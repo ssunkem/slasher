@@ -57,7 +57,7 @@ create table if not exists public.rolls (
   character_id uuid references public.characters(id) on delete set null,
   kind text not null check (kind in ('test','attack','monster')),
   description text not null default '',
-  natural integer not null check (natural between 1 and 20),
+  "natural" integer not null check ("natural" between 1 and 20),
   modifier integer not null check (modifier between -12 and 12),
   total integer not null,
   damage integer not null default 0 check (damage >= 0),
@@ -284,7 +284,7 @@ begin
     (c.owner_id=auth.uid() or public.slasher_is_gm(p_campaign_id))) then raise exception 'Não pode rolar para esta ficha'; end if;
  v_natural := floor(random()*20)::integer+1;
  if p_kind <> 'test' and p_damage_sides>0 then v_damage := floor(random()*p_damage_sides)::integer+1; end if;
- insert into public.rolls(campaign_id,actor_id,character_id,kind,description,natural,modifier,total,damage)
+ insert into public.rolls(campaign_id,actor_id,character_id,kind,description,"natural",modifier,total,damage)
  values(p_campaign_id,auth.uid(),p_character_id,p_kind,left(coalesce(p_description,''),160),v_natural,p_modifier,v_natural+p_modifier,v_damage)
  returning * into v;
  return v;
