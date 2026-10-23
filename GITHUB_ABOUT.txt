@@ -1,0 +1,11 @@
+NOME SUGERIDO
+slasher-rpg
+
+DESCRIÇÃO (campo About do GitHub)
+🔪 RPG de survival horror em Dunmoore. Fichas online, campanhas multiplayer, D20 animado, NPCs e ferramentas para o mestre. Sobreviver é só o começo.
+
+TOPICS
+rpg, tabletop-rpg, survival-horror, ttrpg, javascript, supabase, multiplayer, character-sheet, brazilian-portuguese, horror
+
+WEBSITE
+Depois de publicar pelo GitHub Pages, cole aqui a URL pública gerada.
