@@ -10,6 +10,18 @@ const id=()=>typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():
 const DKEY='slasher71_local_';
 const dockDefault=['inventory','dice','combat','shop','events','notes','master'];
 let lastKnownCamp=null,flashId=null,focusKey=null;
+// O alvo de combate é uma escolha da interface, nunca uma permissão de ataque.
+// O servidor continua validando a criatura, o dono da arma e a ação.
+let selectedMonster={key:'',id:''};
+function targetScope(s){return `${s.user?.id||'guest'}:${s.campaignId||'no-campaign'}`}
+function selectedTarget(s,monsters){
+ const key=targetScope(s);
+ if(selectedMonster.key!==key)selectedMonster={key,id:''};
+ const valid=monsters.find(m=>m.id===selectedMonster.id&&Number(m.hp)>0);
+ if(!valid)selectedMonster.id='';
+ return selectedMonster.id;
+}
+
 const sortKey=(s)=>`slasher71_docks_${s.user?.id||'guest'}_${s.campaignId}`;
 const focusStorage=(s)=>`slasher71_focus_${s.user?.id||'guest'}_${s.campaignId}`;
 const activeKey=(s)=>`slasher71_weapon_${s.user?.id||'guest'}_${s.campaignId}`;
@@ -53,9 +65,22 @@ function inventoryWidget(s,focus){const c=focus?.type==='character'?focus.data:n
  const selected=activeWeapon(s,c.id);return `<p class="m71-help">Clique em <b>Equipar</b> numa arma para selecioná-la no combate. Inventário sincronizado com a campanha.</p><div class="m71-items">${inv.map(i=>`<div class="m71-item"><div class="m71-item-icon">${i.kind==='weapon'?'⚔':'▣'}</div><div class="m71-item-copy"><b>${esc(i.title)}</b><small>${i.kind==='weapon'?`ARMA · ${diceLabel(i.damage_sides)}`:'OBJETO'} · QTD ${i.quantity}</small><small>${esc(i.details)}</small></div>${i.kind==='weapon'?`<button class="btn small ${selected===i.id?'red':'flat'}" data-action="mesa-equip" data-character="${c.id}" data-item="${i.id}">${selected===i.id?'Equipada':'Equipar'}</button>`:''}${roleGM(s)?`<button class="btn small flat" data-action="mesa-del-inventory" data-item="${i.id}" title="Remover item">✕</button>`:''}</div>`).join('')}${legacy.map(i=>`<div class="m71-item legacy"><div class="m71-item-icon">▣</div><div class="m71-item-copy"><b>${esc(i.title)}</b><small>ITEM ANTIGO · ${esc(i.details||'')}</small></div></div>`).join('')}${!inv.length&&!legacy.length?'<div class="m71-info">Inventário vazio. Peça itens ao mestre ou compre numa loja aberta.</div>':''}</div><div class="m71-bottomline">DINHEIRO <b>$ ${Number(c.credits??80)}</b></div>`;
 }
 function diceWidget(s,focus){const c=focus?.type==='character'?focus.data:null;return `<p class="m71-help">Teste livre com D20. Para atacar e causar dano real, use a janela <b>Combate atual</b>.</p><form data-mesa-form="test" class="m71-form"><label>Sobrevivente<input name="char_name" value="${esc(c?.name||'Sem personagem')}" disabled></label><div class="m71-two"><label>Atributo<select name="attr">${[['none','Sem atributo'],['CIE','Ciências'],['RAL','Raciocínio'],['COC','Oculto'],['EDF','Educação física'],['REF','Reflexos'],['TEC','Tecnologia'],['CRI','Criatividade'],['SOC','Social']].map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></label><label>Circunstância<select name="circumstance">${[-4,-3,-2,-1,0,1,2,3,4].map(n=>`<option value="${n}" ${n===0?'selected':''}>${n>0?'+':''}${n}</option>`).join('')}</select></label></div><label>O que você está tentando fazer?<input name="description" maxlength="120" placeholder="Ex.: Escapar pelo corredor"></label><button class="btn red" type="submit" ${!s.campaignId?'disabled':''}>⬡ Rolar D20</button></form>`}
-function encounterWidget(s,focus){const d=currentData(s),enc=d.encounter,monsters=d.monsters,c=focus?.type==='character'?focus.data:null,gm=roleGM(s);if(!enc?.active)return `<div class="m71-no-combat"><span>☾</span><h3>Nenhum combate ativo</h3><p>O mestre abre um confronto quando Dunmoore deixa de apenas observar.</p>${gm?'<button class="btn red" data-action="mesa-open-combat">Iniciar combate</button>':''}</div>`;
- const weapons=c?d.inventory.filter(i=>i.character_id===c.id&&i.kind==='weapon'):[];const w=activeWeapon(s,c?.id);return `<div class="m71-encounter-status"><span class="m71-pill dangerous">● CONFRONTO AO VIVO</span><span class="m71-pill">RODADA ${enc.round}</span><span class="m71-pill">VEZ DE ${esc(enc.turn_label||'A definir')}</span></div><div class="m71-combatants">${monsters.map(m=>`<div class="m71-combatant">${avatar(m,'monster')}<div><b>${esc(m.name)}</b>${meter('HP',m.hp,m.hp_max,'hp')}</div></div>`).join('')||'<p class="m71-info">Nenhuma criatura registrada.</p>'}</div>${c?`<form data-mesa-form="attack" class="m71-form"><h4>Atacar criatura</h4><div class="m71-two"><label>Alvo<select name="target" required>${monsters.map(m=>`<option value="${m.id}" ${m.hp===0?'disabled':''}>${esc(m.name)} (${m.hp}/${m.hp_max})</option>`).join('')}</select></label><label>Arma<select name="weapon"><option value="">Improvisada · 1d4</option>${weapons.map(i=>`<option value="${i.id}" ${i.id===w?'selected':''}>${esc(i.title)} · ${diceLabel(i.damage_sides)}</option>`).join('')}</select></label></div><button class="btn red" type="submit" ${!monsters.some(m=>m.hp>0)?'disabled':''}>⚔ Atacar com D20 e aplicar dano</button><p class="m71-help">Ataque e dano são calculados no servidor, conferindo arma, defensor e permissão.</p></form>`:null}${gm?`<form data-mesa-form="monster-attack" class="m71-form"><h4>⚠ Ataque do monstro</h4><div class="m71-two"><label>Criatura<select name="monster" required>${monsters.map(m=>`<option value="${m.id}" ${m.hp===0?'disabled':''}>${esc(m.name)}</option>`).join('')}</select></label><label>Alvo<select name="target" required>${s.characters.map(ch=>`<option value="${ch.id}" ${ch.hp===0?'disabled':''}>${esc(ch.name)} (${ch.hp}/${ch.hp_max})</option>`).join('')}</select></label></div><button class="btn flat" type="submit">☠ Rolar ataque da criatura</button></form>`:''}`;
+function encounterWidget(s,focus){
+ const d=currentData(s),enc=d.encounter,monsters=d.monsters,c=focus?.type==='character'?focus.data:null,gm=roleGM(s);
+ if(!enc?.active){if(selectedMonster.key===targetScope(s))selectedMonster.id='';return `<div class="m71-no-combat"><span>☾</span><h3>Nenhum combate ativo</h3><p>O mestre abre um confronto quando Dunmoore deixa de apenas observar.</p>${gm?'<button class="btn red" data-action="mesa-open-combat">Iniciar combate</button>':''}</div>`}
+ const weapons=c?d.inventory.filter(i=>i.character_id===c.id&&i.kind==='weapon'):[];
+ const w=activeWeapon(s,c?.id),targetId=selectedTarget(s,monsters);
+ const target=monsters.find(m=>m.id===targetId);
+ return `<div class="m71-encounter-status"><span class="m71-pill dangerous">● CONFRONTO AO VIVO</span><span class="m71-pill">RODADA ${enc.round}</span><span class="m71-pill">VEZ DE ${esc(enc.turn_label||'A definir')}</span></div>
+ <div class="m71-target-prompt">${c?'Selecione seu alvo clicando na criatura:':'Criaturas presentes no combate:'}</div>
+ <div class="m71-combatants" role="group" aria-label="Criaturas do combate">${monsters.map(m=>{
+  const alive=Number(m.hp)>0,chosen=m.id===targetId;
+  return `<button class="m71-combatant m71-target ${chosen?'selected':''} ${!alive?'defeated':''}" type="button" data-action="mesa-select-monster" data-monster="${esc(m.id)}" aria-pressed="${chosen?'true':'false'}" aria-label="${alive?'Selecionar alvo':'Criatura incapacitada'}: ${esc(m.name)}, ${m.hp} de ${m.hp_max} pontos de vida" ${alive?'':'disabled'}>${avatar(m,'monster')}<span class="m71-target-info"><span class="m71-target-heading"><b>${esc(m.name)}</b><span class="m71-target-label">${chosen?'✓ ALVO SELECIONADO':alive?'ESCOLHER ALVO':'INCAPACITADO'}</span></span>${meter('HP',m.hp,m.hp_max,'hp')}</span></button>`
+ }).join('')||'<p class="m71-info">Nenhuma criatura registrada.</p>'}</div>
+ ${c?`<form data-mesa-form="attack" class="m71-form"><h4>Atacar criatura</h4><input type="hidden" name="target" value="${esc(targetId)}"><p class="m71-target-hint" data-m71-target-hint>${target?`Alvo selecionado: <strong>${esc(target.name)}</strong>`:'Clique em um monstro acima para liberar o ataque.'}</p><label class="field">Arma<select name="weapon"><option value="">Improvisada · 1d4</option>${weapons.map(i=>`<option value="${i.id}" ${i.id===w?'selected':''}>${esc(i.title)} · ${diceLabel(i.damage_sides)}</option>`).join('')}</select></label><button class="btn red" type="submit" data-m71-attack-submit ${target?'':'disabled'}>⚔ Atacar com D20 e aplicar dano</button><p class="m71-help">Ataque e dano são calculados no servidor, conferindo arma, defensor e permissão.</p></form>`:''}
+ ${gm?`<form data-mesa-form="monster-attack" class="m71-form"><h4>⚠ Ataque do monstro</h4><div class="m71-two"><label>Criatura<select name="monster" required>${monsters.map(m=>`<option value="${m.id}" ${m.hp===0?'disabled':''}>${esc(m.name)}</option>`).join('')}</select></label><label>Alvo<select name="target" required>${s.characters.map(ch=>`<option value="${ch.id}" ${ch.hp===0?'disabled':''}>${esc(ch.name)} (${ch.hp}/${ch.hp_max})</option>`).join('')}</select></label></div><button class="btn flat" type="submit">☠ Rolar ataque da criatura</button></form>`:''}`;
 }
+
 function shopWidget(s,focus){const d=currentData(s),shop=d.shop,gm=roleGM(s),c=focus?.type==='character'?focus.data:null;if(!shop?.is_open&&!gm)return '<div class="m71-info">O comércio está fechado. Quando o mestre abrir a loja, os produtos aparecerão aqui.</div>';
  return `<div class="m71-shop-title"><span>${esc(shop?.name||'Loja fechada')}</span><span class="m71-pill ${shop?.is_open?'':'dangerous'}">${shop?.is_open?'ABERTA':'FECHADA'}</span></div><div class="m71-stock">${d.stock.map(i=>`<div class="m71-stock-item"><div><b>${esc(i.title)}</b><small>${i.kind==='weapon'?`ARMA · ${diceLabel(i.damage_sides)}`:'OBJETO'} · estoque ${i.stock}</small><small>${esc(i.details||'')}</small></div><div class="m71-stock-buy"><b>$ ${i.price}</b>${shop?.is_open&&c?`<button data-action="mesa-buy" data-item="${i.id}" data-character="${c.id}" class="btn small red" ${i.stock<1||Number(c.credits??80)<i.price?'disabled':''}>Comprar</button>`:''}${gm?`<button data-action="mesa-del-stock" data-item="${i.id}" class="btn small flat">✕</button>`:''}</div></div>`).join('')||'<div class="m71-info">Nenhum produto cadastrado.</div>'}</div>${!c?'<p class="m71-help">Selecione uma ficha de sobrevivente para comprar.</p>':''}`;
 }
@@ -100,6 +125,28 @@ function demoRpc(s,op,p){const d=currentData(s),gm=roleGM(s),c=s.characters.find
 async function run(s,api,op,p){if(s.mode==='demo')return demoRpc(s,op,p);return rpc(api,op,p)}
 async function refresh(s,api,display){if(s.mode==='online')await display.refreshCampaign(true);else{persistDemo(s);api.save?.();display.render()} }
 async function action(act,btn,ctx){const {state:s,api,refreshCampaign,render,toast}=ctx;const d=currentData(s),c=getFocus(s);const idVal=btn.dataset.item;
+ if(act==='mesa-select-monster'){
+  const monster=d.monsters.find(m=>m.id===btn.dataset.monster);
+  if(!d.encounter?.active||!monster||Number(monster.hp)<=0)throw Error('Essa criatura não pode ser selecionada.');
+  selectedMonster={key:targetScope(s),id:monster.id};
+  const combatDock=btn.closest('.m71-dock');
+  combatDock?.querySelectorAll('[data-action="mesa-select-monster"]').forEach(card=>{
+    const isPicked=card.dataset.monster===monster.id;
+    card.classList.toggle('selected',isPicked);
+    card.setAttribute('aria-pressed',isPicked?'true':'false');
+    const label=card.querySelector('.m71-target-label');
+    if(label)label.textContent=isPicked?'✓ ALVO SELECIONADO':'ESCOLHER ALVO';
+  });
+  const attackForm=combatDock?.querySelector('form[data-mesa-form="attack"]');
+  const targetInput=attackForm?.querySelector('input[name="target"]');
+  if(targetInput)targetInput.value=monster.id;
+  const attackButton=attackForm?.querySelector('[data-m71-attack-submit]');
+  if(attackButton)attackButton.disabled=false;
+  const hint=attackForm?.querySelector('[data-m71-target-hint]');
+  if(hint){hint.textContent='Alvo selecionado: '+monster.name;hint.classList.add('ready')}
+  btn.disabled=false;
+  return;
+ }
  if(act==='mesa-retry'){await load(s,api);render();return}
  if(act==='mesa-reset-layout'){setLayout(s,{order:dockDefault,hidden:{}});render();return}
  if(act==='mesa-toggle'){const l=getLayout(s);l.hidden[btn.dataset.dock]=!l.hidden[btn.dataset.dock];setLayout(s,l);render();return}
@@ -112,7 +159,7 @@ async function action(act,btn,ctx){const {state:s,api,refreshCampaign,render,toa
 }
 async function submit(form,ctx,submitter){const {state:s,api,refreshCampaign,render,toast}=ctx,dat=formData(form),c=getFocus(s);const kind=form.dataset.mesaForm;const num=k=>Number(dat[k]||0);const act=async(op,args)=>run(s,api,op,args);const cam=s.campaignId;let event=null;
  if(kind==='test'){const ch=c?.type==='character'?c.data:null;const a=ch?.attrs?.[dat.attr]||0;const description=String(dat.description||'').trim()||`Teste ${dat.attr!=='none'?dat.attr:'geral'} · ${ch?.name||'Dunmoore'}`;const p={campaign_id:cam,character_id:ch?.id||null,kind:'test',description,modifier:Number(a)+num('circumstance'),damage_sides:0};const r=await api.roll(p);toast(`D20: ${r.natural} ${r.modifier>=0?'+':'−'} ${Math.abs(r.modifier)} = ${r.total}`)}
- else if(kind==='attack'){const ch=mustFocusChar(s);const inv=dat.weapon||null;event=await act('attack',{p_campaign:cam,p_actor_character:ch.id,p_actor_monster:null,p_target_character:null,p_target_monster:dat.target,p_inventory:inv});}
+ else if(kind==='attack'){const ch=mustFocusChar(s);const target=d.monsters.find(m=>m.id===dat.target&&Number(m.hp)>0);if(!target)throw Error('Clique em um monstro vivo para escolher seu alvo antes de atacar.');const inv=dat.weapon||null;event=await act('attack',{p_campaign:cam,p_actor_character:ch.id,p_actor_monster:null,p_target_character:null,p_target_monster:target.id,p_inventory:inv});}
  else if(kind==='monster-attack'){mustGM(s);event=await act('attack',{p_campaign:cam,p_actor_character:null,p_actor_monster:dat.monster,p_target_character:dat.target,p_target_monster:null,p_inventory:null});}
  else if(kind==='monster-adjust'){mustGM(s);if(c?.type!=='monster')throw Error('Selecione um monstro');await act('monster_adjust',{p_id:c.data.id,p_delta:num('delta')});}
  else if(kind==='monster-portrait'){mustGM(s);if(c?.type!=='monster')throw Error('Selecione um monstro');const pic=await compressPortrait(dat.portrait);await act('monster_portrait',{p_id:c.data.id,p_portrait:pic});}
