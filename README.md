@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🔪 SLASHER 7.0
+# 🔪 SLASHER 7.1
 
 ### DUNMOORE HORROR STORY
 
@@ -8,7 +8,7 @@
 
 *Um RPG de investigação e survival horror. Agora, com a mesa conectada.*
 
-![Versão](https://img.shields.io/badge/vers%C3%A3o-7.0-9d2639?style=for-the-badge&labelColor=111115)
+![Versão](https://img.shields.io/badge/vers%C3%A3o-7.1-9d2639?style=for-the-badge&labelColor=111115)
 ![Status](https://img.shields.io/badge/status-MVP%20experimental-702431?style=for-the-badge&labelColor=111115)
 ![Tecnologias](https://img.shields.io/badge/HTML%20%2B%20CSS%20%2B%20JS-frontend-9d2639?style=for-the-badge&labelColor=111115)
 ![Backend](https://img.shields.io/badge/Supabase-multiplayer-702431?style=for-the-badge&labelColor=111115)
@@ -25,25 +25,51 @@
 
 ## Sobre o SLASHER
 
-**SLASHER 7.0: Dunmoore Horror Story** é uma plataforma web para jogar um RPG de **horror, investigação e sobrevivência**. Aqui, monstros não são sacos de pontos de vida, ferimentos deixam marcas e descobrir a verdade costuma ser mais importante do que vencer uma luta.
+**SLASHER 7.1: Dunmoore Horror Story** é uma plataforma web para jogar um RPG de **horror, investigação e sobrevivência**. Aqui, monstros não são sacos de pontos de vida, ferimentos deixam marcas e descobrir a verdade costuma ser mais importante do que vencer uma luta.
 
-A versão 7.0 leva o sistema para uma mesa digital: jogadores acompanham seus sobreviventes enquanto o mestre organiza a campanha, administra recursos, registra acontecimentos e conduz o terror de Dunmoore.
+A versão 7.1 leva o sistema para uma mesa digital: jogadores acompanham seus sobreviventes enquanto o mestre organiza a campanha, administra recursos, registra acontecimentos e conduz o terror de Dunmoore.
 
 A proposta é simples: **facilitar a vida de quem narra sem tirar dos jogadores o medo de abrir a próxima porta.**
 
 ## Uma olhada em Dunmoore
 
 <p align="center">
-  <img src="assets/preview-desktop.webp" alt="Painel do mestre do SLASHER 7.0, com sobreviventes, campanha e últimos acontecimentos" width="100%">
+  <img src="assets/preview-desktop.png" alt="Painel do mestre do SLASHER 7.1, com sobreviventes, campanha e últimos acontecimentos" width="100%">
 </p>
 
 <details>
 <summary><b>📱 Ver a interface no celular</b></summary>
 <br>
-<p align="center"><img src="assets/preview-mobile.webp" alt="Interface responsiva do SLASHER 7.0 no celular" width="350"></p>
+<p align="center"><img src="assets/preview-mobile.png" alt="Interface responsiva do SLASHER 7.1 no celular" width="350"></p>
 </details>
 
 *As capturas mostram o modo de demonstração. A aparência é a mesma no modo conectado.*
+
+## Mesa Atual · Novo na 7.1
+
+A página **Mesa Atual** é a central jogável do SLASHER, inspirada em painéis de investigação e inventários de survival horror. Ao entrar numa campanha, cada jogador encontra:
+
+- **Retrato em destaque:** vida, stamina, estresse, efeitos e item equipado; o mestre pode alternar também entre fichas de NPCs e criaturas.
+- **Docks personalizados:** inventário, rolagem rápida, combate, loja, log de ataques e notas. Arraste os painéis no desktop ou use as setas; recolha os que não precisa. A ordem é salva no navegador por usuário e campanha.
+- **Inventário com armas reais:** o mestre concede uma arma e informa o dado de dano. O jogador a equipa e o ataque utiliza esse dado automaticamente.
+- **Combate compartilhado:** o mestre abre o combate. Ações usam D20 no servidor, conferem defesa e aplicam o dano ao HP correto. O histórico mostra atacante, alvo, foto, defesa, acerto e **barra animada com HP antes e depois**.
+- **Monstros persistentes:** cada criatura tem HP, defesa e dado de ataque próprio, armazenados no Supabase.
+- **Loja da cena:** o mestre cadastra itens, preços e estoque, e decide quando abrir. Compras verificam permissões, saldo e estoque no banco.
+
+> [!IMPORTANT]
+> O **SLASHER 7.1 requer uma migração adicional no Supabase**. Não execute o `schema.sql` inteiro outra vez nem apague tabelas existentes. O script `migrate_7_1.sql` adiciona somente as estruturas novas. Veja as instruções abaixo.
+
+### Atualizar o banco existente para 7.1
+
+1. Abra **Supabase → SQL Editor → New query**.
+2. Abra [`migrate_7_1.sql`](migrate_7_1.sql) no GitHub, clique em **Raw** e copie todo o conteúdo.
+3. Cole na nova query e execute **Run** uma vez. O script preserva campanhas, fichas e dados da edição 7.0.
+4. Atualize o SLASHER no navegador (`Ctrl + F5`) e abra a nova aba **Mesa Atual**.
+5. Consulte [`TESTES_7_1.md`](TESTES_7_1.md) para criar uma criatura, entregar uma arma e validar o combate entre duas contas.
+
+**Conta de jogador:** a entrada rápida por username permanece disponível, desde que **Anonymous Sign-Ins** esteja habilitado em Authentication no Supabase. A identidade pertence à sessão do navegador, não apenas ao apelido.
+
+**Teste sem banco:** abra [`SLASHER_7_1_Demo.html`](SLASHER_7_1_Demo.html). A demo funciona sem conta nem servidor e já vem com duas criaturas, uma arma e uma pequena loja de exemplo. O banco online não é modificado pelo modo demo.
 
 ## O que já existe
 
@@ -58,15 +84,6 @@ A proposta é simples: **facilitar a vida de quem narra sem tirar dos jogadores 
 
 **No modo online**, as fichas, os recursos e as rolagens são armazenados no Supabase e sincronizados entre os membros da campanha. O banco aplica permissões para distinguir ações do mestre e dos jogadores.
 
-### Entrar sem e-mail
-
-A entrada principal é pelo **nome de usuário**, sem senha ou e-mail: o Supabase cria uma **conta anônima única**, e o nome escolhido funciona como apelido. Esse nome **não dá acesso** às contas de outros jogadores, mesmo se duas pessoas escolherem o mesmo.
-
-> [!WARNING]
-> **A conta anônima está vinculada à sessão deste navegador.** Não saia da conta, não limpe os dados do site e não troque de aparelho se quiser manter acesso às suas fichas e campanhas. Digitar o mesmo nome novamente cria outra identidade, não recupera a antiga. Para usar uma conta com recuperação, existe a opção secundária **Já tenho conta com e-mail**.
-
-O banco continua aplicando RLS às contas anônimas, que têm IDs independentes. Ative *Allow anonymous sign-ins* no painel do Supabase antes de usar essa forma de entrada. Para um lançamento público, habilite CAPTCHA e considere um sistema de recuperação de contas.
-
 **No modo demo**, essas funções podem ser experimentadas localmente, sem conta nem servidor, mas os dados **não são compartilhados entre computadores**.
 
 ### Sobre o combate
@@ -79,7 +96,7 @@ Você não precisa instalar React, Node.js ou dependências de build.
 
 ### 1. Testar a demonstração
 
-Baixe o repositório e abra **`SLASHER_7_0_Demo.html`** no navegador. Esse arquivo é independente e funciona sem Supabase.
+Baixe o repositório e abra **`SLASHER_7_1_Demo.html`** no navegador. Esse arquivo é independente e funciona sem Supabase.
 
 Para servir a aplicação principal localmente, na raiz do projeto execute:
 
@@ -119,11 +136,9 @@ Para usar **GitHub Pages**, abra o repositório e vá em **Settings → Pages �
 https://SEU-USUARIO.github.io/NOME-DO-REPOSITORIO/
 ```
 
-**Passo 5.** No Supabase, abra **Authentication → Settings / General** e habilite **Allow anonymous sign-ins** (a localização exata pode variar conforme a versão do painel). Confira **Authentication → URL Configuration** para o endereço do GitHub Pages e, se mantiver o login legado por e-mail, as URLs de confirmação.
+**Passo 5.** No Supabase, confira as opções de autenticação e as URLs autorizadas em **Authentication → URL Configuration**, principalmente se a confirmação de e-mail estiver ativa.
 
-**Passo 6.** No SLASHER, escolha um nome de usuário na tela inicial. A autenticação anônima cria uma sessão própria e mantém os convites e fichas associados àquele usuário enquanto o navegador preserva a sessão.
-
-Pronto: o mestre acessa com um nome de usuário, cria uma campanha, compartilha o código de convite e os jogadores entram com suas próprias sessões.
+Pronto: o mestre cria uma conta e uma campanha, compartilha o código de convite e os jogadores entram com suas próprias contas.
 
 > [!IMPORTANT]
 > **Esta é uma versão experimental.** O modo demo foi testado localmente; o fluxo completo de autenticação e a sincronização entre contas reais ainda precisam ser validados em um Supabase configurado. Não interprete a presença do código multiplayer como garantia de produção.
@@ -135,9 +150,12 @@ SLASHER-7.0/
 ├── index.html                 # Entrada da aplicação online
 ├── styles.css                 # Interface preto e vermelho
 ├── app.js                     # Fichas, campanhas, rolagens e sincronização
+├── mesa71.js                  # Mesa atual, docks, combate e loja
+├── mesa71.css                 # Estética do painel de sessão
 ├── config.js                  # Configuração pública do Supabase
-├── schema.sql                 # Estrutura e permissões do banco
-├── SLASHER_7_0_Demo.html      # Demonstração independente
+├── schema.sql                 # Estrutura e permissões base do banco
+├── migrate_7_1.sql           # Migração aditiva para a Mesa Atual
+├── SLASHER_7_1_Demo.html      # Demonstração independente
 ├── manual-6.html              # Manual completo da edição anterior
 ├── assets/
 │   ├── preview-desktop.webp
@@ -155,7 +173,10 @@ SLASHER-7.0/
 - [x] Inventário, habilidades, condições e rolagens
 - [x] Implementação inicial de banco e sincronização
 - [ ] Testes completos de multiplayer com contas reais
-- [ ] Biblioteca de monstros e perseguições interativas
+- [x] Monstros persistentes com HP, defesa e ataque
+- [x] Loja, equipamentos e combate com dano automático
+- [x] Mesa Atual com docks rearranjáveis
+- [ ] Perseguições e efeitos sobrenaturais avançados
 - [ ] Mensagens privadas e manifestações sobrenaturais na interface
 - [ ] Catálogo reutilizável de itens e habilidades por campanha
 - [ ] Backup/exportação de campanhas e histórico para desfazer ações
@@ -163,7 +184,7 @@ SLASHER-7.0/
 
 ## Limitações conhecidas
 
-O SLASHER 7.0 é um **MVP para mesas privadas**, não um serviço comercial pronto para grandes comunidades. Ainda não há backup automático próprio, reversão completa de mudanças ou testes de carga publicados. Salve cópias periódicas dos dados importantes e distribua códigos de convite apenas aos participantes da campanha.
+O SLASHER 7.1 é um **MVP para mesas privadas**, não um serviço comercial pronto para grandes comunidades. A 7.1 é uma versão de teste: ainda é necessário validar o fluxo conectado entre contas reais após a migração. Ainda não há backup automático próprio, reversão completa de mudanças ou testes de carga publicados. Salve cópias periódicas dos dados importantes e distribua códigos de convite apenas aos participantes da campanha.
 
 As notas secretas do mestre são protegidas por permissões do banco no modo conectado; já as anotações normais das fichas podem ser vistas pelos membros da mesa. **Não use essas áreas para dados pessoais sensíveis.**
 
@@ -177,7 +198,7 @@ Ideias, relatos de bugs e sugestões de mecânicas são bem-vindos pelas **Issue
 
 <div align="center">
 
-### SLASHER 7.0 · DUNMOORE HORROR STORY
+### SLASHER 7.1 · DUNMOORE HORROR STORY
 
 *Você não precisa derrotar o monstro.*  
 **Precisa sobreviver tempo suficiente para descobrir quem o deixou entrar.**
