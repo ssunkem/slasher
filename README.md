@@ -45,6 +45,12 @@ A proposta é simples: **facilitar a vida de quem narra sem tirar dos jogadores 
 
 *As capturas mostram o modo de demonstração. A aparência é a mesma no modo conectado.*
 
+## Correção de formulários da Mesa Atual (7.1.1)
+
+A versão 7.1.1 corrige um erro de integração que ignorava formulários da Mesa Atual sem `id`. Agora o mestre pode **entregar itens ou armas**, **abrir/fechar a loja** e **cadastrar produtos** no painel, com mensagens de confirmação. Também foi corrigida a referência interna ao estado do combate no ataque do sobrevivente.
+
+**Não é necessário executar uma nova migração SQL** para esse patch. Para conferir a correção execute `node tests/formularios-mesa71.cjs` (Node.js) ou use a demonstração offline. No site publicado, recarregue a página com `Ctrl + F5`. O código só atualiza os dados de fato depois que a resposta do Supabase confirma a operação.
+
 ## Mesa Atual · Novo na 7.1
 
 A página **Mesa Atual** é a central jogável do SLASHER, inspirada em painéis de investigação e inventários de survival horror. Ao entrar numa campanha, cada jogador encontra:

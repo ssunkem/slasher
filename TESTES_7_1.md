@@ -2,6 +2,17 @@
 
 **Migração necessária:** no seu Supabase já configurado para a 7.0, execute `migrate_7_1.sql` pelo SQL Editor. O arquivo preserva suas campanhas e personagens. Não rode em um banco com outro esquema sem antes revisar o SQL.
 
+## Regressão dos formulários (patch 7.1.1)
+
+Execute `node tests/formularios-mesa71.cjs` na raiz do repositório. O teste dispara o **evento real de `submit`** que antes era ignorado, em vez de chamar a função do formulário diretamente. Ele cobre:
+
+- Entrega de arma e exibição no inventário da Mesa Atual
+- Fechar e abrir a loja pelo botão correto
+- Cadastro de produtos e atualização do estoque
+- Visibilidade da loja para jogadores, sem mostrar ferramentas exclusivas do mestre
+
+**Nenhuma migração nova é necessária** se `migrate_7_1.sql` já foi executado. A validação entre contas reais ainda deve ser feita no Supabase.
+
 ## Teste rápido (sem servidor)
 
 Abra `SLASHER_7_1_Demo.html`, entre na demonstração e selecione a campanha. A aba **Mesa Atual** deverá abrir automaticamente.

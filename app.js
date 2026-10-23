@@ -175,7 +175,7 @@ document.addEventListener('change',async e=>{
 });
 
 document.addEventListener('submit',async e=>{
- e.preventDefault();const form=e.target;const formId=form.getAttribute('id');if(!formId)return;const dat=Object.fromEntries(new FormData(form).entries());const submit=form.querySelector('button[type=submit]');if(submit?.disabled)return;if(submit)submit.disabled=true;
+ e.preventDefault();const form=e.target;const formId=form.getAttribute('id');if(!formId&&!form.dataset.mesaForm)return;const dat=Object.fromEntries(new FormData(form).entries());const submit=form.querySelector('button[type=submit]');if(submit?.disabled)return;if(submit)submit.disabled=true;
  try{
  if(form.dataset.mesaForm){await window.SLASHER71.submit(form,{state,api,refreshCampaign,render,toast},e.submitter);return}
  if(formId==='quick-auth-form'){

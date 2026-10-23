@@ -300,7 +300,7 @@ async function action(act,btn,ctx){const {state:s,api,refreshCampaign,render,toa
  if(act==='mesa-del-stock'){mustGM(s);if(!confirm('Retirar produto da loja?'))return;await run(s,api,'stock_remove',{p_id:idVal});await refresh(s,api,{refreshCampaign,render});return}
  if(act==='mesa-del-inventory'){mustGM(s);if(!confirm('Retirar item do inventário?'))return;await run(s,api,'inventory_remove',{p_id:idVal});await refresh(s,api,{refreshCampaign,render});return}
 }
-async function submit(form,ctx,submitter){const {state:s,api,refreshCampaign,render,toast}=ctx,dat=formData(form),c=getFocus(s);const kind=form.dataset.mesaForm;const num=k=>Number(dat[k]||0);const act=async(op,args)=>run(s,api,op,args);const cam=s.campaignId;let event=null;
+async function submit(form,ctx,submitter){const {state:s,api,refreshCampaign,render,toast}=ctx,dat=formData(form),c=getFocus(s),d=currentData(s);const kind=form.dataset.mesaForm;const num=k=>Number(dat[k]||0);const act=async(op,args)=>run(s,api,op,args);const cam=s.campaignId;let event=null;
  if(kind==='test'){const ch=c?.type==='character'?c.data:null;const a=ch?.attrs?.[dat.attr]||0;const description=String(dat.description||'').trim()||`Teste ${dat.attr!=='none'?dat.attr:'geral'} · ${ch?.name||'Dunmoore'}`;const p={campaign_id:cam,character_id:ch?.id||null,kind:'test',description,modifier:Number(a)+num('circumstance'),damage_sides:0};const r=await api.roll(p);toast(`D20: ${r.natural} ${r.modifier>=0?'+':'−'} ${Math.abs(r.modifier)} = ${r.total}`)}
  else if(kind==='attack'){const ch=mustFocusChar(s);const target=d.monsters.find(m=>m.id===dat.target&&Number(m.hp)>0);if(!target)throw Error('Clique em um monstro vivo para escolher seu alvo antes de atacar.');const inv=dat.weapon||null;event=await act('attack',{p_campaign:cam,p_actor_character:ch.id,p_actor_monster:null,p_target_character:null,p_target_monster:target.id,p_inventory:inv});}
  else if(kind==='monster-attack'){mustGM(s);event=await act('attack',{p_campaign:cam,p_actor_character:null,p_actor_monster:dat.monster,p_target_character:dat.target,p_target_monster:null,p_inventory:null});}
@@ -313,7 +313,12 @@ async function submit(form,ctx,submitter){const {state:s,api,refreshCampaign,ren
  else if(kind==='shop-settings'){mustGM(s);await act('shop_set',{p_campaign:cam,p_name:dat.name,p_open:submitter?.value==='true'});}
  else if(kind==='stock'){mustGM(s);await act('stock_add',{p_campaign:cam,p_title:dat.title,p_kind:dat.kind,p_damage:dat.kind==='item'?0:num('damage'),p_price:num('price'),p_stock:num('stock'),p_details:dat.details});}
  else return;
- await refresh(s,api,{refreshCampaign,render});if(event)toast(event.hit?`${event.actor_name} acertou ${event.target_name}: -${event.damage} HP`:`${event.actor_name} errou o ataque!`);else if(kind!=='test')toast('Mesa Atual sincronizada.');
+ await refresh(s,api,{refreshCampaign,render});
+ if(event)toast(event.hit?`${event.actor_name} acertou ${event.target_name}: -${event.damage} HP`:`${event.actor_name} errou o ataque!`);
+ else if(kind==='grant-item')toast(`${dat.kind==='weapon'?'Arma':'Item'} entregue a ${c?.data?.name||'sobrevivente'}: ${dat.title}. Veja o inventário.`);
+ else if(kind==='shop-settings')toast(submitter?.value==='true'?`Loja aberta para todos: ${dat.name}.`:'Loja fechada para os jogadores.');
+ else if(kind==='stock')toast(`Produto cadastrado na loja: ${dat.title}.`);
+ else if(kind!=='test')toast('Mesa Atual sincronizada.');
 }
 function onFocus(s,value){focusKey=value;setLocal(focusStorage(s),value)}
 function animateCounters(){document.querySelectorAll('[data-m71-from][data-m71-to]').forEach(el=>{const from=Number(el.dataset.m71From),to=Number(el.dataset.m71To),max=Number(el.dataset.m71Max),start=performance.now(),duration=900;const tick=now=>{const f=Math.min(1,(now-start)/duration);const eased=1-Math.pow(1-f,3);el.textContent=Math.round(from+(to-from)*eased)+' / '+max;if(f<1)requestAnimationFrame(tick)};requestAnimationFrame(tick)})}
@@ -500,7 +505,7 @@ document.addEventListener('change',async e=>{
 });
 
 document.addEventListener('submit',async e=>{
- e.preventDefault();const form=e.target;const formId=form.getAttribute('id');if(!formId)return;const dat=Object.fromEntries(new FormData(form).entries());const submit=form.querySelector('button[type=submit]');if(submit?.disabled)return;if(submit)submit.disabled=true;
+ e.preventDefault();const form=e.target;const formId=form.getAttribute('id');if(!formId&&!form.dataset.mesaForm)return;const dat=Object.fromEntries(new FormData(form).entries());const submit=form.querySelector('button[type=submit]');if(submit?.disabled)return;if(submit)submit.disabled=true;
  try{
  if(form.dataset.mesaForm){await window.SLASHER71.submit(form,{state,api,refreshCampaign,render,toast},e.submitter);return}
  if(formId==='quick-auth-form'){
