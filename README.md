@@ -58,6 +58,15 @@ A proposta é simples: **facilitar a vida de quem narra sem tirar dos jogadores 
 
 **No modo online**, as fichas, os recursos e as rolagens são armazenados no Supabase e sincronizados entre os membros da campanha. O banco aplica permissões para distinguir ações do mestre e dos jogadores.
 
+### Entrar sem e-mail
+
+A entrada principal é pelo **nome de usuário**, sem senha ou e-mail: o Supabase cria uma **conta anônima única**, e o nome escolhido funciona como apelido. Esse nome **não dá acesso** às contas de outros jogadores, mesmo se duas pessoas escolherem o mesmo.
+
+> [!WARNING]
+> **A conta anônima está vinculada à sessão deste navegador.** Não saia da conta, não limpe os dados do site e não troque de aparelho se quiser manter acesso às suas fichas e campanhas. Digitar o mesmo nome novamente cria outra identidade, não recupera a antiga. Para usar uma conta com recuperação, existe a opção secundária **Já tenho conta com e-mail**.
+
+O banco continua aplicando RLS às contas anônimas, que têm IDs independentes. Ative *Allow anonymous sign-ins* no painel do Supabase antes de usar essa forma de entrada. Para um lançamento público, habilite CAPTCHA e considere um sistema de recuperação de contas.
+
 **No modo demo**, essas funções podem ser experimentadas localmente, sem conta nem servidor, mas os dados **não são compartilhados entre computadores**.
 
 ### Sobre o combate
@@ -110,9 +119,11 @@ Para usar **GitHub Pages**, abra o repositório e vá em **Settings → Pages �
 https://SEU-USUARIO.github.io/NOME-DO-REPOSITORIO/
 ```
 
-**Passo 5.** No Supabase, confira as opções de autenticação e as URLs autorizadas em **Authentication → URL Configuration**, principalmente se a confirmação de e-mail estiver ativa.
+**Passo 5.** No Supabase, abra **Authentication → Settings / General** e habilite **Allow anonymous sign-ins** (a localização exata pode variar conforme a versão do painel). Confira **Authentication → URL Configuration** para o endereço do GitHub Pages e, se mantiver o login legado por e-mail, as URLs de confirmação.
 
-Pronto: o mestre cria uma conta e uma campanha, compartilha o código de convite e os jogadores entram com suas próprias contas.
+**Passo 6.** No SLASHER, escolha um nome de usuário na tela inicial. A autenticação anônima cria uma sessão própria e mantém os convites e fichas associados àquele usuário enquanto o navegador preserva a sessão.
+
+Pronto: o mestre acessa com um nome de usuário, cria uma campanha, compartilha o código de convite e os jogadores entram com suas próprias sessões.
 
 > [!IMPORTANT]
 > **Esta é uma versão experimental.** O modo demo foi testado localmente; o fluxo completo de autenticação e a sincronização entre contas reais ainda precisam ser validados em um Supabase configurado. Não interprete a presença do código multiplayer como garantia de produção.
@@ -129,8 +140,8 @@ SLASHER-7.0/
 ├── SLASHER_7_0_Demo.html      # Demonstração independente
 ├── manual-6.html              # Manual completo da edição anterior
 ├── assets/
-│   ├── preview-desktop.png
-│   └── preview-mobile.png
+│   ├── preview-desktop.webp
+│   └── preview-mobile.webp
 └── README.md
 ```
 
