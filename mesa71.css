@@ -88,3 +88,22 @@
 @media(max-width:920px){.m71-board{grid-template-columns:1fr}.m71-hero{grid-template-columns:minmax(0,1fr) 180px}.m71-portrait.hero{width:155px;height:210px;font-size:110px}.m71-hero-copy{padding:27px 19px}}
 @media(max-width:570px){.m71-page-title h2{font-size:36px}.m71-hero{grid-template-columns:minmax(0,1fr);padding-top:220px}.m71-hero-character{position:absolute;top:0;left:0;right:0;height:223px;align-items:center;justify-content:center;padding:10px}.m71-portrait.hero{width:115px;height:163px;font-size:90px}.m71-hero-copy{padding:17px}.m71-hero-copy h2{font-size:31px}.m71-portrait-caption{margin-top:6px;font-size:9px}.m71-two,.m71-three{grid-template-columns:1fr}.m71-dock-content{padding:15px}.m71-dock-bar{padding:10px}.m71-dock-title h3{font-size:17px}.m71-dock-tools button{padding:2px 6px}}
 @media(prefers-reduced-motion:reduce){.m71-event.impact,.m71-event.impact .m71-meter-ghost,.m71-floating{animation:none!important}}
+
+/* 7.1 · Criatura clicável como alvo (teclado, toque, mouse) */
+.m71-target-prompt{font-size:12px;color:#d9bec4;margin:14px 0 7px;letter-spacing:.02em}
+button.m71-combatant.m71-target{display:flex;width:100%;min-width:0;min-height:78px;text-align:left;cursor:pointer;position:relative;appearance:none;transition:border-color .18s ease,background-color .18s ease,box-shadow .18s ease,transform .18s ease}
+button.m71-target:not(:disabled):hover{border-color:#b43b54;background:#231016;transform:translateY(-1px)}
+button.m71-target:focus-visible{outline:2px solid #f26881;outline-offset:3px}
+button.m71-target.selected,button.m71-target.selected:hover{border:2px solid #e0435a;background:linear-gradient(110deg,#32131d,#1a0d13);box-shadow:0 0 0 2px #911d3540,0 0 18px #be273744}
+button.m71-target.selected:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#e0435a}
+button.m71-target.defeated{opacity:.46;filter:grayscale(.45);cursor:not-allowed}
+.m71-target-info{display:block;min-width:0;flex:1}.m71-target-info>.m71-meter-wrap{margin-top:7px}
+.m71-target-heading{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:5px}
+.m71-target-heading>b{font-size:13px;white-space:normal}
+.m71-target-label{font-family:ui-monospace,Consolas,monospace;font-size:9px;color:#c4a3ad;letter-spacing:.04em;text-transform:uppercase}
+.m71-target.selected .m71-target-label{color:#ff91a7;font-weight:800}
+.m71-target-hint{font-size:12px;border:1px dashed #66323e;background:#1a1217;color:#cab6bf;border-radius:7px;padding:10px 12px;margin:4px 0 13px}
+.m71-target-hint.ready{border-color:#b43850;color:#ffe0e5;background:#281218}
+.m71-form button[data-m71-attack-submit]:disabled{background:#30242a;color:#b5a7aa;border-color:#53424a;cursor:not-allowed;opacity:.72;box-shadow:none}
+@media(max-width:600px){.m71-target-heading{align-items:start;flex-direction:column}.m71-target-label{font-size:9px}}
+@media(prefers-reduced-motion:reduce){button.m71-combatant.m71-target{transition:none}button.m71-target:not(:disabled):hover{transform:none}}
