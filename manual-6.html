@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="theme-color" content="#050505"><meta name="description" content="SLASHER 6.0: Dunmoore Horror Story, manual de survival horror, criador de sobreviventes e painel do narrador. Funciona sem internet."><title>SLASHER 6.0 | Dunmoore Horror Story</title>
+<style>
+:root{color-scheme:dark;--bg:#0c0b0e;--ink:#eae3db;--mut:#b8acaa;--dim:#857b7c;--red:#d85250;--red2:#702f37;--border:#392b2d;--card:#171317;--card2:#22191d;--cyan:#93b5ac;--yellow:#e6c18a;--curve:14px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 system-ui,-apple-system,Segoe UI,Arial,sans-serif}body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 75% 45% at 80% 0%,rgba(117,27,37,.18),transparent),linear-gradient(160deg,transparent 40%,rgba(150,116,94,.032))}a{color:var(--cyan)}button,select,input,textarea{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--yellow);outline-offset:2px}button:disabled{opacity:.4;cursor:not-allowed}#app{display:grid;grid-template-columns:266px minmax(0,1fr);min-height:100vh;max-width:1800px;margin:0 auto}.rail{background:linear-gradient(175deg,#160f13,#0c0b0e 50%);border-right:1px solid var(--border);position:sticky;top:0;height:100vh;overflow:auto;padding:25px 15px 20px;scrollbar-width:thin}.brand{font:900 27px/1 'Arial Narrow',Impact,sans-serif;letter-spacing:.22em;padding:10px 11px 4px;color:#f1e9e1}.brand span{color:var(--red)}.sub{font:10px/1.6 monospace;letter-spacing:.12em;color:var(--dim);padding:5px 11px 21px}.nav-label{padding:19px 11px 7px;font:11px monospace;letter-spacing:.16em;color:var(--dim);border-top:1px solid #31262c}.nav-link{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:transparent;border:1px solid transparent;color:#c9bdba;border-radius:7px;padding:8px 10px;margin:2px 0;line-height:1.35;font-size:13px;transition:background .15s,color .15s}.nav-link:hover{background:rgba(219,70,68,.09);color:white}.nav-link.active{background:#402126;border-color:#6c3138;color:#fff}.nav-index{font:10px monospace;color:var(--red);min-width:23px}.rail-foot{font:11px/1.5 monospace;color:var(--dim);margin:25px 11px 0}.rail-foot b{color:var(--red)}.page{padding:0 clamp(18px,4vw,72px) 60px;min-width:0}.topbar{display:flex;justify-content:space-between;gap:10px;align-items:center;position:sticky;z-index:3;top:0;backdrop-filter:blur(13px);background:rgba(12,11,14,.86);border-bottom:1px solid var(--border);height:63px}.topbar .crumb{font:11px/1.4 monospace;letter-spacing:.09em;color:var(--dim)}.topbar-controls{display:flex;gap:8px;align-items:center}.button{background:var(--red2);border:1px solid #99525b;border-radius:8px;color:white;padding:9px 14px;font-weight:650;font-size:13px;transition:transform .14s,background .14s}.button:hover{background:#8a3744;transform:translateY(-1px)}.button.alt{background:#21191d;color:#dcd2cf;border-color:#554046}.button.alt:hover{background:#32242a}.button.subtle{background:transparent;border-color:#5c4144;color:#e3d5d2}.button.warning{background:#7b302f}.button.iconic{padding:8px 12px}.mode{display:flex;align-items:center;gap:7px;color:var(--mut);font:12px monospace}.mode input{accent-color:var(--red);width:16px;height:16px}.panel{display:none;max-width:1120px;margin:auto;padding-top:31px;animation:fade .22s ease}.panel.active{display:block}.gm-only{display:none}.gm-on .gm-only.active{display:block}.gm-link{display:none}.gm-on .gm-link{display:flex}@keyframes fade{from{opacity:.6;transform:translateY(7px)}to{opacity:1;transform:none}}.hero{padding:38px 0 45px;border-bottom:1px solid var(--border);position:relative}.eyebrow{font:11px/1.5 monospace;letter-spacing:.22em;color:var(--red);font-weight:700}.hero h1{margin:10px 0 6px;font:900 clamp(70px,11vw,155px)/.9 Impact,'Arial Narrow',sans-serif;letter-spacing:.045em;color:#f0e8de;text-shadow:3px 7px 0 #47252d}.hero .series{font:700 clamp(18px,2.6vw,35px)/1.15 Georgia,serif;letter-spacing:.05em;color:var(--red);margin:13px 0 23px}.hero p{font:19px/1.65 Georgia,serif;color:#cbc1bd;max-width:630px}.seal{position:absolute;right:2%;top:65px;width:120px;height:120px;border:2px solid #8c4144;border-radius:50%;transform:rotate(19deg);display:grid;place-items:center;font:700 12px/1.4 monospace;letter-spacing:.1em;text-align:center;color:#b77172;opacity:.7}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:25px 0}.stat-card,.tile{background:linear-gradient(150deg,rgba(38,25,29,.84),rgba(19,17,20,.94));border:1px solid var(--border);border-radius:var(--curve);padding:19px}.stat-card b{font:700 34px Georgia,serif;color:var(--yellow)}.stat-card small{display:block;color:var(--mut)}.columns{display:grid;grid-template-columns:1.05fr .95fr;gap:17px}.tile h3,.card-title{font:700 21px Georgia,serif;margin:0 0 10px}.tile p{color:var(--mut);margin:0 0 12px}.fate{font:19px Georgia,serif;border-left:3px solid var(--red);padding:12px 19px;color:#e7d7d0;background:#281b20}.tension{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.step{border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;color:var(--mut)}.step b{font-size:22px;color:var(--red);display:block}.chapter-label{font:11px monospace;letter-spacing:.18em;color:var(--red);margin:12px 0}.doc h2{font:800 clamp(34px,5vw,63px)/1.1 Georgia,serif;letter-spacing:-.025em;margin:9px 0 24px;border-bottom:1px solid var(--border);padding-bottom:17px}.doc h3{font:700 23px/1.25 Georgia,serif;color:var(--yellow);margin:30px 0 12px}.doc h4{color:var(--red);letter-spacing:.03em}.doc p,.doc li{font-size:15px;color:#d8ceca;line-height:1.83}.doc strong{color:#f4ece7}.doc blockquote{border-left:3px solid var(--red);background:#24191d;padding:10px 25px;margin:22px 0;color:#e7e0db}.doc blockquote p{font:19px/1.6 Georgia,serif}.doc ol,.doc ul{padding-left:25px}.doc li{padding-left:4px;margin-bottom:6px}.doc table{width:100%;border-collapse:collapse;margin:23px 0 31px;font-size:13px}.doc th{background:#392329;color:#f2e7df;text-align:left}.doc td,.doc th{padding:12px;border:1px solid #4a373a;vertical-align:top}.doc tr:nth-child(even) td{background:#1b171b}.doc td{color:#d1c6c1}.doc hr{border:0;border-top:1px solid var(--border);margin:30px 0}.doc code{font:12px monospace;color:#e8b7a9}.next{text-align:right;margin:37px 0 40px}.next button{border:0;background:transparent;color:var(--red);font-weight:700;font-size:14px;padding:10px}.next button:hover{text-decoration:underline}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.fields{display:grid;gap:10px}.field{display:flex;flex-direction:column;gap:5px;font-size:12px;letter-spacing:.05em;color:var(--mut)}.field input,.field select,.field textarea{background:#0f0d10;border:1px solid #5a4147;border-radius:7px;padding:10px 11px;color:var(--ink);outline:none;max-width:100%;width:100%}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--red)}.sheet-head{display:flex;justify-content:space-between;align-items:center;gap:15px}.sheet-head h2,.tool-head h2{font:800 clamp(32px,5vw,55px)/1.2 Georgia,serif;margin:5px 0 15px}.hint{color:var(--mut);font-size:13px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.metric{border:1px solid #50333c;background:linear-gradient(#26171c,#171116);border-radius:12px;padding:18px}.metric .big{font:700 38px Georgia,serif;line-height:1.15}.metric .small{font:11px monospace;color:var(--mut);text-transform:uppercase;letter-spacing:.12em}.metric .track{height:6px;background:#4a3339;border-radius:20px;overflow:hidden;margin:12px 0}.metric .track i{height:100%;display:block;background:var(--red);transition:width .2s}.metric:nth-child(2) .track i{background:var(--yellow)}.metric:nth-child(3) .track i{background:var(--cyan)}.metric-buttons{display:flex;gap:6px;flex-wrap:wrap}.mini{border:1px solid #65464a;background:#322329;color:white;border-radius:5px;padding:5px 10px;font-size:12px}.mini:hover{background:#57313b}.section-title{font:700 21px Georgia,serif;margin:28px 0 14px}.attr-wrap{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.attr{background:#20181c;border:1px solid #4b363d;border-radius:9px;padding:12px}.attr b{display:block;font-size:16px}.attr small{display:block;color:var(--mut);font-size:11px;min-height:33px}.attr .adjust{display:flex;align-items:center;justify-content:space-between;margin-top:10px}.attr .adjust strong{font:700 25px Georgia,serif}.attr .adjust button{border:1px solid #6b4850;background:#33232a;color:#fff;border-radius:6px;width:30px;height:29px}.status-row{display:flex;gap:9px;flex-wrap:wrap;margin:15px 0}.checkchip{display:inline-flex;align-items:center;gap:7px;padding:9px 12px;background:#241b20;border:1px solid #563940;border-radius:8px;color:#ddd0cc;font-size:13px}.checkchip input{accent-color:var(--red)}.control-row{display:flex;gap:9px;flex-wrap:wrap;align-items:end}.control-row .field{min-width:110px;flex:1}.feed{font:12px/1.55 monospace;max-height:260px;overflow:auto;background:#0b0c10;border:1px solid #403237;border-radius:8px;padding:12px}.feed p{color:#cfc1ba;border-bottom:1px dashed #30262a;margin:0;padding:7px 0}.feed p:first-child{color:#f4e9df}.danger-text{color:#f29c99}.okay-text{color:#a9c7b5}.meter-title{display:flex;justify-content:space-between;align-items:center}.clock{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.clock button{width:39px;height:41px;border:1px solid #68505a;border-radius:7px;background:#1a1519;color:#b99c9e}.clock button.filled{background:#8b313b;color:white;border-color:#c05556}.clock-caption{font-size:13px;color:var(--mut)}.monster-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.monster{border:1px solid #4c3339;background:#241b1f;border-radius:10px;padding:14px;transition:background .2s;cursor:pointer}.monster:hover{background:#342227}.monster.selected{border-color:#e07b77;box-shadow:0 0 0 1px #98504f}.monster strong{color:#f2e9e4}.monster p{font-size:12px;color:var(--mut);margin:7px 0}.monster .mono{font:11px monospace;color:var(--yellow)}.kicker{font:11px monospace;color:var(--red);letter-spacing:.17em}.divider{border-top:1px solid var(--border);margin:20px 0}.empty{font-size:12px;color:var(--dim);font-style:italic}.warning-note{padding:11px 14px;background:#2b171b;border-left:3px solid #bd5552;color:#e8c9c1;font-size:13px}.badge{display:inline-block;font:10px monospace;color:#e2b09d;border:1px solid #794952;padding:4px 8px;border-radius:20px}.badge.ok{color:#9ac5ac;border-color:#476b5a}.hidden{display:none!important}.hamb{display:none}.float-nav{display:none}footer{margin:70px auto 0;max-width:1100px;color:var(--dim);font:11px monospace;letter-spacing:.06em;border-top:1px solid var(--border);padding-top:22px}
+@media(max-width:1100px){.attr-wrap{grid-template-columns:repeat(2,1fr)}.columns{grid-template-columns:1fr}.seal{opacity:.2}.hero h1{font-size:90px}}
+@media(max-width:750px){#app{grid-template-columns:1fr}.rail{position:fixed;z-index:7;left:0;top:0;width:min(86vw,310px);box-shadow:0 10px 70px #000;transform:translateX(-110%);transition:transform .2s}.rail.open{transform:none}.hamb{display:inline-flex}.page{padding:0 17px 45px}.topbar{margin:0 -17px;padding:0 15px}.topbar .crumb{font-size:10px}.topbar-controls{gap:7px}.mode{font-size:11px}.hero{padding:25px 0}.hero h1{font-size:clamp(60px,18vw,115px)}.seal{display:none}.form-grid,.monster-list{grid-template-columns:1fr}.grid3{grid-template-columns:1fr}.attr-wrap{grid-template-columns:repeat(2,1fr)}.doc table{display:block;overflow:auto;white-space:normal}.doc td,.doc th{min-width:106px}.sheet-head{align-items:start;flex-direction:column}.tension{grid-template-columns:1fr 1fr}.button{padding:8px 10px}}
+@media print{body{background:#fff;color:#111}body:before,.rail,.topbar,.hero-actions,.next,.button,button,footer,.no-print{display:none!important}#app{display:block}.page{padding:0}.panel:not(.gm-only){display:block!important;page-break-after:always}.panel.gm-only{display:none!important;page-break-after:always}.gm-on .panel.gm-only{display:block!important}.panel.tool-panel,#home{display:none!important}.doc h2{color:#171717}.doc h3{color:#672f30}.doc p,.doc li,.doc td,.doc th{color:#111}.doc table td,.doc table th{border:1px solid #999;background:transparent}.doc blockquote{background:transparent;color:#222}.chapter-label{color:#5e292c} }
+
+/* 6.0 • Noir / vermelho. Preto e cinza neutros, vermelho apenas para ênfase. */
+:root{--bg:#050505;--ink:#f0f0f0;--mut:#aaaaaa;--dim:#818181;--red:#dc343e;--red2:#711820;--border:#2b2b2b;--card:#111;--card2:#151515;--cyan:#dc343e;--yellow:#ed555e}
+body{background:#050505;color:var(--ink)}
+body::before{background:none}
+a{color:#ed555e}a:hover{color:#ff858a}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline-color:#ef5c62}
+.rail{background:#090909;border-color:#242424}
+.topbar{background:rgba(6,6,6,.94);border-color:#242424}
+.nav-label{border-top-color:#292929;color:#969696}
+.nav-link{color:#ccc}.nav-link:hover{background:#201013}.nav-link.active{background:#341014;border-color:#8f2830}
+.brand,.hero h1{color:#f5f5f5}.hero h1{text-shadow:3px 6px 0 #480f16}
+.hero p,.doc p,.doc li,.doc td{color:#c9c9c9}
+.stat-card,.tile,.metric,.attr,.monster{background:#111;border-color:#313131}
+.tile h3,.card-title,.doc strong,.monster strong{color:#eee}
+.tile p{color:#b7b7b7}
+.fate{background:#160a0d;color:#dedede;border-left-color:var(--red)}
+.step{border-color:#363636}
+.doc h3{color:#ef575e}.doc blockquote{background:#121212;color:#e0e0e0}
+.doc th{background:#211012;color:#eee}.doc td,.doc th{border-color:#3a3a3a}
+.doc tr:nth-child(even) td{background:#0e0e0e}.doc code{color:#f07d80}
+.field input,.field select,.field textarea{background:#080808;border-color:#424242;color:#f1f1f1}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#e0444b}
+.metric .track{background:#262626}.metric .track i,.metric:nth-child(2) .track i,.metric:nth-child(3) .track i{background:#cd3039}
+.attr{background:#101010}.attr .adjust button,.mini{background:#181818;border-color:#454545;color:#f5f5f5}
+.attr .adjust button:hover,.mini:hover{background:#2b1116;border-color:#b23a42}
+.checkchip{background:#101010;border-color:#383838;color:#dedede}
+.feed{background:#070707;border-color:#353535}.feed p{color:#c5c5c5;border-bottom-color:#242424}.feed p:first-child{color:#f5f5f5}
+.clock button{background:#0d0d0d;border-color:#474747;color:#a0a0a0}.clock button.filled{background:#7f1923;border-color:#c73944}
+.monster:hover{background:#1e1013}.monster.selected{border-color:#d6424e;box-shadow:0 0 0 1px #8f2830}
+.monster .mono{color:#f2666b}.warning-note{background:#170d0f;color:#ddd;border-left-color:#cc3843}
+.badge{color:#ef8587;border-color:#78343b}.badge.ok{color:#e2e2e2;border-color:#565656}
+.button{background:#781822;border-color:#a62c35;color:#fff}.button:hover{background:#9f252e}
+.button.alt{background:#151515;color:#e9e9e9;border-color:#454545}.button.alt:hover{background:#251014;border-color:#8e2b35}
+.button.subtle{background:transparent;border-color:#474747;color:#eee}.button.warning{background:#871c26;border-color:#b33c45}
+/* D20 de mesa: face, número natural, total e dano legíveis sem abrir o histórico. */
+.roll-stage{display:grid;grid-template-columns:116px minmax(0,1fr);gap:20px;align-items:center;padding:18px 20px;margin:16px 0 4px;background:linear-gradient(115deg,#13090b,#090909 55%);border:1px solid #512028;border-radius:12px;min-height:147px;position:relative;overflow:hidden}
+.roll-stage::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 68%,rgba(212,46,58,.04));}
+.die-holder{display:flex;align-items:center;justify-content:center;perspective:450px;min-height:110px}
+.d20{width:105px;height:110px;position:relative;display:flex;align-items:center;justify-content:center;color:white;filter:drop-shadow(0 6px 15px rgba(160,12,27,.2));transform-origin:center;isolation:isolate}
+.d20::before{content:"";position:absolute;inset:1px;background:#d13540;clip-path:polygon(50% 0,90% 20%,100% 61%,50% 100%,0 61%,10% 20%);z-index:-2}
+.d20::after{content:"";position:absolute;inset:5px;background:linear-gradient(145deg,#471017 3%,#13080b 70%);clip-path:polygon(50% 0,90% 20%,100% 61%,50% 100%,0 61%,10% 20%);z-index:-1}
+.d20 .face-lines{position:absolute;inset:0;pointer-events:none;opacity:.55;background:linear-gradient(28deg,transparent 45%,#d3454c 46%,#d3454c 46.8%,transparent 48%),linear-gradient(152deg,transparent 45%,#d3454c 46%,#d3454c 46.8%,transparent 48%);clip-path:polygon(50% 0,90% 20%,100% 61%,50% 100%,0 61%,10% 20%)}
+.d20 .die-number{position:relative;z-index:2;font:900 42px/1 system-ui,Arial,sans-serif;text-shadow:0 2px 8px #070707;font-variant-numeric:tabular-nums}
+.roll-info{min-width:0;position:relative;z-index:1}
+.roll-kicker{font:700 10px/1.4 monospace;letter-spacing:.17em;color:#f27179;text-transform:uppercase}
+.roll-result{font:900 clamp(21px,3.2vw,36px)/1.2 system-ui,Arial,sans-serif;letter-spacing:-.02em;color:#f1f1f1;margin:5px 0}
+.roll-details{font:13px/1.65 monospace;color:#bfbfbf;overflow-wrap:anywhere}
+.roll-stage.rolling{border-color:#c73641;box-shadow:0 0 34px rgba(195,30,42,.13)}
+.roll-stage.rolling .d20{animation:die-spin .78s cubic-bezier(.21,.7,.2,1) both}
+.roll-stage.rolling .die-number{animation:number-flicker .17s steps(2,end) infinite}
+.roll-stage.hit .roll-result{color:#f5f5f5}.roll-stage.miss .roll-result{color:#aeaeae}
+.roll-stage.critical{border-color:#f05b60;box-shadow:0 0 0 1px rgba(228,68,79,.32),0 0 30px rgba(224,42,54,.14)}
+@keyframes die-spin{0%{transform:translateY(-18px) rotate(-80deg) scale(.74)}26%{transform:translateY(3px) rotate(130deg) scale(1.06)}54%{transform:translateY(-9px) rotate(275deg) scale(.86)}76%{transform:translateY(5px) rotate(356deg) scale(1.08)}100%{transform:translateY(0) rotate(360deg) scale(1)}}
+@keyframes number-flicker{0%{opacity:.45}100%{opacity:1}}
+@media(max-width:540px){.roll-stage{grid-template-columns:88px minmax(0,1fr);gap:12px;padding:13px}.d20{width:83px;height:88px}.d20 .die-number{font-size:33px}.roll-result{font-size:22px}.roll-details{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.roll-stage.rolling .d20,.roll-stage.rolling .die-number{animation:none}}
+@media print{.roll-stage{display:none!important}}
+
+/* Criação expressa de sobreviventes e arquivo de NPCs */
+.preset-box{margin-top:20px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:15px;border:1px solid #5c2930;border-radius:11px;background:linear-gradient(120deg,#190c10,#0c0c0c)}
+.preset-title{font:700 11px/1.5 monospace;color:#ed6069;letter-spacing:.15em}
+.preset-preview{font:12px/1.8 monospace;color:#cfcfcf;margin-top:6px}
+.preset-preview b{color:#ff6b74}
+.npc-actions{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.npc-actions .card-title{margin:0 0 4px}.npc-actions p{margin:0 0 12px;max-width:580px}
+.npc-roster{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+.npc-card{border:1px solid #383033;background:#0a0a0a;border-radius:10px;padding:14px;min-width:0}
+.npc-card .npc-tag{color:#ea6970;font:700 11px monospace;letter-spacing:.09em;text-transform:uppercase}
+.npc-card h4{color:#eee;margin:4px 0 7px;font:700 21px Georgia,serif}
+.npc-card p{margin:5px 0;color:#bbb;font-size:13px;line-height:1.55;overflow-wrap:anywhere}
+.npc-card .npc-stats{color:#f0b3b5;font:12px/1.8 monospace;white-space:normal}
+.npc-card .npc-buttons{margin-top:11px;display:flex;gap:6px;flex-wrap:wrap}
+.npc-card .npc-buttons .mini{padding:6px 9px}
+@media(max-width:820px){.npc-roster{grid-template-columns:1fr}}
+@media(max-width:540px){.preset-box{align-items:stretch}.preset-box button{width:100%}}
+
+/* Retrato editável do sobrevivente • responsivo e 100% offline. */
+.identity-layout{display:grid;grid-template-columns:215px minmax(0,1fr);gap:24px;align-items:start}
+.identity-layout>.form-grid{min-width:0}
+.portrait-box{min-width:0;display:flex;flex-direction:column;gap:8px}
+.portrait-label{font:700 10px/1.6 ui-monospace,monospace;letter-spacing:.13em;color:#ee5d67}
+.portrait-frame{position:relative;aspect-ratio:4/5;width:100%;overflow:hidden;border:1px solid #833039;border-radius:9px;background:radial-gradient(ellipse at 45% 25%,#261014,#080808 65%);box-shadow:inset 0 0 0 5px #0a0909,0 5px 18px #0008}
+.portrait-frame::after{content:'';position:absolute;inset:6px;pointer-events:none;border:1px solid #443037;border-radius:5px}
+.portrait-placeholder[hidden]{display:none}
+.portrait-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:#a7a7a7;font:700 12px/1.5 ui-monospace,monospace;letter-spacing:.1em;text-align:center}
+.portrait-placeholder small{font-size:9px;font-weight:500;color:#777;letter-spacing:.09em}
+.portrait-symbol{font-size:62px;line-height:1;color:#9b2e3b;text-shadow:0 0 35px #d22b4233;margin-bottom:13px}
+.portrait-preview{height:100%;width:100%;object-fit:cover;object-position:center;display:block;background:#050505}
+.portrait-preview[hidden]{display:none}
+.portrait-upload,.portrait-remove{width:100%;text-align:center;font:700 11px/1.6 ui-monospace,monospace;letter-spacing:.04em;padding:9px 8px;cursor:pointer}
+.portrait-remove:disabled{opacity:.42;cursor:not-allowed}
+.portrait-hint{font:11px/1.5 system-ui,Arial,sans-serif!important;color:#999!important;margin:1px 0 0!important}
+@media(max-width:950px){.identity-layout{grid-template-columns:180px minmax(0,1fr);gap:17px}}
+@media(max-width:690px){.identity-layout{grid-template-columns:1fr}.portrait-box{width:min(250px,100%);margin:0 auto 12px}.identity-layout>.form-grid{width:100%}}
+@media print{.portrait-box{break-inside:avoid}}
+</style></head>
+<body><div id="app"><aside class="rail" id="rail"><div class="brand">SLA<span>SH</span>ER</div><div class="sub">DOSSIÊ / V6.0<br>DUNMOORE HORROR STORY</div><div class="nav-label">ACESSO RÁPIDO</div><button class="nav-link active" data-go="home"><span class="nav-index">▸</span> Página inicial</button><button class="nav-link" data-go="sheet"><span class="nav-index">▣</span> Ficha interativa</button><button class="nav-link gm-link" data-go="gm"><span class="nav-index">◉</span> Painel do narrador</button><div class="nav-label">LIVRO DE REGRAS</div><button class="nav-link " data-go="r1"><span class="nav-index">01</span>Contrato de horror</button>
+<button class="nav-link " data-go="r2"><span class="nav-index">02</span>Criação de personagens</button>
+<button class="nav-link " data-go="r3"><span class="nav-index">03</span>Testes e consequências</button>
+<button class="nav-link " data-go="r4"><span class="nav-index">04</span>Investigação e pressão da cidade</button>
+<button class="nav-link " data-go="r5"><span class="nav-index">05</span>Medo e estresse</button>
+<button class="nav-link " data-go="r6"><span class="nav-index">06</span>Combate: sobreviver ao próximo minuto</button>
+<button class="nav-link " data-go="r7"><span class="nav-index">07</span>Perseguições e fuga</button>
+<button class="nav-link " data-go="r8"><span class="nav-index">08</span>Recuperação, recursos e equipamento</button>
+<button class="nav-link " data-go="r9"><span class="nav-index">09</span>Arquétipos reinterpretados</button>
+<button class="nav-link gm-link" data-go="r10"><span class="nav-index">10</span>Bestiário de Dunmoore (somente narrador)</button>
+<button class="nav-link gm-link" data-go="r11"><span class="nav-index">11</span>Direção de campanha e ritmo</button>
+<button class="nav-link " data-go="r12"><span class="nav-index">12</span>Escudo rápido do narrador</button><div class="rail-foot"><b>NO FUNDO DO LAGO</b><p>Ninguém precisa vencer uma criatura para sobreviver a ela.</p><p>Funciona sem internet. Dados e anotações ficam salvos apenas neste navegador.</p></div></aside><div class="page"><header class="topbar"><div style="display:flex;align-items:center;gap:10px"><button class="button alt iconic hamb" type="button" id="menuBtn" aria-label="Abrir menu">☰</button><div class="crumb">DUNMOORE / MAINE <span style="color:#88555b">•</span> ARQUIVO RESTRITO</div></div><div class="topbar-controls"><label class="mode"><input id="gmMode" type="checkbox"> MESTRE</label><button class="button alt" type="button" id="printBtn" title="Imprimir todo o livro de regras">▤ <span class="print-txt">IMPRIMIR</span></button></div></header>
+<section class="panel active" id="home" data-panel="home"><div class="hero"><div class="eyebrow">REGISTRO 001 · EDIÇÃO DE TESTE · 2026</div><h1>SLASHER</h1><div class="series">DUNMOORE HORROR STORY</div><p>Algumas portas foram feitas para permanecer fechadas. Outras foram feitas para deixar alguma coisa entrar.</p><div class="hero-actions"><button class="button" data-go="r1">ABRIR O MANUAL ↗</button><button class="button alt" data-go="sheet">CRIAR MANUALMENTE</button><button class="button" id="homeRandomBtn" type="button">⚄ SOBREVIVENTE ALEATÓRIO</button><button class="button subtle" data-go="r12">ESCUDO RÁPIDO</button></div></div><div class="columns"><div class="tile"><div class="kicker">A REGRA DA CASA</div><h3>Não é uma história sobre matar monstros.</h3><p>É uma história sobre pessoas que desaparecem, arquivos que mudam sozinhos e habitantes que preferem continuar agradecendo. O combate é o momento em que a investigação falhou em te manter longe da coisa.</p><div class="fate">“O que a montanha engole não desaparece.”</div></div><div class="tile"><div class="kicker">ALFABETO DO MEDO</div><h3>Quatro passos antes da tragédia</h3><div class="tension"><div class="step"><b>01</b>Sinal</div><div class="step"><b>02</b>Pista</div><div class="step"><b>03</b>Escolha</div><div class="step"><b>04</b>Preço</div></div><p style="margin-top:15px">Nenhuma morte arbitrária. Nenhuma segurança garantida. Uma pista bem encontrada pode valer mais que uma arma.</p></div></div><div class="divider"></div><div class="columns"><div class="tile"><h3>Uma mudança na matemática da sobrevivência</h3><p>Na 5.1, EDF 2 tinha <strong>30 HP</strong>. Na 6.0, a mesma pessoa tem <strong>16 HP</strong>. Um Escavado causa 1d8+4 de dano, o bastante para provocar lesões sérias em um único acerto.</p><button class="button alt" data-go="r6">VER COMBATE</button></div><div class="tile"><h3>O que esta página já faz</h3><p>Manual integral, ficha automática, <strong>12 classes com atributos pré-definidos</strong>, gerador de sobreviventes e NPCs, rolagens de ataque, ferimentos e painel de criaturas para o mestre.</p><button class="button alt" data-go="sheet">ABRIR FICHA</button></div></div></section>
+<section id="r1" class="panel rule-panel " data-panel="r1"><div class="chapter-label">ARQUIVO 01 / SLASHER 6.0</div><div class="doc"><h2 id="1-contrato-de-horror">1. Contrato de horror</h2>
+<p>O narrador dá sinais antes de ameaças letais, oferece rotas de ação verificáveis e não esconde a única solução atrás de uma rolagem. Os jogadores aceitam que personagens podem morrer, que recursos acabam e que fugir é uma escolha legítima. Uma boa decisão pode evitar qualquer combate.</p>
+<p>Na sessão zero, estabeleçam limites, temas fora de cena e um sinal simples para interromper descrições desconfortáveis. Para protagonistas crianças, use ameaças indiretas e perseguições sem violência gráfica. A letalidade plena entra quando a mesa concordar, especialmente nos arcos adolescentes/adultos.</p>
+<h3 id="ciclo-de-uma-sessão">Ciclo de uma sessão</h3>
+<p><strong>Sinal → investigação → preparação → risco → consequência → nova pista.</strong> O monstro que apareceu na cena deve comunicar alguma verdade do mistério, não preencher um encontro aleatório.</p></div><div class="next"><button data-go="r2">Próximo arquivo <span aria-hidden="true">↗</span></button></div></section>
+<section id="r2" class="panel rule-panel " data-panel="r2"><div class="chapter-label">ARQUIVO 02 / SLASHER 6.0</div><div class="doc"><h2 id="2-criação-de-personagens">2. Criação de personagens</h2>
+<p>Distribua <strong>10 pontos</strong> entre oito atributos. Cada atributo começa em <strong>0</strong>, pode receber até <strong>4</strong> na criação e nunca ultrapassa 4 pela progressão regular.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Código</th>
+<th>Atributo</th>
+<th>Uso típico</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>CIE</td>
+<td>Ciências</td>
+<td>Medicina, química, biologia, primeiros socorros, perícia</td>
+</tr>
+<tr class="even">
+<td>RAL</td>
+<td>Raciocínio e Lógica</td>
+<td>Padrões, dedução, arquivos, mapas, planejamento</td>
+</tr>
+<tr class="odd">
+<td>COC</td>
+<td>Conhecimento Oculto</td>
+<td>Simbolismo, registros sobrenaturais, firmeza diante do impossível</td>
+</tr>
+<tr class="even">
+<td>EDF</td>
+<td>Educação Física</td>
+<td>Força, resistência, esforço, combate corporal</td>
+</tr>
+<tr class="odd">
+<td>REF</td>
+<td>Reflexo</td>
+<td>Tempo de reação, tiro, equilíbrio, esquiva</td>
+</tr>
+<tr class="even">
+<td>TEC</td>
+<td>Oficina e Tecnologia</td>
+<td>Mecânica, eletrônica, reparos, sistemas digitais</td>
+</tr>
+<tr class="odd">
+<td>CRI</td>
+<td>Criatividade e Estilo</td>
+<td>Distrações, disfarces, improviso, performances</td>
+</tr>
+<tr class="even">
+<td>SOC</td>
+<td>Habilidades Sociais</td>
+<td>Persuasão, leitura social, liderança, negociação</td>
+</tr>
+</tbody>
+</table>
+<p>Na ficha interativa, selecionar um arquétipo também pode aplicar uma <strong>distribuição pré-definida de 10 pontos</strong>. São sugestões, não exigências: é permitido redistribuir qualquer atributo dentro do limite de 0 a 4.</p>
+<p>Escolha um arquétipo da seção 9, um <strong>Vínculo</strong> (pessoa que você não quer perder), um <strong>Temor</strong> (algo que o horror pode explorar), um <strong>Objeto-Âncora</strong> (algo pequeno que prova quem você é) e uma <strong>Razão para investigar</strong>. Nenhum desses elementos é uma licença para o narrador retirar a agência do personagem.</p>
+<h3 id="valores-derivados">Valores derivados</h3>
+<ul>
+<li><strong>Vitalidade (HP) máxima = 12 + 2 × EDF.</strong> Ex.: EDF 2 = 16 HP. Na 5.1 o valor era 24 + 3 × EDF. A redução é deliberada.</li>
+<li><strong>Stamina (STA) máxima = 12 + 2 × EDF.</strong> Ex.: EDF 2 = 16 STA.</li>
+<li><strong>Defesa = 10 + REF.</strong> Cobertura sólida: +2. Valores de Defesa não excedem 19, considerando todas as fontes situacionais.</li>
+<li><strong>Estresse (EST):</strong> começa em 0 e varia até 100.</li>
+<li><strong>Ferimentos:</strong> três espaços; <strong>Hemorragia:</strong> sim/não; <strong>Morrendo:</strong> marcador 0/3.</li>
+<li><strong>Inventário:</strong> até 6 espaços de carga; 1 objeto pequeno agrupado não pesa, item comum 1, volumoso 2. Um item na mão não ocupa espaço adicional, mas ainda conta na carga total.</li>
+</ul>
+<h3 id="crescimento">Crescimento</h3>
+<p>Ao final de um arco importante, ganhe <strong>1 avanço</strong>, escolhendo: +1 em um atributo (máximo 4; no máximo +2 pontos de atributos em toda a campanha), um novo talento treinado de outro arquétipo (com justificativa), ou um contato/recurso estável descrito com o narrador. <strong>HP não aumenta por nível.</strong> Os avanços não geram imunidades nem dano multiplicado.</p></div><div class="next"><button data-go="r3">Próximo arquivo <span aria-hidden="true">↗</span></button></div></section>
+<section id="r3" class="panel rule-panel " data-panel="r3"><div class="chapter-label">ARQUIVO 03 / SLASHER 6.0</div><div class="doc"><h2 id="3-testes-e-consequências">3. Testes e consequências</h2>
+<p>Role <strong>1d20 + atributo + circunstância</strong> e iguale ou supere a DT. Não existe rolagem para tarefas rotineiras sem pressão.</p>
+<table>
+<thead>
+<tr class="header">
+<th>DT</th>
+<th>Pressão</th>
+<th>Exemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>8</td>
+<td>Fácil</td>
+<td>Identificar um acesso óbvio na planta da mina</td>
+</tr>
+<tr class="even">
+<td>12</td>
+<td>Padrão</td>
+<td>Convencer uma testemunha nervosa</td>
+</tr>
+<tr class="odd">
+<td>16</td>
+<td>Difícil</td>
+<td>Abrir uma fechadura com passos no corredor</td>
+</tr>
+<tr class="even">
+<td>20</td>
+<td>Extrema</td>
+<td>Cruzar um corredor inundado antes do desabamento</td>
+</tr>
+</tbody>
+</table>
+<p>Ferramenta, ajuda competente ou preparação: <strong>+2</strong>. Circunstância desfavorável: <strong>−2</strong>. Total circunstancial limitado a <strong>±4</strong>. Só um personagem faz o teste principal; os demais podem ajudar, quando fizer sentido.</p>
+<ul>
+<li><strong>Sucesso:</strong> a intenção funciona.</li>
+<li><strong>Falha por 1–3:</strong> o jogador pode aceitar <strong>sucesso com custo concreto</strong>, ou falhar sem aceitar o custo se a situação permitir. Exemplos: gastar um item, deixar uma evidência, sofrer 2 STA, aumentar Suspeita em 1, separar-se.</li>
+<li><strong>Falha por 4+:</strong> não funciona; para tentar de novo, mude a abordagem ou as condições.</li>
+<li><strong>20 natural:</strong> sucesso e uma vantagem adicional plausível.</li>
+<li><strong>1 natural:</strong> uma complicação plausível; <strong>não</strong> significa morte automática e não apaga pistas essenciais.</li>
+</ul>
+<p><strong>Testes opostos:</strong> ambos rolam; quem obtiver o maior total vence; empate favorece quem mantém a situação atual. Nunca use um teste oposto para negar uma pista essencial.</p></div><div class="next"><button data-go="r4">Próximo arquivo <span aria-hidden="true">↗</span></button></div></section>
+<section id="r4" class="panel rule-panel " data-panel="r4"><div class="chapter-label">ARQUIVO 04 / SLASHER 6.0</div><div class="doc"><h2 id="4-investigação-e-pressão-da-cidade">4. Investigação e pressão da cidade</h2>
+<p><strong>Pistas essenciais são encontradas automaticamente quando os personagens procuram no lugar pertinente, fazem a pergunta certa ou obtêm acesso à fonte.</strong> O teste descobre detalhes adicionais, rapidez ou discrição. Prepare <strong>três caminhos</strong> até cada revelação indispensável: documento, testemunha, vestígio, gravação, local ou contradição.</p>
+<h3 id="relógio-de-suspeita-06">Relógio de Suspeita (0–6)</h3>
+<p>Avance em 1 ao invadir, ameaçar um cúmplice, divulgar algo prematuramente ou falhar de forma ruidosa; não avance só porque os jogadores raciocinaram bem. Aos <strong>2</strong>, a cidade percebe. Aos <strong>4</strong>, alguém sabota uma evidência ou pressiona uma testemunha. Aos <strong>6</strong>, conspiradores agem diretamente, mas ainda deixam caminhos de investigação. Após uma consequência forte, reduza para <strong>3</strong> e continue.</p>
+<h3 id="relógio-de-perigo-04">Relógio de Perigo (0–4)</h3>
+<p>Cada local hostil pode ter seu relógio separado: 0 tranquilo, 1 sinal, 2 aproximação, 3 criatura em posição, <strong>4 contato imediato ou mudança de cenário</strong>. Avance por barulho, tempo perdido ou ação arriscada. O jogador sempre vê ou percebe <strong>algum indicador ficcional</strong> de que o perigo está crescendo. Esse relógio não substitui o de Suspeita, que representa a conspiração humana.</p></div><div class="next"><button data-go="r5">Próximo arquivo <span aria-hidden="true">↗</span></button></div></section>
+<section id="r5" class="panel rule-panel " data-panel="r5"><div class="chapter-label">ARQUIVO 05 / SLASHER 6.0</div><div class="doc"><h2 id="5-medo-e-estresse">5. Medo e estresse</h2>
+<p>Diante de uma manifestação nova, role <strong>1d20 + COC</strong> contra DT <strong>12 / 14 / 18</strong>, conforme a ameaça. Sucesso: ganhe <strong>metade</strong> do Estresse; falha: receba <strong>10 / 15 / 20 EST</strong>. A mesma aparição não gera novo teste sem escalada real.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Estresse</th>
+<th>Estado</th>
+<th>Consequência</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0–29</td>
+<td>Controlado</td>
+<td>Nenhuma penalidade</td>
+</tr>
+<tr class="even">
+<td>30–59</td>
+<td>Inquieto</td>
+<td>Sinais narrativos, sem penalidade automática</td>
+</tr>
+<tr class="odd">
+<td>60–89</td>
+<td>Abalado</td>
+<td>−1 em testes mentais e sociais sob pressão</td>
+</tr>
+<tr class="even">
+<td>90–99</td>
+<td>À beira do colapso</td>
+<td>−2 em testes mentais e sociais sob pressão</td>
+</tr>
+<tr class="odd">
+<td>100</td>
+<td>Crise</td>
+<td>O jogador escolhe: congelar brevemente, fugir, gritar, ou buscar abrigo. Após a crise, EST volta a 80</td>
+</tr>
+</tbody>
+</table>
+<p>Uma conversa segura e significativa reduz <strong>10 EST</strong> uma vez por cena. Uma noite de sono em local genuinamente seguro reduz <strong>15 EST</strong>. Um Objeto-Âncora pode justificar a recuperação, mas não concede imunidade.</p></div><div class="next"><button data-go="r6">Próximo arquivo <span aria-hidden="true">↗</span></button></div></section>
+<section id="r6" class="panel rule-panel " data-panel="r6"><div class="chapter-label">ARQUIVO 06 / SLASHER 6.0</div><div class="doc"><h2 id="6-combate-sobreviver-ao-próximo-minuto">6. Combate: sobreviver ao próximo minuto</h2>
+<p><strong>A ordem é deliberadamente assimétrica.</strong> Humanos agem rápido e improvisam; criaturas sobrenaturais anunciam uma ação ameaçadora que será resolvida <strong>ao fim da rodada</strong>, depois das reações dos sobreviventes. Isso torna o golpe devastador, mas antecipável. Não role iniciativa do monstro.</p>
+<h3 id="61-sequência-da-rodada">6.1 Sequência da rodada</h3>
+<ol type="1">
+<li><strong>Intenção:</strong> o narrador descreve claramente <strong>o que a criatura está prestes a fazer, a quem ou a qual zona</strong>. Ex.: “Ela prende os olhos em você e começa a escalar a porta acima da sua cabeça.” Um alvo pode não saber o alcance exato, mas deve compreender que há risco.</li>
+<li><strong>Sobreviventes:</strong> no primeiro turno do confronto, cada um rola <strong>1d20 + REF</strong> para definir a ordem entre os jogadores, mantida para a cena. Cada um tem <strong>um movimento curto entre zonas adjacentes</strong> e <strong>uma ação</strong>. O movimento não remove automaticamente a ameaça se a criatura já o encurralou.</li>
+<li><strong>Resolução da ameaça:</strong> se não foi evitada, bloqueada, interrompida ou despistada, a criatura realiza a intenção anunciada. Role seu ataque quando apropriado. O narrador descreve nova situação e começa a rodada seguinte.</li>
+</ol>
+<p><strong>Inimigos humanos</strong> atuam pela iniciativa normal (1d20 + REF), realizando ação e movimento no próprio turno; não precisam anunciar um ataque com uma rodada de antecedência. Para emboscadas sobrenaturais, use os sinais da exploração como prenúncio e conceda uma reação se alguém perceber o perigo.</p>
+<h3 id="62-zonas">6.2 Zonas</h3>
+<p>Use <strong>Colado</strong> (alcance corporal), <strong>Perto</strong> (um movimento), <strong>Longe</strong> (dois movimentos) e <strong>Oculto</strong> (fora da linha de visão). Portas, grades, veículos e paredes são <strong>obstáculos</strong>, não pontos de defesa abstratos. Mover-se normalmente muda <strong>uma zona</strong>. Sair de <strong>Colado</strong> com uma criatura que bloqueia a passagem exige gastar a ação com <strong>Escapar</strong> (REF ou EDF DT 12; DT 16 se encurralado). Em sucesso, move-se uma zona; em falha por 1–3, pode sair sofrendo um custo. Obstáculos criativos podem dispensar o teste quando claramente impedem a perseguição.</p>
+<h3 id="63-ações-disponíveis">6.3 Ações disponíveis</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Ação</th>
+<th>Regra</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Atacar</td>
+<td>1d20 + EDF em corpo a corpo, ou + REF a distância, contra Defesa do alvo</td>
+</tr>
+<tr class="even">
+<td>Correr</td>
+<td>Mover-se uma zona adicional; custa 2 STA</td>
+</tr>
+<tr class="odd">
+<td>Escapar</td>
+<td>Sair de alcance bloqueado com REF/EDF DT 12 ou 16; custa 2 STA</td>
+</tr>
+<tr class="even">
+<td>Esquivar</td>
+<td><strong>Reação</strong>, uma vez por rodada, antes da rolagem de ataque: gastar <strong>3 STA</strong>, ganhar <strong>+3 Defesa</strong> somente contra aquele ataque; não consome ação</td>
+</tr>
+<tr class="odd">
+<td>Proteger</td>
+<td>Gastar a ação e entrar na linha do golpe destinado ao aliado na mesma zona; você se torna o alvo, com +2 Defesa contra o golpe</td>
+</tr>
+<tr class="even">
+<td>Ajudar</td>
+<td>Gastar a ação para conceder +2 ao próximo teste específico de alguém, com explicação</td>
+</tr>
+<tr class="odd">
+<td>Preparar obstáculo</td>
+<td>Gastar ação e usar cenário/equipamento; teste TEC, EDF ou CRI conforme descrição para bloquear a ameaça</td>
+</tr>
+<tr class="even">
+<td>Estancar</td>
+<td>Ação, CIE DT 12 com kit (DT 16 improvisando); encerra Hemorragia</td>
+</tr>
+<tr class="odd">
+<td>Estabilizar</td>
+<td>Ação, CIE DT 12 com kit (DT 16 improvisando); impede avanço de Morrendo</td>
+</tr>
+<tr class="even">
+<td>Respirar</td>
+<td>Gastar ação em lugar defensável, recuperar 3 STA; não funciona se estiver sendo agarrado ou sob ataque direto</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Ataques:</strong> 1 natural no ataque não atinge, 20 natural atinge e acrescenta <strong>+2 dano</strong> e um ferimento grave se o alvo puder ser ferido. Preparação, alcance e cobertura continuam importando. Modificadores circunstanciais seguem o limite ±4; ataques de monstros usam seu bônus fixo.</p>
+<p><strong>Dano após proteção:</strong> reduza HP pelo dano da arma ou criatura, menos proteção adequada (geralmente 1 ou 2). Proteção nunca reduz dano abaixo de <strong>1</strong> em um acerto físico. Criaturas podem ignorar proteção mundana, conforme a ficha. Dano e ferimento são resolvidos imediatamente.</p>
+<h3 id="64-ferimentos-que-realmente-importam">6.4 Ferimentos que realmente importam</h3>
+<p>Um golpe que cause <strong>6 ou mais HP de dano após proteção</strong>, ou um <strong>20 natural</strong> do atacante que cause dano, gera <strong>um ferimento grave</strong>, além do HP perdido. A cada ferimento, marque um espaço e escolha um efeito plausível: braço lesionado (−2 em força/manipulação com aquele braço), perna comprometida (movimento extra exige sucesso em EDF DT 12), costelas (−2 em testes de esforço), concussão (−2 em percepção e raciocínio sob pressão). O narrador propõe a lesão; o jogador pode sugerir uma equivalente. Penalidades de lesões não se somam acima de −4 no mesmo teste.</p>
+<ul>
+<li><strong>1 ferimento:</strong> penalidade localizada de −2 em testes diretamente afetados.</li>
+<li><strong>2 ferimentos:</strong> além dos efeitos localizados, <strong>−2 em todos os testes físicos sob pressão</strong>; não é cumulativo com a penalidade localizada, use a pior penalidade aplicável.</li>
+<li><strong>3 ferimentos:</strong> o personagem fica <strong>incapacitado</strong>, mesmo com HP acima de zero; só pode falar, rastejar ou pedir ajuda, conforme a cena.</li>
+</ul>
+<p>Quando um ferimento é descrito como <strong>corte profundo/perfuração</strong>, ele também causa <strong>Hemorragia</strong>. Uma pessoa só pode ter um marcador ativo de hemorragia. No final de <strong>cada rodada em que estiver sangrando</strong>, perde <strong>2 HP</strong> até alguém estancar. Hemorragia continua durante uma perseguição, com perda de 2 HP por complicação ou a cada intervalo narrativo de aproximadamente 30 segundos, a critério declarado do narrador.</p>
+<h3 id="65-zero-hp-morte-e-socorro">6.5 Zero HP, morte e socorro</h3>
+<p>A <strong>0 HP</strong>, o personagem cai incapacitado e entra em <strong>Morrendo 0/3</strong>. No fim de cada rodada, se não estiver estabilizado, acrescente <strong>1 marca</strong>; ao receber dano enquanto Morrendo, acrescente <strong>1 marca adicional</strong>, em vez de HP negativo. Em <strong>3 marcas</strong>, morre. Se havia Hemorragia, ela precisa ser estancada também; estar estabilizado não desliga um sangramento ativo. Não execute personagens inconscientes sem anúncio claro de ameaça e oportunidade real de intervenção.</p>
+<p><strong>Estabilizar</strong> com a ação apropriada remove o risco de novas marcas do estado Morrendo, mas não restaura HP nem permite levantar. Após o perigo, dez minutos de cuidado com kit e CIE DT 12 restauram <strong>1d4 HP uma vez por personagem por cena</strong>, encerrando o estado Morrendo se estiver estabilizado. Ferimentos continuam.</p>
+<h3 id="66-dano-por-equipamento">6.6 Dano por equipamento</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Equipamento</th>
+<th>Dano</th>
+<th>Observações</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Mãos, empurrão, objeto leve</td>
+<td>1d4</td>
+<td>Só ameaça humanos vulneráveis; pode ganhar tempo</td>
+</tr>
+<tr class="even">
+<td>Canivete, ferramenta pequena</td>
+<td>1d6+1</td>
+<td>Corpo a corpo, risco de ficar Colado</td>
+</tr>
+<tr class="odd">
+<td>Taco, barra ou machado</td>
+<td>1d8+2</td>
+<td>Volumoso (2 espaços), barulhento</td>
+</tr>
+<tr class="even">
+<td>Revólver ou pistola</td>
+<td>1d8+3</td>
+<td>Barulhento; munição finita; exige linha de visão</td>
+</tr>
+<tr class="odd">
+<td>Espingarda a curta distância</td>
+<td>2d6+2</td>
+<td>Muito barulho, recuo, munição escassa</td>
+</tr>
+<tr class="even">
+<td>Criatura menor</td>
+<td>1d6+3</td>
+<td>Consegue abrir cortes graves</td>
+</tr>
+<tr class="odd">
+<td>Predador da Fenda</td>
+<td>1d8+4</td>
+<td>Um acerto pode incapacitar alguém</td>
+</tr>
+<tr class="even">
+<td>Cobrador</td>
+<td>2d8+3</td>
+<td>Enfrentar diretamente é quase suicídio</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Munição:</strong> conte cada cartucho, não faça testes de recarga a cada tiro. Recarregar sob pressão consome uma ação. Armas de fogo atraem atenção: +1 no relógio de Perigo do local ou Suspeita, se alguém puder ouvir. Som e luz têm efeitos ficcionais que podem importar mais do que o dano.</p>
+<p><strong>Monstros e HP:</strong> HP de uma criatura mede <strong>o quanto pode ser afastada ou desorganizada</strong>, não necessariamente sua morte. Somente uma fraqueza descoberta, um ritual interrompido ou um ambiente explorado pode encerrar a ameaça permanentemente. O narrador deve definir isso antes da sessão.</p></div><div class="next"><button data-go="r7">Próximo arquivo <span aria-hidden="true">↗</span></button></div></section>
+<section id="r7" class="panel rule-panel " data-panel="r7"><div class="chapter-label">ARQUIVO 07 / SLASHER 6.0</div><div class="doc"><h2 id="7-perseguições-e-fuga">7. Perseguições e fuga</h2>
+<p>Uma fuga é um <strong>desafio de 3 sucessos antes de 2 complicações</strong>. Cada tentativa exige uma estratégia <strong>diferente ou um novo elemento de cena</strong>: trancar uma porta, cortar caminho, atravessar um riacho, improvisar distração, guiar o grupo pelos mapas. Teste o atributo adequado, com DT <strong>12 ou 16</strong> conforme terreno e criatura.</p>
+<p><strong>1ª complicação:</strong> o predador se aproxima, um item é perdido ou um sobrevivente fica para trás. <strong>2ª complicação:</strong> ele alcança uma vítima, bloqueia a saída ou separa o grupo; imediatamente ofereça <strong>uma reação concreta</strong> (proteger, distração, último esforço). A segunda complicação <strong>não é morte automática</strong>.</p>
+<p>Se uma fraqueza foi identificada e aplicada (ex.: flash que desorienta o Escavado), conte <strong>1 sucesso sem rolagem</strong>, no máximo uma vez por fuga. Se alguém já está gravemente ferido, a fuga pode exigir que outro personagem o ajude ou abandone carga. A escolha deve ser explícita.</p></div><div class="next"><button data-go="r8">Próximo arquivo <span aria-hidden="true">↗</span></button></div></section>
+<section id="r8" class="panel rule-panel " data-panel="r8"><div class="chapter-label">ARQUIVO 08 / SLASHER 6.0</div><div class="doc"><h2 id="8-recuperação-recursos-e-equipamento">8. Recuperação, recursos e equipamento</h2>
+<p><strong>STA:</strong> 10 minutos realmente seguros restauram 8 STA; 8 horas restauram toda STA. <strong>HP:</strong> 8 horas seguras restauram <strong>2 HP</strong>, desde que haja água, comida e descanso. Cuidados clínicos apropriados durante uma noite restauram <strong>4 HP</strong> em vez de 2. Um tratamento de 10 minutos após cena perigosa pode restaurar <strong>1d4 HP uma vez</strong> (regra de primeiros socorros). Não some 2 e 4 pela mesma noite.</p>
+<p><strong>Ferimentos:</strong> um ferimento grave exige <strong>3 dias de recuperação e cuidado apropriado</strong> para ser removido, ou 1 dia em caso de tratamento hospitalar com acompanhamento. Remova apenas <strong>1 ferimento por intervalo</strong>. Concussão, fratura e outros traumas graves podem exigir mais tempo na ficção, sem punir o jogador com meses de inatividade desnecessária. <strong>Hemorragia</strong> não some com descanso; precisa de estancamento.</p>
+<p><strong>Inventário recomendado:</strong> lanterna (1), pilhas (pequeno), rádio portátil (1), câmera (1), corda (2), kit de primeiros socorros (1, 3 utilizações), canivete (1), máscara simples (1), mapa dobrado (pequeno). Um kit perde <strong>1 utilização</strong> ao estancar, estabilizar ou recuperar 1d4 HP, conforme a escolha. Lanternas se apagam por ficção e relógio, não por uma rolagem aleatória a cada corredor.</p>
+<p><strong>Preparação vale mais do que compra:</strong> equipamentos comuns não concedem +5 dano nem armaduras mágicas. Objetos que expõem, confundem ou atrasam uma entidade valem muito mais do que armas “épicas”.</p></div><div class="next"><button data-go="r9">Próximo arquivo <span aria-hidden="true">↗</span></button></div></section>
+<section id="r9" class="panel rule-panel " data-panel="r9"><div class="chapter-label">ARQUIVO 09 / SLASHER 6.0</div><div class="doc"><h2 id="9-arquétipos-reinterpretados">9. Arquétipos reinterpretados</h2>
+<p>Mantenha <strong>um arquétipo por personagem</strong>, escolhido pelo papel dramático, não por otimização. Cada personagem recebe <strong>seu talento inicial</strong>, que funciona uma vez por cena quando indicado. Nenhum talento cria acertos automáticos ou imunidade ao pavor.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Arquétipo</th>
+<th>Talento inicial</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>O Atleta</td>
+<td><strong>Arrancada:</strong> 1× por cena, gaste 3 STA para ganhar +2 em Escapar ou na etapa de uma perseguição</td>
+</tr>
+<tr class="even">
+<td>O Bully</td>
+<td><strong>Entre eles:</strong> 1× por cena, ao Proteger, receba +3 Defesa em vez de +2 contra o golpe recebido</td>
+</tr>
+<tr class="odd">
+<td>O Nerd</td>
+<td><strong>Padrão oculto:</strong> 1× por cena, ao analisar uma pista já encontrada, faça uma pergunta adicional ao narrador sobre sua relação com outra pista</td>
+</tr>
+<tr class="even">
+<td>A Patricinha</td>
+<td><strong>Pessoa certa:</strong> 1× por sessão, declare um contato social plausível que pode abrir uma porta; ele não precisa se arriscar por você</td>
+</tr>
+<tr class="odd">
+<td>A Popular</td>
+<td><strong>Voz firme:</strong> 1× por cena, após uma conversa de apoio segura, um aliado recupera 5 EST adicionais</td>
+</tr>
+<tr class="even">
+<td>O Rebelde</td>
+<td><strong>Saída lateral:</strong> 1× por cena, receba +2 em REF ou TEC para usar uma passagem, cobertura ou distração existente</td>
+</tr>
+<tr class="odd">
+<td>O Paranormal</td>
+<td><strong>Presságio:</strong> 1× por cena, aceite +5 EST para pedir ao narrador um sinal sensorial verdadeiro sobre a manifestação próxima; não revela a solução inteira</td>
+</tr>
+<tr class="even">
+<td>O Artista</td>
+<td><strong>Ruído certo:</strong> 1× por cena, receba +2 ao criar uma distração plausível com som, imagem ou performance</td>
+</tr>
+<tr class="odd">
+<td>O Coder</td>
+<td><strong>Cópia fria:</strong> 1× por cena, com acesso e tempo, preserve uma cópia adicional de evidência digital; não recupera dados que nunca foram acessados</td>
+</tr>
+<tr class="even">
+<td>O Escoteiro</td>
+<td><strong>Conheço um caminho:</strong> 1× por cena, +2 para achar uma rota segura ou orientar um grupo perdido</td>
+</tr>
+<tr class="odd">
+<td>O Trabalhador</td>
+<td><strong>Na gambiarra:</strong> 1× por cena, +2 em TEC ao reparar ou bloquear algo com material adequado</td>
+</tr>
+<tr class="even">
+<td>O Professor</td>
+<td><strong>Contexto histórico:</strong> 1× por cena, ao ler um documento, pergunte qual evento, autoridade ou lacuna de arquivo merece atenção</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Substituições da versão 5.0:</strong> acerto automático vira +2 condicionado; esquiva automática vira Esquivar pagando STA; cura por rodada deixa de existir; imunidade mental vira pista de preparação ou recuperação; ataques extras garantidos deixam de existir; magia de combate e “invocações aliadas” passam a fenômenos narrativos raros e arriscados, nunca poderes básicos de personagens.</p></div><div class="next"><button data-go="r10">Próximo arquivo <span aria-hidden="true">↗</span></button></div></section>
+<section id="r10" class="panel rule-panel gm-only" data-panel="r10"><div class="chapter-label">ARQUIVO 10 / SLASHER 6.0</div><div class="doc"><h2 id="10-bestiário-de-dunmoore-somente-narrador">10. Bestiário de Dunmoore (somente narrador)</h2>
+<p><strong>Segredo central do cânone:</strong> o <strong>Fundo</strong> é uma inteligência antiga sob a montanha; a <strong>Fenda</strong> é uma abertura; o <strong>Rei Oculto</strong> é uma face pela qual a cidade negocia; os <strong>Ecos</strong> são resíduos de nomes, lembranças e histórias apagadas. A prosperidade depende da cumplicidade das pessoas, que adulteram documentos e entregam vítimas. A monstruosidade humana continua sendo o eixo da campanha.</p>
+<h3 id="eco-da-parede--ameaça-i">Eco da Parede · ameaça I</h3>
+<p><strong>Defesa 11 · Integridade 12 · Ataque +4 · Dano 1d6+3 · Medo DT 12 (+10 EST).</strong> Voz familiar em tubulações e paredes. <strong>Sinal:</strong> três batidas contínuas e voz de alguém desaparecido. <strong>Intenção:</strong> fazer a vítima responder, revelar posição e projetar uma mão ou boca da parede. <strong>Fraqueza:</strong> ruído constante (rádio fora de sintonia, motor ou alarme) interrompe a localização por voz e concede 1 sucesso de fuga. <strong>Resolução:</strong> desaparece ao perder acesso à resposta e às tubulações, não necessariamente quando Integridade chega a zero.</p>
+<h3 id="o-escavado--ameaça-ii">O Escavado · ameaça II</h3>
+<p><strong>Defesa 12 · Integridade 20 · Ataque +5 · Dano 1d8+4 · Medo DT 14 (+15 EST).</strong> Figura coberta de pó mineral, articulações erradas. <strong>Sinal:</strong> quatro riscos paralelos, raspagem de unhas e concreto úmido. <strong>Intenção:</strong> encurralar um sobrevivente na mesma zona e desferir um golpe corporal. <strong>Fraqueza:</strong> clarão forte o desorienta por uma rodada inteira (uma vez por fonte de clarão); vibrações de máquinas podem esconder movimento. <strong>Resolução:</strong> mesmo a 0 Integridade, apenas recua para as galerias; uma morte definitiva não está garantida.</p>
+<h3 id="o-sem-nome--ameaça-ii">O Sem-Nome · ameaça II</h3>
+<p><strong>Sem HP nem ataque físico · Medo DT 14 (+15 EST).</strong> Um espaço humano errado numa fotografia ou lembrança. <strong>Sinal:</strong> registros de turma com nomes raspados, objetos sem dono. <strong>Intenção:</strong> apagar uma lembrança recente, separando um personagem do que acabou de descobrir. <strong>Fraqueza:</strong> enunciar o nome verdadeiro com <strong>prova concreta</strong> preservada por outra pessoa rompe sua presença na cena. <strong>Resolução:</strong> não é ferido por armas; investigar é o confronto.</p>
+<h3 id="o-cobrador--ameaça-iii">O Cobrador · ameaça III</h3>
+<p><strong>Defesa 13 · Sem Integridade derrotável · Ataque +6 · Dano 2d8+3 · Medo DT 18 (+20 EST).</strong> Volume impossível de ferramentas, corpos e promessas. <strong>Sinal:</strong> vibração de ferramentas, gosto de metal, súbito silêncio de máquinas. <strong>Intenção:</strong> reclamar a pessoa nomeada numa oferta. <strong>Fraqueza:</strong> sino de retorno da mina suspende sua aproximação por uma rodada; documentação preservada de quem foi reclamado pode quebrar um vínculo específico. <strong>Resolução:</strong> não tem vitória por dano comum; objetivo é salvar o nome/vítima, atravessar saída ou interromper cobrança.</p>
+<h3 id="cúmplice-humano--ameaça-recorrente">Cúmplice humano · ameaça recorrente</h3>
+<p><strong>HP 12 · DEF 11–12 · REF 1–2 · Ataque +3 · Dano 1d6+2</strong> (bastão, ferramenta ou arma leve). Um segurança corrupto, policial ou capanga também pode sentir medo, negociar, fugir, render-se e deixar documentos. <strong>Intenção:</strong> proteger a conspiração, mais que lutar até morrer. <strong>Regra:</strong> violência contra humanos produz consequências legais e morais, não recompensas de combate.</p>
+<h3 id="rei-oculto--manifestação-maior">Rei Oculto · manifestação maior</h3>
+<p><strong>Não atribua HP ou dano padrão.</strong> É uma figura de negociação, linguagem, memória e dívida, não um chefe final de videogame. Enfrentá-lo é interromper um pacto humano, preservar nomes, revelar provas e decidir que preço a cidade está disposta a pagar. A novela sustenta o papel do sino e das vozes, mas o desenho de qualquer ritual final é tarefa da campanha, não um fato previamente fechado.</p></div><div class="next"><button data-go="r11">Próximo arquivo <span aria-hidden="true">↗</span></button></div></section>
+<section id="r11" class="panel rule-panel gm-only" data-panel="r11"><div class="chapter-label">ARQUIVO 11 / SLASHER 6.0</div><div class="doc"><h2 id="11-direção-de-campanha-e-ritmo">11. Direção de campanha e ritmo</h2>
+<p>Uma sessão típica pode conter 2–4 cenas de investigação, 1 cena de pressão, e no máximo 1 confronto físico relevante. <strong>Nem toda sessão precisa de monstro.</strong> Investigadores devem obter informações que permitam evitar o próximo perigo.</p>
+<p><strong>Arcos de Dunmoore:</strong> 2015 (primeiras mentiras, protagonistas crianças), 2019 (documentos contraditórios, primeiro Eco), 2022 (história dos sobreviventes de 2008), 2025 (o pacto exige novo pagamento). <strong>Jacob Andersen</strong>, apelidado de <strong>Vomit Blasphemy Tormentor</strong>, guarda fitas, nomes e provas; <strong>Zachariah “Zac” Crane</strong> tornou-se professor. Em 2008, os dois sobreviveram; Mara, Iris, Noah e Theo tiveram destinos trágicos e não devem ser ressuscitados por conveniência. A nova campanha pode explorar a fotografia escolar e o <strong>aluno extra</strong> sem transformar Jacob ou Zac em protagonistas substitutos dos jogadores.</p>
+<p>A novela apresenta o Fundo, a Fenda, o Rei Oculto e os Ecos como fenômenos distintos. A campanha pode reinterpretar manifestações particulares, mas é útil preservar essa hierarquia e o tema da cumplicidade cívica.</p>
+<h3 id="procedimento-para-preparar-uma-criatura">Procedimento para preparar uma criatura</h3>
+<ol type="1">
+<li>Escreva <strong>dois sinais claros</strong> que aparecem antes do contato.</li>
+<li>Escreva <strong>uma pista acessível</strong> da fraqueza e onde encontrá-la.</li>
+<li>Escreva <strong>duas rotas concretas de fuga</strong>, uma óbvia e outra descoberta com investigação.</li>
+<li>Descreva <strong>uma intenção anunciável</strong> e <strong>uma consequência muito grave</strong> se ninguém reagir.</li>
+<li>Defina <strong>qual fato da conspiração</strong> essa aparição revela.</li>
+</ol>
+<h3 id="exemplo-de-confronto-em-3-rodadas">Exemplo de confronto em 3 rodadas</h3>
+<p><strong>Rodada 1.</strong> Os investigadores entram numa sala de manutenção. Riscos no teto, rádio chia. O Escavado surge e bloqueia o corredor. Intenção anunciada: alcançar e esmagar quem tentar cruzar a porta. Uma personagem gasta a ação para fechar uma grade (TEC DT 12), outra prepara o flash de uma câmera.</p>
+<p><strong>Rodada 2.</strong> O monstro entorta a grade. O flash, cuja eficácia foi indicada em um relatório de eletricista, o desorienta. A fraqueza conta como um sucesso automático na fuga; o grupo escolhe uma saída lateral, deixando uma mochila.</p>
+<p><strong>Rodada 3.</strong> A perseguição exige um último teste; uma falha com custo separa dois sobreviventes, mas ninguém é morto por uma rolagem arbitrária. Eles escapam com uma gravação de passos que não batem com seus próprios movimentos.</p></div><div class="next"><button data-go="r12">Próximo arquivo <span aria-hidden="true">↗</span></button></div></section>
+<section id="r12" class="panel rule-panel " data-panel="r12"><div class="chapter-label">ARQUIVO 12 / SLASHER 6.0</div><div class="doc"><h2 id="12-escudo-rápido-do-narrador">12. Escudo rápido do narrador</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Situação</th>
+<th>Regra</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Teste comum</td>
+<td>d20 + atributo + circunstância versus DT 8/12/16/20</td>
+</tr>
+<tr class="even">
+<td>Preparação / ajuda / prejuízo</td>
+<td>±2, modificador circunstancial total ±4</td>
+</tr>
+<tr class="odd">
+<td>Falha por 1–3</td>
+<td>Sucesso com custo, se aceito e plausível</td>
+</tr>
+<tr class="even">
+<td>Pista essencial</td>
+<td>Automática ao acessar fonte adequada</td>
+</tr>
+<tr class="odd">
+<td>HP / STA</td>
+<td>12 + 2×EDF para ambos</td>
+</tr>
+<tr class="even">
+<td>Defesa</td>
+<td>10 + REF; cobertura +2</td>
+</tr>
+<tr class="odd">
+<td>Ataque</td>
+<td>d20 + EDF corpo a corpo / REF distância</td>
+</tr>
+<tr class="even">
+<td>Esquiva</td>
+<td>Reação, 3 STA, +3 Defesa contra um ataque</td>
+</tr>
+<tr class="odd">
+<td>Grave</td>
+<td>≥6 de dano após proteção ou 20 natural com dano</td>
+</tr>
+<tr class="even">
+<td>Hemorragia</td>
+<td>−2 HP por rodada até CIE DT 12 (kit) / 16 (improviso)</td>
+</tr>
+<tr class="odd">
+<td>Zero HP</td>
+<td>Morrendo 0/3; +1 por rodada sem estabilizar e +1 por novo ataque</td>
+</tr>
+<tr class="even">
+<td>Fuga</td>
+<td>3 sucessos antes de 2 complicações, usando abordagens diferentes</td>
+</tr>
+<tr class="odd">
+<td>EST</td>
+<td>60+: −1 mental/social; 90+: −2; 100: crise escolhida</td>
+</tr>
+<tr class="even">
+<td>Suspeita</td>
+<td>0–6: 2 observam; 4 sabotam; 6 agem</td>
+</tr>
+<tr class="odd">
+<td>Perigo do local</td>
+<td>0–4: 1 sinal; 2 aproximação; 3 posição; 4 contato</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Regra final:</strong> anuncie o risco, permita escolhas difíceis e respeite suas consequências. Horror letal e injustiça de design são coisas diferentes.</p>
+<hr/>
+<p><strong>Nota de versão:</strong> este manual é uma proposta independente de SLASHER 6.0 para playtest. O sistema 5.1 era mais permissivo em combate; esta edição substitui a escala de HP, golpes, ferimentos, recuperação e talentos. Ainda recomenda-se testar ao menos uma sessão com 3–5 sobreviventes e um Escavado antes de fixar valores como definitivos.</p></div><div class="next"><button data-go="home">Próximo arquivo <span aria-hidden="true">↗</span></button></div></section>
+<section class="panel tool-panel" id="sheet" data-panel="sheet"><div class="chapter-label">ARQUIVO PESSOAL / SALVO AUTOMATICAMENTE</div><div class="sheet-head"><h2>Ficha de sobrevivente</h2><div class="control-row"><button class="button" type="button" id="randomBtn">⚄ GERAR SOBREVIVENTE</button><button class="button alt" type="button" id="exportBtn">EXPORTAR JSON</button><label class="button alt" style="cursor:pointer">IMPORTAR <input type="file" id="importFile" accept="application/json,.json" class="hidden"></label><button class="button warning" type="button" id="resetBtn">ZERAR FICHA</button></div></div><p class="hint">Uma pessoa comum diante de um horror extraordinário. Escolha uma classe para preencher automaticamente os 10 pontos ou monte os atributos à mão. O gerador aleatório cria identidade, história e ficha pronta.</p>
+<div class="tile"><div class="identity-layout"><div class="portrait-box"><div class="portrait-label">RETRATO / ARQUIVO PESSOAL</div><div class="portrait-frame" id="portraitFrame"><div class="portrait-placeholder" id="portraitPlaceholder" aria-hidden="true"><span class="portrait-symbol">◇</span><span>SEM RETRATO</span><small>ADICIONE UMA IMAGEM</small></div><img id="portraitPreview" class="portrait-preview" alt="Retrato do sobrevivente" hidden></div><label class="button alt portrait-upload" for="portraitInput">ANEXAR IMAGEM<input type="file" id="portraitInput" accept="image/png,image/jpeg,image/webp,image/gif,image/avif,image/bmp" class="hidden"></label><button type="button" class="button subtle portrait-remove" id="portraitRemoveBtn" disabled>REMOVER IMAGEM</button><p class="portrait-hint" id="portraitHint" role="status" aria-live="polite">PNG, JPG, WEBP ou GIF. Salvo na ficha e no JSON exportado.</p></div><div class="form-grid"><label class="field">NOME DO PERSONAGEM<input type="text" id="chName" placeholder="Ex.: Evelyn Harper"></label><label class="field">NOME DO JOGADOR<input type="text" id="chPlayer" placeholder="Jogador"></label><label class="field">ARQUÉTIPO<select id="chClass"></select></label><label class="field">PESSOA QUE NÃO QUERO PERDER<input type="text" id="chBond" placeholder="Nome ou vínculo"></label><label class="field">TEMOR<input type="text" id="chFear" placeholder="O que me apavora"></label><label class="field">OBJETO-ÂNCORA<input type="text" id="chAnchor" placeholder="Uma lembrança física"></label><label class="field">IDADE<input type="number" id="chAge" min="12" max="99" placeholder="Ex.: 18"></label><label class="field">OCUPAÇÃO / PAPEL<input type="text" id="chRole" placeholder="Ex.: estudante, auxiliar da biblioteca"></label><label class="field">TRAÇO MARCANTE<input type="text" id="chTrait" placeholder="Ex.: nunca olha alguém nos olhos"></label><label class="field">SEGREDO / GANCHO DE HISTÓRIA<input type="text" id="chHook" placeholder="Ex.: viu a última pessoa a desaparecer"></label></div></div><div class="divider"></div><div class="preset-box"><div><div class="preset-title">ATRIBUTOS DA CLASSE</div><div id="presetPreview" class="preset-preview">Selecione um arquétipo para ver sua distribuição sugerida.</div></div><button class="button alt" id="applyPresetBtn" type="button">APLICAR PREDEFINIÇÃO</button></div><div class="section-title">Atributos <span class="badge" id="pointsLeft">10 PONTOS RESTANTES</span></div><div class="attr-wrap" id="attrGrid"></div><div id="classTalent" class="warning-note" style="margin-top:14px"></div></div>
+<div class="section-title">Condição</div><div class="grid3"><div class="metric"><div class="small">VITALIDADE / HP</div><div class="big" id="hpVal">16 / 16</div><div class="track"><i id="hpBar" style="width:100%"></i></div><div class="metric-buttons"><button class="mini" data-adjust="hp:-5">−5</button><button class="mini" data-adjust="hp:-1">−1</button><button class="mini" data-adjust="hp:1">+1</button><button class="mini" data-adjust="hp:5">+5</button></div></div><div class="metric"><div class="small">STAMINA / STA</div><div class="big" id="staVal">16 / 16</div><div class="track"><i id="staBar" style="width:100%"></i></div><div class="metric-buttons"><button class="mini" data-adjust="sta:-3">−3</button><button class="mini" data-adjust="sta:-1">−1</button><button class="mini" data-adjust="sta:1">+1</button><button class="mini" data-adjust="sta:3">+3</button></div></div><div class="metric"><div class="small">ESTRESSE / 100</div><div class="big" id="estVal">0 / 100</div><div class="track"><i id="estBar" style="width:0%"></i></div><div class="metric-buttons"><button class="mini" data-adjust="est:-10">−10</button><button class="mini" data-adjust="est:-5">−5</button><button class="mini" data-adjust="est:5">+5</button><button class="mini" data-adjust="est:10">+10</button></div></div></div><div class="status-row"><label class="checkchip"><input type="checkbox" id="bleed"> Hemorragia</label><label class="checkchip"><input type="checkbox" id="stabilized"> Estabilizado</label><span class="checkchip" id="dyingText">Morrendo: 0/3</span><span class="checkchip" id="defenseText">Defesa: 10</span></div><div class="tile"><div class="meter-title"><h3 class="card-title">Ferimentos graves</h3><small class="hint">3 = incapacitado</small></div><div class="status-row"><label class="checkchip"><input type="checkbox" class="wound" data-index="0"> 1º ferimento</label><label class="checkchip"><input type="checkbox" class="wound" data-index="1"> 2º ferimento</label><label class="checkchip"><input type="checkbox" class="wound" data-index="2"> 3º ferimento</label></div><label class="field">DESCRIÇÃO DAS LESÕES<textarea id="woundNotes" rows="2" placeholder="Ex.: braço direito lesionado, costelas fraturadas..."></textarea></label><div class="control-row" style="margin-top:10px"><button class="button alt" id="tickBtn">AVANÇAR 1 RODADA</button><button class="button alt" id="stanchBtn">ESTANCAR</button><button class="button alt" id="stabilizeBtn">ESTABILIZAR</button><button class="button alt" id="firstAidBtn">PRIMEIROS SOCORROS</button></div><p class="hint">“Avançar rodada” aplica hemorragia e contagem de Morrendo. Estancar e estabilizar rolam CIE DT 12 com kit ou 16 improvisando. Primeiros socorros restauram 1d4 HP apenas após perigo e uma vez por cena.</p><div class="control-row"><label class="checkchip"><input id="hasKit" type="checkbox" checked> Tenho kit de primeiros socorros</label><span class="checkchip" id="kitCount">3 / 3 usos</span><span class="checkchip" id="aidCount">Socorro da cena disponível</span><button class="button alt" id="newSceneBtn">NOVA CENA</button></div></div>
+<div class="section-title">Rolagens e combate</div><div class="tile"><div class="control-row"><label class="field">ATRIBUTO<select id="rollAttr"></select></label><label class="field">DIFICULDADE<select id="rollDT"><option value="8">8 · Fácil</option><option selected value="12">12 · Padrão</option><option value="16">16 · Difícil</option><option value="20">20 · Extrema</option></select></label><label class="field">CIRCUNSTÂNCIA<select id="rollMod"><option value="-4">−4</option><option value="-2">−2</option><option value="0" selected>0</option><option value="2">+2</option><option value="4">+4</option></select></label><button class="button" id="testBtn">ROLAR TESTE D20</button></div><div class="divider"></div><div class="control-row"><label class="field">ATAQUE<select id="attackType"><option value="EDF">Corpo a corpo · EDF</option><option value="REF">Distância · REF</option></select></label><label class="field">DEFESA DO ALVO<input id="enemyDef" type="number" min="1" max="30" value="12"></label><label class="field">ARMA<select id="weapon"><option value="1d4">Improvisada · 1d4</option><option value="1d6+1">Canivete · 1d6+1</option><option value="1d8+2">Arma pesada · 1d8+2</option><option value="1d8+3">Pistola · 1d8+3</option><option value="2d6+2">Espingarda · 2d6+2</option></select></label><button class="button" id="attackBtn">ATACAR</button></div><div class="roll-stage" id="attackRollStage" role="status" aria-live="polite" aria-atomic="true">
+   <div class="die-holder"><div class="d20" aria-hidden="true"><span class="face-lines"></span><span class="die-number" id="attackDieFace">?</span></div></div>
+   <div class="roll-info"><div class="roll-kicker" id="attackRollLabel">D20 • ROLAGEM DE ATAQUE</div><div class="roll-result" id="attackRollMain">Pronto para rolar</div><div class="roll-details" id="attackRollBreakdown">O resultado e o dano aparecerão aqui.</div></div>
+  </div><div class="divider"></div><div class="control-row"><label class="field">DANO SOFRIDO<input id="hurtValue" type="number" min="1" max="100" value="7"></label><label class="field">TIPO<select id="hurtType"><option value="trauma">Trauma / impacto</option><option value="corte">Corte profundo / perfuração</option></select></label><button class="button warning" id="hurtBtn">APLICAR DANO</button></div><div class="divider"></div><div class="control-row"><button class="button alt" id="breatherBtn">RESPIRAR (+3 STA)</button><button class="button alt" id="restBtn">DESCANSO SEGURO (8H)</button></div><p class="hint">Ataques de criaturas, com a intenção anunciada, podem ser resolvidos no Painel do Narrador. Este registro não substitui as decisões da mesa.</p></div><div class="section-title">Registro</div><div class="feed" id="log"><p>As anotações da sessão aparecerão aqui.</p></div></section>
+<section class="panel tool-panel gm-only" id="gm" data-panel="gm"><div class="chapter-label">PAINEL RESTRITO / CONTÉM SPOILERS</div><div class="tool-head"><h2>O narrador não esquece.</h2><p class="hint">Gerencie a pressão da cidade, o perigo em uma área e resolva ataques somente depois de anunciar claramente a intenção do predador.</p></div><div class="form-grid"><div class="tile"><div class="meter-title"><h3 class="card-title">Suspeita da cidade</h3><span class="badge" id="suspText">0 / 6</span></div><div class="clock" id="suspClock"></div><p id="suspCaption" class="clock-caption"></p><div class="control-row"><button class="button alt" data-clock="susp:-1">− 1</button><button class="button alt" data-clock="susp:1">+ 1</button><button class="button subtle" data-clock="susp:0">RESETAR</button></div></div><div class="tile"><div class="meter-title"><h3 class="card-title">Perigo do local</h3><span class="badge" id="dangerText">0 / 4</span></div><div class="clock" id="dangerClock"></div><p id="dangerCaption" class="clock-caption"></p><div class="control-row"><button class="button alt" data-clock="danger:-1">− 1</button><button class="button alt" data-clock="danger:1">+ 1</button><button class="button subtle" data-clock="danger:0">RESETAR</button></div></div></div><div class="section-title">Manifestações e inimigos</div><div class="monster-list" id="monsters"></div><div class="tile" style="margin-top:14px"><div class="kicker">INTENÇÃO DO PREDADOR</div><h3 id="monsterName" class="card-title">O Escavado</h3><p id="monsterIntent" class="fate" style="margin:10px 0"></p><p id="monsterWeakness" class="hint"></p><div class="divider"></div><div class="control-row"><label class="field">PROTEÇÃO DO ALVO (DANO REDUZIDO)<select id="armor"><option value="0">Sem proteção</option><option value="1">Proteção 1</option><option value="2">Proteção 2</option></select></label><label class="checkchip"><input id="dodge" type="checkbox"> Alvo esquiva (+3 DEF, −3 STA)</label><button class="button alt" id="monsterFearBtn">TESTAR MEDO</button><button class="button warning" id="monsterAttackBtn">RESOLVER GOLPE ANUNCIADO</button></div><div class="roll-stage" id="monsterRollStage" role="status" aria-live="polite" aria-atomic="true">
+   <div class="die-holder"><div class="d20" aria-hidden="true"><span class="face-lines"></span><span class="die-number" id="monsterDieFace">?</span></div></div>
+   <div class="roll-info"><div class="roll-kicker" id="monsterRollLabel">D20 • ATAQUE DA CRIATURA</div><div class="roll-result" id="monsterRollMain">Aguardando intenção</div><div class="roll-details" id="monsterRollBreakdown">Anuncie o golpe e depois resolva a rolagem.</div></div>
+  </div><p class="hint">Ação aplica ataque ao sobrevivente na ficha. Para o Sem-Nome e o Rei Oculto, use investigação, Estresse e consequências narrativas, não dano físico.</p></div><div class="section-title">Sobreviventes da cidade <span class="badge" id="npcCount">0 NPCS</span></div><div class="tile"><div class="npc-actions"><div><h3 class="card-title">Arquivo de NPCs</h3><p class="hint">Gere personagens secundários completos sem sobrescrever a ficha ativa. Os NPCs ficam guardados neste navegador.</p></div><button class="button" id="npcRandomBtn" type="button">⚄ GERAR NPC RÁPIDO</button></div><div id="npcRoster" class="npc-roster"><p class="hint">Nenhum NPC no arquivo.</p></div></div><div class="section-title">Anotações da sessão</div><div class="tile"><label class="field">VESTÍGIOS / PRÓXIMA CENA<textarea id="gmNotes" rows="7" placeholder="Sinais já mostrados, fraqueza acessível, rota de fuga, quem assinou..."></textarea></label></div></section>
+<footer>SLASHER 6.0 • A ÚLTIMA SAÍDA • EDIÇÃO DE TESTE • OFFLINE • SEU NAVEGADOR GUARDA A FICHA</footer></div></div>
+<script>
+'use strict';
+const ATTR=[['CIE','Ciências','Primeiros socorros e perícia'],['RAL','Raciocínio e Lógica','Padrões, arquivos e dedução'],['COC','Conhecimento Oculto','Simbolismo e resistência ao horror'],['EDF','Educação Física','Força e resistência'],['REF','Reflexo','Reação, equilíbrio e pontaria'],['TEC','Oficina e Tecnologia','Reparos e sistemas'],['CRI','Criatividade e Estilo','Improviso, distração e arte'],['SOC','Habilidades Sociais','Persuasão e negociação']];
+const CLASSES=[['atl','O Atleta','Arrancada: 1× por cena, 3 STA para +2 em Escapar ou etapa de perseguição'],['bul','O Bully','Entre eles: 1× por cena, Proteger concede +3 Defesa contra o golpe'],['ner','O Nerd','Padrão oculto: 1× por cena, pergunte relação entre duas pistas encontradas'],['pat','A Patricinha','Pessoa certa: 1× por sessão, declare contato social plausível'],['pop','A Popular','Voz firme: 1× por cena, conversa segura recupera +5 EST adicionais'],['reb','O Rebelde','Saída lateral: 1× por cena, +2 em REF/TEC com cobertura ou passagem'],['par','O Paranormal','Presságio: 1× por cena, +5 EST para receber sinal sensorial verdadeiro'],['art','O Artista','Ruído certo: 1× por cena, +2 ao criar distração plausível'],['cod','O Coder','Cópia fria: 1× por cena, faça cópia extra de evidência digital acessível'],['esc','O Escoteiro','Conheço um caminho: 1× por cena, +2 ao localizar rota segura'],['tra','O Trabalhador','Na gambiarra: 1× por cena, +2 em TEC com materiais adequados'],['pro','O Professor','Contexto histórico: 1× por cena, descubra uma conexão relevante no documento']];
+// Cada predefinição soma exatamente 10 pontos, na ordem CIE, RAL, COC, EDF, REF, TEC, CRI, SOC.
+const CLASS_PRESETS={
+ atl:[0,0,0,4,3,0,1,2],bul:[0,0,0,4,2,1,0,3],ner:[2,4,1,0,0,2,1,0],
+ pat:[0,2,0,0,1,0,3,4],pop:[0,1,0,0,2,0,3,4],reb:[0,0,1,2,3,2,2,0],
+ par:[0,2,4,0,1,0,2,1],art:[0,1,1,0,1,1,4,2],cod:[0,3,0,0,1,4,2,0],
+ esc:[1,1,0,3,3,1,0,1],tra:[0,1,0,3,1,4,0,1],pro:[2,4,1,0,0,0,1,2]
+};
+const FIRST_NAMES=['Abigail','Addison','Alice','Amelia','Annie','Arthur','Avery','Benjamin','Beth','Caleb','Casey','Charlotte','Claire','Connor','Daniel','Dylan','Eleanor','Elliot','Emily','Ethan','Evelyn','Finn','Grace','Hannah','Harper','Hazel','Isaac','Jamie','Jesse','Jonah','Jordan','Julia','Leah','Liam','Lucy','Madeline','Maggie','Mason','Morgan','Nathan','Nora','Olivia','Owen','Parker','Rachel','Riley','Rose','Samuel','Sophie','Theo','Vivian'];
+const LAST_NAMES=['Abbott','Barlow','Bennett','Bishop','Blackwell','Brooks','Carter','Collins','Dawson','Ellis','Fletcher','Foster','Graves','Hale','Harper','Holloway','Keating','Keller','Mercer','Miller','Parker','Pierce','Quinn','Reed','Rivers','Shaw','Sullivan','Turner','Walker','Whitmore'];
+const AGE_BY_CLASS={atl:[15,28],bul:[16,40],ner:[15,30],pat:[16,30],pop:[15,28],reb:[16,35],par:[18,57],art:[15,49],cod:[16,45],esc:[16,48],tra:[18,57],pro:[25,60]};
+const ROLE_BY_CLASS={atl:['capitão do time de atletismo','monitor da academia','jogador de hóquei'],bul:['segurança do estacionamento','aluno repetente','cobrador de dívidas'],ner:['voluntário da biblioteca','assistente de laboratório','monitor de estudos'],pat:['herdeiro de comerciante','organizador de eventos','estudante recém-transferido'],pop:['líder do grêmio','atendente do café','organizador do baile'],reb:['mecânico informal','skatista','entregador de bicicleta'],par:['frequentador da antiga capela','pesquisador de folclore','zelador do cemitério'],art:['fotógrafo amador','músico de garagem','pintor de placas'],cod:['técnico de informática','estagiário de TI','moderador do fórum local'],esc:['guia das trilhas','voluntário do parque','campista experiente'],tra:['auxiliar de serraria','mecânico da garagem','operador de manutenção'],pro:['professor substituto','arquivista municipal','tutor de história']};
+const TRAITS=['Guarda bilhetes de qualquer conversa importante.','Fala pouco e observa portas e janelas.','Faz piadas quando está com medo.','Nunca anda sem uma lanterna.','Conta os próprios passos involuntariamente.','Confia em estranhos mais do que deveria.','Se irrita quando alguém mente por educação.','Escreve datas nas costas das fotografias.','Evita ficar sozinho perto do lago.','Prefere resolver tudo antes de pedir ajuda.','Finge coragem para proteger os outros.','Não consegue ignorar um pedido de socorro.'];
+const FEARS=['ficar trancado no escuro','ouvir a própria voz vinda de outro lugar','ser esquecido por todos','água negra e profunda','perder alguém por hesitar','o barulho de três batidas','ser enterrado vivo','voltar para casa e não reconhecer ninguém','ouvir alguém chamá-lo pelo ralo','descobrir que a família mente'];
+const ANCHORS=['uma fita cassete sem etiqueta','uma fotografia amassada do verão','um anel antigo de família','uma moeda de 1999','um chaveiro da escola','uma bússola quebrada','uma carta nunca enviada','um relógio parado','um broche de estrela','uma pulseira vermelha desbotada'];
+const BONDS=['minha irmã caçula','meu melhor amigo de infância','minha mãe','meu pai','a pessoa que me ensinou a nadar','meu irmão mais velho','meu professor favorito','a pessoa que desapareceu no último inverno'];
+const HOOKS=['Uma foto da turma mostra alguém que você não reconhece, mas que segura sua mão.','Você viu o xerife saindo da estrada da mina durante a madrugada.','Uma fita gravou sua voz numa noite em que você estava fora da cidade.','Sua família recebeu um pagamento logo após o desaparecimento de um estudante.','Você sabe quem trocou uma página do arquivo municipal.','Você encontrou uma planta da galeria sete atrás de um armário.','Você ouve batidas por dentro do encanamento, sempre no mesmo horário.','Seu sobrenome apareceu na lista de uma visita ao hospital que nunca ocorreu.','Alguém apagou seu nome de uma fotografia antiga.','Você tem a chave de um cômodo do hospital que oficialmente não existe.'];
+const MONSTERS=[{id:'eco',name:'Eco da Parede',def:11,hp:12,toHit:4,damage:'1d6+3',stress:10,bleed:false,intent:'Três batidas. A voz de alguém que não deveria estar ali pronuncia um nome, enquanto algo pressiona o papel de parede pelo lado de dentro.',weak:'Ruído constante impede que localize alguém pela resposta vocal; use rádio, motor ou alarme.'},{id:'escavado',name:'O Escavado',def:12,hp:20,toHit:5,damage:'1d8+4',stress:15,bleed:true,intent:'Quatro riscos surgem no teto. A criatura dobra o cotovelo ao contrário, fixa uma pessoa e se prepara para alcançá-la.',weak:'Um clarão muito forte a desorienta por uma rodada. Vibração pode mascarar movimento.'},{id:'semnome',name:'O Sem-Nome',def:0,hp:0,toHit:null,damage:null,stress:15,bleed:false,intent:'O registro da turma perde uma letra. Na fotografia, alguém ocupa o espaço entre duas crianças. Uma lembrança tenta desaparecer.',weak:'Dizer o nome verdadeiro com uma prova física confiável desfaz a manifestação naquela cena.'},{id:'cobrador',name:'O Cobrador',def:13,hp:0,toHit:6,damage:'2d8+3',stress:20,bleed:false,intent:'O silêncio cobre a sala. Parafusos começam a vibrar e uma massa de corpos e ferramentas aponta para o nome reclamado.',weak:'O sino de retorno atrasa uma rodada; preservar provas da vítima pode quebrar a cobrança específica.'},{id:'humano',name:'Cúmplice humano',def:12,hp:12,toHit:3,damage:'1d6+2',stress:0,bleed:false,intent:'O cúmplice saca sua arma e tenta impedir que o grupo leve as evidências. Age por iniciativa normal, não por intenção sobrenatural.',weak:'Teme provas, testemunhas e perder a proteção social. Pode render-se, fugir ou negociar.'},{id:'reioculto',name:'Rei Oculto',def:0,hp:0,toHit:null,damage:null,stress:20,bleed:false,intent:'A água negra sobe como uma figura humana. Ele aguarda que alguém pronuncie um nome por vontade própria.',weak:'Não é combatente. A saída está em impedir a oferta e documentar quem a autorizou.'}];
+const STORE='slasher6-last-exit-v1';const $=x=>document.getElementById(x);const lim=(v,a,b)=>Math.min(b,Math.max(a,v));const initial=()=>({v:1,ch:{name:'',player:'',class:'',bond:'',fear:'',anchor:'',age:'',role:'',trait:'',hook:'',portrait:'',a:Object.fromEntries(ATTR.map(x=>[x[0],0])),hp:12,sta:12,est:0,wounds:0,bleed:false,stabilized:false,dying:0,woundNotes:'',hasKit:true,kitCharges:3,aidUsed:false},gm:{susp:0,danger:0,selected:'escavado',notes:'',npcs:[]},log:[]});
+let state=initial();try{const raw=JSON.parse(localStorage.getItem(STORE)||'null');if(raw&&raw.v===1) state=Object.assign(initial(),raw)}catch(e){};
+const c=()=>state.ch;const a=id=>Number(c().a?.[id]||0);const maxHP=()=>12+2*a('EDF');const maxSTA=maxHP;const defense=()=>10+a('REF');
+function sanitize(){let ch=c();if(!ch.a||typeof ch.a!=='object')ch.a={};for(const [id] of ATTR)ch.a[id]=lim(Number(ch.a[id])||0,0,4);let remaining=10;for(const [id] of ATTR){let give=Math.min(ch.a[id],remaining);ch.a[id]=give;remaining-=give;}for(const s of ['name','player','class','bond','fear','anchor','role','trait','hook','woundNotes'])ch[s]=String(ch[s]||'').slice(0,2000);ch.portrait=(typeof ch.portrait==='string'&&ch.portrait.length<400000&&/^data:image\/(?:webp|jpeg|png);base64,[a-zA-Z0-9+/=]+$/.test(ch.portrait))?ch.portrait:'';ch.age=ch.age===''?'':String(lim(Number(ch.age)||18,12,99));ch.hp=lim(Number(ch.hp)||0,0,maxHP());ch.sta=lim(Number(ch.sta)||0,0,maxSTA());ch.est=lim(Number(ch.est)||0,0,100);ch.wounds=lim(Number(ch.wounds)||0,0,3);ch.dying=lim(Number(ch.dying)||0,0,3);ch.bleed=!!ch.bleed;ch.stabilized=!!ch.stabilized;ch.hasKit=ch.hasKit!==false;ch.kitCharges=lim(Number(ch.kitCharges??3),0,3);ch.aidUsed=!!ch.aidUsed;if(!state.gm||typeof state.gm!=='object')state.gm=initial().gm;state.gm.npcs=Array.isArray(state.gm.npcs)?state.gm.npcs.slice(0,20).filter(n=>n&&typeof n==='object'&&typeof n.name==='string').map(n=>({...n,name:String(n.name).slice(0,120)})):[];state.gm.susp=lim(Number(state.gm.susp)||0,0,6);state.gm.danger=lim(Number(state.gm.danger)||0,0,4);if(state.gm.selected==='messias')state.gm.selected='reioculto';state.gm.selected=MONSTERS.some(m=>m.id===state.gm.selected)?state.gm.selected:'escavado';state.gm.notes=String(state.gm.notes||'').slice(0,20000);if(!Array.isArray(state.log))state.log=[];state.log=state.log.slice(0,30).map(s=>String(s).slice(0,500))}
+function persist(){try{localStorage.setItem(STORE,JSON.stringify(state))}catch(e){}};
+function log(s){state.log.unshift(s);state.log=state.log.slice(0,30);persist();renderLog()}
+function roll(sides){return 1+Math.floor(Math.random()*sides)}
+function damageRoll(notation){let m=/^(\d+)d(\d+)([+-]\d+)?$/.exec(notation||'');if(!m)return {total:0,rolls:[]};const rolls=Array.from({length:Number(m[1])},()=>roll(Number(m[2])));return{total:rolls.reduce((s,n)=>s+n,0)+Number(m[3]||0),rolls}}
+function renderLog(){const feed=$('log');feed.replaceChildren();for(const msg of state.log.slice(0,20)){let p=document.createElement('p');p.textContent=msg;feed.append(p)}if(!state.log.length){let p=document.createElement('p');p.textContent='Nenhuma rolagem registrada.';feed.append(p)}}
+function show(id){if((id==='gm'||id==='r10'||id==='r11')&&!document.body.classList.contains('gm-on')){id='home';}document.querySelectorAll('.panel').forEach(el=>el.classList.toggle('active',el.id===id));document.querySelectorAll('[data-go]').forEach(el=>el.classList.toggle('active',el.dataset.go===id));$('rail').classList.remove('open');window.scrollTo({top:0,behavior:'instant'});try{history.replaceState(null,'','#'+id)}catch(e){}}
+function pick(items){return items[Math.floor(Math.random()*items.length)]}
+function className(id){return CLASSES.find(x=>x[0]===id)?.[1]||'Sem arquétipo'}
+function presetObject(id){const values=CLASS_PRESETS[id];return values?Object.fromEntries(ATTR.map((x,i)=>[x[0],values[i]])):null}
+function writePresetPreview(){const id=c().class,box=$('presetPreview'),pre=CLASS_PRESETS[id];$('applyPresetBtn').disabled=!pre;
+ if(!pre){box.textContent='Selecione um arquétipo para ver sua distribuição sugerida.';return}
+ box.replaceChildren();pre.forEach((v,i)=>{const span=document.createElement('span');const strong=document.createElement('b');span.textContent=ATTR[i][0]+' ';if(v>=3){strong.textContent=String(v);span.append(strong)}else span.append(String(v));box.append(span);if(i<7)box.append(document.createTextNode('  ·  '))});
+}
+function applyClassPreset(id,withConfirmation=false){const template=presetObject(id);if(!template)return false;
+ if(withConfirmation&&ATTR.some(([key])=>a(key)!==0)&&!confirm('Substituir os atributos atuais pela distribuição pronta de '+className(id)+'? Os ferimentos e o progresso do personagem serão preservados.'))return false;
+ const oldMax=maxHP();c().a=template;const diff=maxHP()-oldMax;c().hp=lim(c().hp+diff,0,maxHP());c().sta=lim(c().sta+diff,0,maxSTA());render();return true;
+}
+function createSurvivor(){const classId=pick(CLASSES)[0],attributes=presetObject(classId),base=initial().ch,ages=AGE_BY_CLASS[classId];
+ return {...base,name:pick(FIRST_NAMES)+' '+pick(LAST_NAMES),class:classId,age:String(ages[0]+Math.floor(Math.random()*(ages[1]-ages[0]+1))),a:attributes,role:pick(ROLE_BY_CLASS[classId]),trait:pick(TRAITS),hook:pick(HOOKS),bond:pick(BONDS),fear:pick(FEARS),anchor:pick(ANCHORS),hp:12+2*attributes.EDF,sta:12+2*attributes.EDF};
+}
+function hasActiveCharacter(){return !!(c().name||c().portrait||c().class||ATTR.some(([id])=>a(id)!==0)||c().hp!==maxHP()||c().est||c().wounds)}
+function loadCharacter(ch){state.ch={...initial().ch,...ch,a:{...ch.a}};state.log=[];render();log('Ficha pronta: '+state.ch.name+' • '+className(state.ch.class)+' • atributos 10/10.');}
+function generateSurvivor(){if(hasActiveCharacter()&&!confirm('Gerar um novo sobrevivente e substituir a ficha atual? Você pode exportar o personagem antes de continuar.'))return;
+ loadCharacter(createSurvivor());show('sheet');
+}
+function npcSummary(n){return `${n.name} (${n.age} anos) | ${className(n.class)} | ${n.role}\nHP ${n.hp} • STA ${n.sta} • DEF ${10+Number(n.a?.REF||0)}\n${ATTR.map(([id])=>id+' '+(n.a?.[id]||0)).join(' · ')}\nTraço: ${n.trait}\nVínculo: ${n.bond} | Temor: ${n.fear}\nÂncora: ${n.anchor}\nSegredo: ${n.hook}`}
+function renderNPCs(){const roster=$('npcRoster');roster.replaceChildren();const npcs=state.gm.npcs;
+ $('npcCount').textContent=npcs.length+' NPC'+(npcs.length===1?'':'S');
+ if(!npcs.length){let p=document.createElement('p');p.className='hint';p.textContent='Nenhum NPC no arquivo. Gere um sobrevivente para começar.';roster.append(p);return}
+ for(const n of npcs){const i=npcs.indexOf(n),card=document.createElement('article');card.className='npc-card';
+ const tag=document.createElement('div');tag.className='npc-tag';tag.textContent=className(n.class)+' • '+n.age+' anos';
+ const title=document.createElement('h4');title.textContent=n.name;
+ const role=document.createElement('p');role.textContent=n.role+' · '+n.trait;
+ const stats=document.createElement('p');stats.className='npc-stats';stats.textContent='HP '+n.hp+'  ·  DEF '+(10+Number(n.a?.REF||0))+'  ·  '+ATTR.map(([id])=>id+' '+(n.a?.[id]||0)).join(' / ');
+ const hook=document.createElement('p');hook.textContent='SEGREDO: '+n.hook;
+ const buttons=document.createElement('div');buttons.className='npc-buttons';
+ const load=document.createElement('button');load.className='mini';load.type='button';load.textContent='ABRIR FICHA';load.addEventListener('click',()=>{if(hasActiveCharacter()&&!confirm('Carregar '+n.name+' na ficha ativa? Exporte a ficha atual caso queira guardá-la.'))return;loadCharacter(n);show('sheet')});
+ const copy=document.createElement('button');copy.className='mini';copy.type='button';copy.textContent='COPIAR';copy.addEventListener('click',async()=>{const summary=npcSummary(n);try{await navigator.clipboard.writeText(summary);copy.textContent='COPIADO ✓';setTimeout(()=>copy.textContent='COPIAR',1400)}catch(e){const area=document.createElement('textarea');area.value=summary;area.style.position='fixed';area.style.opacity='0';document.body.append(area);area.select();try{document.execCommand('copy');copy.textContent='COPIADO ✓';setTimeout(()=>copy.textContent='COPIAR',1400)}catch(err){alert(summary)}area.remove()}});
+ const del=document.createElement('button');del.className='mini';del.type='button';del.textContent='EXCLUIR';del.addEventListener('click',()=>{npcs.splice(i,1);renderNPCs();persist()});
+ buttons.append(load,copy,del);card.append(tag,title,role,stats,hook,buttons);roster.append(card);
+ }
+}
+function addNPC(){if(state.gm.npcs.length>=20){alert('O arquivo comporta até 20 NPCs. Remova um antes de continuar.');return}
+ const npc=createSurvivor();npc.player='NPC';state.gm.npcs.unshift(npc);renderNPCs();persist();}
+function pointLeft(){return 10-ATTR.reduce((sum,x)=>sum+a(x[0]),0)}
+function renderAttrs(){let grid=$('attrGrid');grid.replaceChildren();for(const [id,name,desc] of ATTR){let wrap=document.createElement('div');wrap.className='attr';wrap.innerHTML='<b></b><small></small><div class="adjust"><button type="button" class="down">−</button><strong></strong><button type="button" class="up">+</button></div>';wrap.querySelector('b').textContent=id+' · '+name;wrap.querySelector('small').textContent=desc;wrap.querySelector('strong').textContent=a(id);wrap.querySelector('.down').disabled=a(id)===0;wrap.querySelector('.up').disabled=a(id)>=4||pointLeft()===0;wrap.querySelector('.down').addEventListener('click',()=>setAttr(id,-1));wrap.querySelector('.up').addEventListener('click',()=>setAttr(id,1));grid.append(wrap)}$('pointsLeft').textContent=pointLeft()+' PONTOS RESTANTES'}
+function setAttr(id,amount){if(amount>0&&(a(id)>=4||pointLeft()===0))return;if(amount<0&&a(id)===0)return;const oldM=maxHP();c().a[id]+=amount;const newM=maxHP();if(newM!==oldM){c().hp=lim(c().hp+(newM-oldM),0,newM);c().sta=lim(c().sta+(newM-oldM),0,newM)}render()}
+function renderSheet(){const ch=c();renderPortrait();for(const [id,key] of [['chName','name'],['chPlayer','player'],['chClass','class'],['chBond','bond'],['chFear','fear'],['chAnchor','anchor'],['chAge','age'],['chRole','role'],['chTrait','trait'],['chHook','hook'],['woundNotes','woundNotes']]){if(document.activeElement!==$(id))$(id).value=ch[key]||''}renderAttrs();const cl=CLASSES.find(x=>x[0]===ch.class);$('classTalent').textContent=cl?cl[2]:'Escolha um arquétipo para receber um talento inicial situacional.';writePresetPreview();for(const [key,id,bar,max] of [['hp','hpVal','hpBar',maxHP()],['sta','staVal','staBar',maxSTA()],['est','estVal','estBar',100]]){$(id).textContent=ch[key]+' / '+max;$(bar).style.width=100*ch[key]/max+'%'}$('defenseText').textContent='Defesa: '+defense();$('dyingText').textContent='Morrendo: '+ch.dying+'/3'+(ch.hp===0?' • CAÍDO':'');$('dyingText').style.color=ch.dying>0?'#f09898':'';$('bleed').checked=ch.bleed;$('stabilized').checked=ch.stabilized;$('hasKit').checked=ch.hasKit;$('kitCount').textContent=ch.kitCharges+' / 3 usos';$('aidCount').textContent=ch.aidUsed?'Socorro da cena já usado':'Socorro da cena disponível';document.querySelectorAll('.wound').forEach((el,i)=>el.checked=i<ch.wounds);renderLog()}
+
+function renderPortrait(){
+ const data=c().portrait||'',img=$('portraitPreview');
+ if(data){if(img.getAttribute('src')!==data)img.src=data;img.hidden=false;$('portraitPlaceholder').hidden=true;$('portraitFrame').classList.add('has-portrait')}
+ else{img.hidden=true;img.removeAttribute('src');$('portraitPlaceholder').hidden=false;$('portraitFrame').classList.remove('has-portrait')}
+ $('portraitRemoveBtn').disabled=!data;
+}
+function renderPortraitMessage(message){$('portraitHint').textContent=message}
+function portraitFromFile(file){
+ if(!file)return;
+ if(!file.type.startsWith('image/')){renderPortraitMessage('Escolha um arquivo de imagem.');return}
+ if(file.size>12*1024*1024){renderPortraitMessage('Imagem muito grande. Limite de 12 MB.');return}
+ const reader=new FileReader();
+ reader.onerror=()=>renderPortraitMessage('Não foi possível ler o arquivo.');
+ reader.onload=()=>{
+  const source=new Image();
+  source.onerror=()=>renderPortraitMessage('A imagem não pôde ser aberta neste navegador.');
+  source.onload=()=>{
+   const side=Math.max(source.naturalWidth,source.naturalHeight);
+   if(!side){renderPortraitMessage('Arquivo sem imagem válida.');return}
+   try{
+    let data='';
+    for(const [maxSide,quality] of [[660,.83],[480,.75],[350,.68]]){
+     const scale=Math.min(1,maxSide/side);
+     const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(source.naturalWidth*scale));canvas.height=Math.max(1,Math.round(source.naturalHeight*scale));
+     const ctx=canvas.getContext('2d');if(!ctx)throw Error('Canvas indisponível');
+     ctx.drawImage(source,0,0,canvas.width,canvas.height);
+     data=canvas.toDataURL('image/webp',quality);
+     if(!data.startsWith('data:image/webp'))data=canvas.toDataURL('image/jpeg',quality);
+     if(data.length<390000)break;
+    }
+    if(data.length>=390000){renderPortraitMessage('Imagem muito detalhada. Escolha uma versão menor.');return}
+    c().portrait=data;renderPortrait();persist();renderPortraitMessage('Retrato anexado! Salvo automaticamente e incluído no JSON.');
+   }catch(error){renderPortraitMessage('Não foi possível processar a imagem. Tente JPG ou PNG.');}
+  };
+  source.src=String(reader.result);
+ };
+ reader.readAsDataURL(file);
+}
+function setClock(k,n){let val=k==='susp'?6:4;state.gm[k]=n===0?0:lim(state.gm[k]+n,0,val);persist();renderGM()}
+function clockUI(id,count,max){const box=$(id);box.replaceChildren();for(let i=1;i<=max;i++){let b=document.createElement('button');b.className=i<=count?'filled':'';b.type='button';b.textContent=String(i);b.title='Ajustar para '+i;let key=id==='suspClock'?'susp':'danger';b.addEventListener('click',()=>{state.gm[key]=i;renderGM()});box.append(b)}}
+function selected(){return MONSTERS.find(m=>m.id===state.gm.selected)||MONSTERS[1]}
+function renderGM(){const gm=state.gm;$('suspText').textContent=gm.susp+' / 6';$('dangerText').textContent=gm.danger+' / 4';clockUI('suspClock',gm.susp,6);clockUI('dangerClock',gm.danger,4);$('suspCaption').textContent=gm.susp<2?'Ainda não percebem.':gm.susp<4?'2: alguém está observando.':gm.susp<6?'4: uma prova ou testemunha é pressionada.':'6: os cúmplices agem diretamente; após a consequência, reduza para 3.';$('dangerCaption').textContent=['0: quietude enganosa.','1: sinais da criatura.','2: aproximação ou ruído.','3: criatura em posição.','4: contato ou mudança imediata.'][gm.danger];const list=$('monsters');list.replaceChildren();for(const m of MONSTERS){let card=document.createElement('div');card.className='monster'+(gm.selected===m.id?' selected':'');card.tabIndex=0;card.setAttribute('role','button');let h=document.createElement('strong');h.textContent=m.name;let p=document.createElement('p');p.textContent=m.weak;let meta=document.createElement('div');meta.className='mono';meta.textContent=m.damage?'DEF '+m.def+' • Ataque +'+m.toHit+' • '+m.damage:'CONFRONTO NÃO FÍSICO';card.append(h,meta,p);card.addEventListener('click',()=>{gm.selected=m.id;renderGM()});card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();gm.selected=m.id;renderGM()}});list.append(card)}const m=selected();$('monsterName').textContent=m.name;$('monsterIntent').textContent=m.intent;$('monsterWeakness').textContent='FRAQUEZA INVESTIGÁVEL: '+m.weak;$('monsterAttackBtn').disabled=!m.damage;if(document.activeElement!==$('gmNotes'))$('gmNotes').value=gm.notes;renderNPCs();persist()}
+function render(){sanitize();renderSheet();renderGM();persist()}
+function applyDamage(value,type,description,critical=false){let ch=c();const v=Math.max(0,Math.floor(Number(value)||0));if(v===0)return;if(ch.hp===0){ch.dying=lim(ch.dying+1,0,3);ch.stabilized=false;log(description+': novo golpe enquanto caído, Morrendo '+ch.dying+'/3'+(ch.dying>=3?' • MORTE':'')+'.');render();return}ch.hp=lim(ch.hp-v,0,maxHP());if((v>=6||critical)&&ch.wounds<3){ch.wounds++;if(type==='corte')ch.bleed=true}if(ch.hp===0){ch.dying=0;ch.stabilized=false}log(description+': −'+v+' HP'+((v>=6||critical)?' • FERIMENTO GRAVE':'')+(type==='corte'&&(v>=6||critical)?' • HEMORRAGIA':'')+(ch.hp===0?' • CAÍDO: Morrendo 0/3':'')+'.');render()}
+function testD20(id,dt,mod){const die=roll(20),total=die+a(id)+mod;let stateStr=die===20?'20 NATURAL: sucesso + vantagem':die===1?'1 NATURAL: complicação':total>=dt?'SUCESSO':dt-total<=3?'FALHA POR POUCO: custo opcional':'FALHA';log(id+' DT '+dt+': d20('+die+') +'+a(id)+' '+(mod>=0?'+':'')+mod+' = '+total+' → '+stateStr);return{die,total,win:die!==1&&(die===20||total>=dt)}}
+function skillTest(id,dt){return testD20(id,dt,0).win}
+function tick(){let ch=c();if(ch.bleed){if(ch.hp>0){ch.hp=Math.max(0,ch.hp-2);if(ch.hp===0){ch.dying=0;ch.stabilized=false}}else if(ch.stabilized){ch.stabilized=false}}if(ch.hp===0&&!ch.stabilized){ch.dying=Math.min(3,ch.dying+1)}log('Fim da rodada: '+(ch.bleed?'hemorragia ativa (−2 HP se vivo); ':'')+'Morrendo '+ch.dying+'/3.'+(ch.dying>=3?' PERSONAGEM MORREU.':''));render()}
+function spendKit(){const ch=c();if(ch.hasKit&&ch.kitCharges>0){ch.kitCharges--;return true}return false}
+function treatment(kind){const ch=c(),withKit=ch.hasKit&&ch.kitCharges>0,dt=withKit?12:16;if(kind==='stanch'&&!ch.bleed){log('Não existe hemorragia ativa.');return}if(kind==='stabilize'&&ch.hp>0){log('Só é necessário estabilizar personagens a 0 HP.');return}if(withKit)spendKit();let ok=skillTest('CIE',dt);if(ok){if(kind==='stanch'){ch.bleed=false;log('Hemorragia estancada.')}if(kind==='stabilize'){ch.stabilized=true;log('Paciente estabilizado. Continua a 0 HP e incapacitado.')}}else log('Tentativa de '+(kind==='stanch'?'estancar':'estabilizar')+' falhou; outro plano ou auxílio pode ser necessário.');render()}
+function firstAid(){const ch=c();if(ch.hp===maxHP()){log('HP já no máximo.');return}if(ch.hp===0&&!ch.stabilized){log('Estabilize o personagem antes de usar primeiros socorros.');return}if(ch.aidUsed){log('Este personagem já recebeu tratamento recuperador nesta cena.');return}if(!ch.hasKit||ch.kitCharges<=0){log('Primeiros socorros 1d4 HP exigem uma utilização de kit.');return}if(ch.dying>=3){log('O personagem já morreu.');return}ch.aidUsed=true;spendKit();const good=skillTest('CIE',12);if(good){let val=roll(4);ch.hp=lim(ch.hp+val,0,maxHP());ch.dying=0;log('Tratamento após a cena: +'+val+' HP. Limite: 1 vez por pessoa por cena.')}else log('Tratamento falhou; não houve recuperação.');render()}
+function monsterFear(){let m=selected();if(m.stress===0){log('Ameaça humana: nenhum teste sobrenatural de medo.');return}const dt=m.id==='eco'?12:(['escavado','semnome'].includes(m.id)?14:18);const die=roll(20);const total=die+a('COC');const ok=die===20||die!==1&&total>=dt;const gain=ok?Math.floor(m.stress/2):m.stress;c().est=lim(c().est+gain,0,100);log('Medo: '+m.name+' • COC d20('+die+') +'+a('COC')+' = '+total+' vs DT '+dt+' → '+(ok?'resistiu':'falhou')+' • +'+gain+' EST.'+(c().est===100?' CRISE: o jogador escolhe a reação e depois ajusta EST para 80.':''));render()}
+// O valor real é sorteado apenas uma vez; a animação mostra faces decorativas.
+function animateAttackDie(kind,die,info,onFinished){
+ const prefix=kind==='monster'?'monster':'attack';
+ const stage=$(prefix+'RollStage'),face=$(prefix+'DieFace'),label=$(prefix+'RollLabel'),main=$(prefix+'RollMain'),details=$(prefix+'RollBreakdown');
+ const button=$(prefix==='monster'?'monsterAttackBtn':'attackBtn');
+ button.disabled=true;
+ stage.classList.remove('hit','miss','critical','rolling');
+ void stage.offsetWidth; // reinicia a animação em rolagens consecutivas
+ stage.classList.add('rolling');
+ label.textContent=info.label+' • ROLANDO...';main.textContent='O dado está girando';details.textContent='O destino ainda está em movimento.';
+ face.textContent='?';
+ const reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ let interval=null;
+ if(!reduced)interval=setInterval(()=>{face.textContent=String(1+Math.floor(Math.random()*20))},55);
+ setTimeout(()=>{
+  if(interval!==null)clearInterval(interval);
+  face.textContent=String(die);
+  label.textContent=info.label+' • D20 NATURAL: '+die;
+  main.textContent=info.title;
+  details.textContent=info.details;
+  stage.classList.remove('rolling');
+  stage.classList.add(info.hit?'hit':'miss');
+  if(die===20)stage.classList.add('critical');
+  button.disabled=false;
+  if(onFinished)onFinished();
+ },reduced?0:820);
+}
+function resolveMonster(){
+ const m=selected();if(!m.damage)return;
+ let dodging=$('dodge').checked,bonus=0;
+ if(dodging){if(c().sta<3){log('STA insuficiente para esquivar: ataque sem bônus.')}else{c().sta-=3;bonus=3}}
+ const die=roll(20),total=die+m.toHit,def=defense()+bonus;
+ const hit=die===20||(die!==1&&total>=def);
+ $('dodge').checked=false;
+ if(hit){
+  const d=damageRoll(m.damage),protection=Number($('armor').value)||0;
+  const val=Math.max(1,d.total-protection)+(die===20?2:0);
+  animateAttackDie('monster',die,{label:m.name,title:(die===20?'ACERTO CRÍTICO':'ACERTO')+' • '+val+' DE DANO',details:'d20 '+die+' + '+m.toHit+' = '+total+' vs DEF '+def+' | '+m.damage+' ['+d.rolls.join(', ')+'] = '+d.total+' | Proteção '+protection+(die===20?' | Crítico +2':'') ,hit:true},()=>{
+   log(m.name+' rolou '+die+' + '+m.toHit+' = '+total+' vs DEF '+def+' • DANO '+d.rolls.join('+')+' = '+d.total+' (proteção '+protection+', '+(die===20?'+2 crítico':'normal')+').');
+   applyDamage(val,m.bleed?'corte':'trauma',m.name,die===20);
+  });
+ }else{
+  animateAttackDie('monster',die,{label:m.name,title:'GOLPE EVITADO',details:'d20 '+die+' + '+m.toHit+' = '+total+' vs DEF '+def+' | Sem dano',hit:false},()=>{
+   log(m.name+' rolou '+die+' + '+m.toHit+' = '+total+' vs DEF '+def+': ERROU / GOLPE EVITADO.');render();
+  });
+ }
+}
+function attack(){
+ if(c().hp===0||c().wounds>=3){log('Personagem incapacitado: não pode atacar.');return}
+ const id=$('attackType').value,def=lim(Number($('enemyDef').value)||12,1,30);
+ const die=roll(20),total=die+a(id),hit=die===20||(die!==1&&total>=def);
+ if(!hit){
+  animateAttackDie('attack',die,{label:'ATAQUE '+id,title:'ERROU O ATAQUE',details:'d20 '+die+' + '+a(id)+' = '+total+' vs DEF '+def+' | Sem dano',hit:false},()=>{
+   log('Ataque '+id+': d20('+die+') + '+a(id)+' = '+total+' contra DEF '+def+' → FALHA.');
+  });
+  return;
+ }
+ const notation=$('weapon').value,d=damageRoll(notation),final=d.total+(die===20?2:0);
+ animateAttackDie('attack',die,{label:'ATAQUE '+id,title:(die===20?'ACERTO CRÍTICO':'ACERTO')+' • '+final+' DE DANO',details:'d20 '+die+' + '+a(id)+' = '+total+' vs DEF '+def+' | '+notation+' ['+d.rolls.join(', ')+']'+(die===20?' +2 crítico':'')+' = '+final+' de dano',hit:true},()=>{
+  log('Ataque '+id+': '+die+' + '+a(id)+' = '+total+' vs DEF '+def+' → ACERTO. '+notation+' ['+d.rolls.join(',')+'] '+(die===20?'+ crítico 2':'')+' = '+final+' DANO. '+(final>=6||die===20?'Ferimento grave se alvo for vulnerável.':'')+' Integridade do monstro não implica morte.');
+ });
+}
+function rest(){const ch=c();if(ch.hp===0&&!ch.stabilized){log('Uma pessoa a 0 HP precisa ser estabilizada antes de descansar.');return}ch.sta=maxSTA();ch.hp=lim(ch.hp+2,0,maxHP());ch.est=lim(ch.est-15,0,100);ch.aidUsed=false;if(ch.hp>0){ch.dying=0;ch.stabilized=false}log('8 horas em segurança: +2 HP, STA restaurada, −15 EST. Ferimentos graves permanecem.');render()}
+function downloadData(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const uri=URL.createObjectURL(blob);const link=document.createElement('a');link.href=uri;link.download='slasher-6-ficha.json';link.click();setTimeout(()=>URL.revokeObjectURL(uri),500)}
+function bind(){document.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',()=>show(el.dataset.go)));$('menuBtn').addEventListener('click',()=>$('rail').classList.toggle('open'));$('gmMode').addEventListener('change',e=>{document.body.classList.toggle('gm-on',e.target.checked);if(!e.target.checked&&['gm','r10','r11'].includes(document.querySelector('.panel.active')?.id))show('home')});$('printBtn').addEventListener('click',()=>window.print());for(const [id,key] of [['chName','name'],['chPlayer','player'],['chBond','bond'],['chFear','fear'],['chAnchor','anchor'],['chAge','age'],['chRole','role'],['chTrait','trait'],['chHook','hook'],['woundNotes','woundNotes']]){$(id).addEventListener('input',e=>{c()[key]=e.target.value;persist()})}
+$('chClass').addEventListener('change',e=>{const oldId=c().class,newId=e.target.value;
+ if(!newId){c().class='';render();return}
+ const modified=ATTR.some(([id])=>a(id)!==0)&&!ATTR.every(([id])=>a(id)===(CLASS_PRESETS[newId]||[])[ATTR.findIndex(x=>x[0]===id)]);
+ if(modified&&!confirm('Aplicar a distribuição pré-definida de '+className(newId)+'? Isso altera os atributos atuais, mas preserva os ferimentos.')){e.target.value=oldId;return}
+ c().class=newId;applyClassPreset(newId,false);
+});
+$('applyPresetBtn').addEventListener('click',()=>applyClassPreset(c().class,true));
+$('portraitInput').addEventListener('change',e=>{const file=e.target.files&&e.target.files[0];portraitFromFile(file);e.target.value=''});$('portraitRemoveBtn').addEventListener('click',()=>{c().portrait='';renderPortrait();persist();renderPortraitMessage('Retrato removido da ficha.');});$('randomBtn').addEventListener('click',generateSurvivor);
+$('homeRandomBtn').addEventListener('click',generateSurvivor);
+$('npcRandomBtn').addEventListener('click',addNPC);document.querySelectorAll('[data-adjust]').forEach(el=>el.addEventListener('click',()=>{let [k,n]=el.dataset.adjust.split(':');const max=k==='hp'?maxHP():k==='sta'?maxSTA():100;c()[k]=lim(c()[k]+Number(n),0,max);render()}));for(const [id,key] of [['bleed','bleed'],['stabilized','stabilized'],['hasKit','hasKit']])$(id).addEventListener('change',e=>{c()[key]=e.target.checked;render()});document.querySelectorAll('.wound').forEach(el=>el.addEventListener('change',e=>{c().wounds=e.target.checked?Number(el.dataset.index)+1:Number(el.dataset.index);render()}));$('tickBtn').addEventListener('click',tick);$('stanchBtn').addEventListener('click',()=>treatment('stanch'));$('stabilizeBtn').addEventListener('click',()=>treatment('stabilize'));$('firstAidBtn').addEventListener('click',firstAid);$('testBtn').addEventListener('click',()=>testD20($('rollAttr').value,Number($('rollDT').value),Number($('rollMod').value)));$('attackBtn').addEventListener('click',attack);$('hurtBtn').addEventListener('click',()=>applyDamage($('hurtValue').value,$('hurtType').value,'Dano registrado'));$('breatherBtn').addEventListener('click',()=>{if(c().hp===0||c().wounds>=3){log('Personagem incapacitado: não consegue recuperar STA com essa ação.');return}c().sta=lim(c().sta+3,0,maxSTA());log('Respirou em lugar defensável: +3 STA');render()});$('restBtn').addEventListener('click',rest);document.querySelectorAll('[data-clock]').forEach(el=>el.addEventListener('click',()=>{const [key,n]=el.dataset.clock.split(':');setClock(key,Number(n))}));$('monsterAttackBtn').addEventListener('click',resolveMonster);$('monsterFearBtn').addEventListener('click',monsterFear);$('newSceneBtn').addEventListener('click',()=>{c().aidUsed=false;log('Nova cena: limite de tratamento recuperador renovado.');render()});$('gmNotes').addEventListener('input',e=>{state.gm.notes=e.target.value;persist()});$('exportBtn').addEventListener('click',downloadData);$('resetBtn').addEventListener('click',()=>{if(confirm('Apagar a ficha, os NPCs gerados, os registros e os relógios desta página?')){state=initial();render()}});$('importFile').addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{let p=JSON.parse(reader.result);if(!p||p.v!==1||!p.ch||!p.gm)throw Error('Formato incompatível');state=p;sanitize();render();log('Ficha importada do arquivo.')}catch(err){alert('Arquivo inválido ou versão incompatível.')}e.target.value=''};reader.readAsText(file)});const sel=$('chClass');for(const [id,name] of CLASSES){let opt=document.createElement('option');opt.value=id;opt.textContent=name;sel.append(opt)}sel.insertAdjacentHTML('afterbegin','<option value="">Escolha seu arquétipo</option>');const s=$('rollAttr');for(const [id,name]of ATTR){let opt=document.createElement('option');opt.value=id;opt.textContent=id+' · '+name;s.append(opt)}}
+sanitize();bind();render();const hash=location.hash.slice(1);show(hash==='gm'||hash==='r10'||hash==='r11'?'home':document.getElementById(hash)?.classList.contains('panel')?hash:'home');
+</script></body></html>
