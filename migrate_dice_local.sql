@@ -24,7 +24,7 @@ begin
   v_damage := p_damage_face;
  end if;
  v_natural := p_natural;
- insert into public.rolls(campaign_id,actor_id,character_id,kind,description,natural,modifier,total,damage)
+ insert into public.rolls(campaign_id,actor_id,character_id,kind,description,"natural",modifier,total,damage)
  values(p_campaign_id,auth.uid(),p_character_id,p_kind,left(coalesce(p_description,''),160),v_natural,p_modifier,v_natural+p_modifier,v_damage)
  returning * into v;
  return v;
