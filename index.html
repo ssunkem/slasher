@@ -2,15 +2,43 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#08090b"><meta name="description" content="SLASHER 7.1.2: plataforma de RPG de horror cooperativo em Dunmoore">
-<title>SLASHER 7.1.2 | Dunmoore Horror Story</title>
+<meta name="theme-color" content="#08111a"><meta name="description" content="SLASHER: plataforma de RPG de horror cooperativo em Dunmoore">
+<title>SLASHER | Dunmoore</title>
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="mesa71.css">
+<link rel="stylesheet" href="dunmoore.css">
 </head>
 <body>
+<div class="ambient-scene" aria-hidden="true">
+  <div class="ambient-aurora"></div>
+  <div class="ambient-stars"></div>
+  <div class="ambient-fog f1"></div>
+  <div class="ambient-fog f2"></div>
+  <div class="ambient-fog f3"></div>
+  <svg class="ambient-svg" viewBox="0 0 1600 360" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="mountA" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#17384a"/><stop offset="100%" stop-color="#0a1219"/></linearGradient>
+      <linearGradient id="mountB" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#0e2430"/><stop offset="100%" stop-color="#061017"/></linearGradient>
+      <linearGradient id="pine" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#102f3d"/><stop offset="100%" stop-color="#040a0f"/></linearGradient>
+    </defs>
+    <path d="M0 250 L130 175 L240 218 L392 122 L520 196 L670 116 L820 212 L950 142 L1118 204 L1280 148 L1420 216 L1600 156 L1600 360 L0 360 Z" fill="url(#mountA)" opacity=".82"/>
+    <path d="M0 288 L150 220 L270 252 L420 172 L588 240 L720 188 L884 252 L1020 201 L1170 252 L1320 198 L1454 262 L1600 226 L1600 360 L0 360 Z" fill="url(#mountB)" opacity=".98"/>
+    <g fill="url(#pine)" opacity=".96">
+      <path d="M50 360 l34 -108 28 70 18 -50 28 88 z"/>
+      <path d="M134 360 l44 -136 35 87 22 -62 35 111 z"/>
+      <path d="M241 360 l30 -94 23 58 14 -42 25 78 z"/>
+      <path d="M1290 360 l34 -108 28 70 18 -50 28 88 z"/>
+      <path d="M1382 360 l50 -152 39 95 25 -67 41 124 z"/>
+      <path d="M1496 360 l34 -108 28 70 18 -50 28 88 z"/>
+    </g>
+  </svg>
+  <div class="ambient-vignette"></div>
+</div>
+
 <div id="app"><div class="boot">SLASHER <span>VII</span><small>CARREGANDO ARQUIVOS...</small></div></div>
 <div id="toast" role="status" aria-live="polite"></div>
 <script src="config.js"></script>
+<script src="dice-local.js"></script>
 <script src="mesa71.js"></script>
 <script type="module" src="app.js"></script>
 </body></html>

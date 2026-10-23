@@ -125,3 +125,101 @@ button.m71-target.defeated{opacity:.46;filter:grayscale(.45);cursor:not-allowed}
 .m71-lib-foot>.btn{justify-self:start}
 .m71-lib-foot>.row{display:flex;gap:6px;flex-wrap:wrap}
 .m71-library .m71-help{font-size:12px}
+
+
+/* Twin Peaks / Dunmoore visual revamp */
+.m71-page{color:#edf8fb}
+.m71-panel,.m71-dock,.m71-library details,.m71-library-card,.m71-combatant,.m71-event,.m71-note,.m71-empty-hero{border-color:#345566;background:linear-gradient(160deg,#10202b,#0b141b)}
+.m71-dock-bar{background:linear-gradient(90deg,#132837,#0c151b);border-bottom-color:#3e6474}
+.m71-dock-title>span,.m71-page-title .eyebrow,.m71-lib-head .m71-pill,.m71-portrait-caption,.m71-target.selected .m71-target-label{color:#8ed9ee}
+.m71-dock-tools button,.m71-dock-tools>span,.m71-help,.m71-info,.m71-stock-item small,.m71-bottomline,.m71-event-footer,.m71-target-label{color:#9cb4bf}
+.m71-form h4,.m71-dock-title h3,.m71-page-title h2,.m71-board-head h3,.m71-event h4{color:#eef7fb}
+.m71-item,.m71-stock-item,.m71-library-card,.m71-target-hint{background:#0d1720;border-color:#315062}
+.m71-item-icon,.m71-event-arrow,.m71-no-combat>span{color:#8ed9ee}
+.m71-note{border-left-color:#5fa8c2;background:#0f1d27}
+.m71-target-prompt{color:#cfe5ed}
+button.m71-target:not(:disabled):hover{border-color:#83cde3;background:#132532}
+button.m71-target.selected,button.m71-target.selected:hover{border:2px solid #8ed9ee;background:linear-gradient(110deg,#163243,#0e1b25);box-shadow:0 0 0 2px #8ed9ee22,0 0 18px #8ed9ee28}
+button.m71-target.selected:before{background:#8ed9ee}
+.m71-target-hint.ready{border-color:#5fa8c2;color:#def5fb;background:#132734}
+.m71-form button[data-m71-attack-submit]:disabled{background:#21333e;color:#9db0b9;border-color:#375666}
+.m71-stock-buy>b,.m71-floating{color:#d7bf8a;text-shadow:0 0 18px #d7bf8a55}
+.m71-event.impact{animation:m71-event-hit-cold .65s ease}
+@keyframes m71-event-hit-cold{0%{box-shadow:inset 0 0 0 2px #8ed9ee,0 0 24px #8ed9ee66;transform:translateX(-5px)}40%{transform:translateX(4px)}100%{box-shadow:none;transform:none}}
+.m71-library summary:focus-visible{outline:2px solid #8ed9ee}
+
+
+/* ═══ DUNMOORE • COLD THEME POLISH / MARKET & ALERTS ═══ */
+/* The interface is blue ice. Red is reserved for critical danger, HP damage and errors. */
+:root{--warning-red:#f17889;--warning-bg:#351a26;--ice-edge:#4e8397;--ice-strong:#a5dbe8}
+.m71-page{--m71-ink:#08131b;--m71-panel:#10212b;--m71-line:#31596a;--m71-red:#99daee}
+.m71-dock.dragging{opacity:.48}
+.m71-dock.drop-target{border-color:#9bd7e7!important;box-shadow:0 0 0 2px #7accdf55!important}
+.m71-page-title select{border-color:#45788b!important;color:#e8f5fb!important}
+.m71-evidence{border-left-color:#365f70!important;background:radial-gradient(ellipse at 50% 55%,#387e9a25,transparent 64%)!important}
+.m71-evidence-symbol{color:#94d7e8!important;text-shadow:0 0 40px #8ed9ee44!important}
+.m71-evidence-bottom{border-top-color:#416d80!important;color:#82a8b9!important}
+.m71-page .m71-form{border-color:#315263!important}
+.m71-page .m71-form label{color:#bbd3de!important}
+.m71-page .m71-form h4{color:#edf8fc!important}
+.m71-page .m71-item-copy small,.m71-page .m71-stock-item small{color:#9ebbc8!important}
+.m71-page .m71-portrait.monster{background:linear-gradient(145deg,#254759,#0c1b25)!important;border-color:#578ba1!important}
+.m71-page .m71-portrait.hero{background:linear-gradient(145deg,#2a5265,#0a1721)!important;border-color:#6595aa!important}
+.m71-page .m71-pill:not(.dangerous){border-color:#456f80!important;background:#112935!important;color:#badce9!important}
+.m71-page .m71-pill.closed{border-color:#405a68!important;background:#111e28!important;color:#809dab!important}
+.m71-page .m71-pill.dangerous{border-color:#a74760!important;background:var(--warning-bg)!important;color:#ffb2be!important}
+.m71-page .m71-error,.error{border-color:#b95a70!important;color:#ffc3cc!important;background:#331b27!important}
+.m71-page .m71-event.hit .eyebrow,.m71-page .m71-event.hit .m71-floating{color:#ff899d!important}
+.m71-page .m71-event.impact{animation:m71-danger-flash .62s ease!important}
+@keyframes m71-danger-flash{0%{box-shadow:inset 0 0 0 2px #d35168,0 0 28px #da385888;transform:translateX(-4px)}40%{transform:translateX(4px)}100%{box-shadow:none;transform:none}}
+.m71-page .m71-floating{color:#ff91a0!important;text-shadow:0 0 14px #dc4a67!important}
+.m71-page button.m71-target:focus-visible{outline-color:#a5e3f3!important}
+.m71-page .m71-target-label,.m71-page .m71-target-prompt{color:#a9c7d5!important}
+.m71-page button.m71-target:not(:disabled):hover{background:#173140!important}
+.m71-page .m71-target-hint.ready{background:#1b3b4b!important;border-color:#70b9d0!important;color:#e2f8fe!important}
+.m71-page .m71-library details{border-color:#396374!important;background:#0c1d27!important}
+.m71-page .m71-library summary{color:#e9f6fb!important}
+.m71-page .m71-library summary:focus-visible{outline-color:#9bdae9!important}
+.m71-page .m71-library-card{border-color:#355d6f!important;background:linear-gradient(155deg,#122631,#0c1b24)!important}
+.m71-page .m71-library-card p{color:#b9cfda!important}
+.m71-page .m71-lib-head h4{color:#f2fbff!important}
+.m71-page .m71-lib-foot>small{color:#a0bcc9!important}
+.m71-page .m71-event,.m71-page .m71-item,.m71-page .m71-combatant{border-color:#375b6c!important;background:#0e202a!important}
+.m71-page .m71-note{background:#0d2330!important;border-left-color:#80c9df!important}
+.m71-page .m71-note p{color:#b8d5e0!important}
+/* Shop layout: entire product uses full card width, no squashed title or overflowing buttons. */
+.m71-shop-title{gap:12px;flex-wrap:wrap;border-bottom-color:#335566!important}
+.m71-shop-title>span:first-child{min-width:0;overflow-wrap:anywhere}
+.m71-stock{display:grid;gap:12px;margin-top:14px}
+.m71-page .m71-stock-item{
+ display:grid;grid-template-columns:minmax(0,1fr);gap:12px;
+ padding:15px 16px;margin:0;align-items:stretch;
+ border:1px solid #355e70!important;border-radius:11px;
+ background:linear-gradient(140deg,#102531,#0b1c26)!important;
+ box-shadow:inset 0 1px 0 #d6f6ff0b;
+}
+.m71-stock-head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:10px}
+.m71-stock-copy{display:grid;gap:5px;min-width:0;align-content:start}
+.m71-stock-copy>b{font:600 15px/1.35 system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:0;color:#edf8fc;overflow-wrap:anywhere}
+.m71-stock-type{font:600 10px/1.45 ui-monospace,Consolas,monospace!important;letter-spacing:.06em;text-transform:uppercase;color:#8faeba!important;overflow-wrap:anywhere}
+.m71-stock-description{font:400 12px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;color:#bad2dc!important;overflow-wrap:anywhere}
+.m71-stock-price{display:inline-flex;align-items:baseline;justify-content:flex-end;gap:4px;white-space:nowrap;color:#d2edf4;background:#183644;border:1px solid #426a7b;padding:7px 10px;border-radius:8px;min-width:69px;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums;line-height:1.1}
+.m71-stock-price .m71-currency{font:600 12px system-ui,-apple-system,"Segoe UI",sans-serif;opacity:.7;color:#a6d8e6}
+.m71-stock-price strong{font:700 17px/1.1 system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:-.03em;color:#e9f9ff}
+.m71-stock-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-start;align-items:center;border-top:1px solid #29495b;padding-top:11px}
+.m71-stock-actions>.btn{flex:0 0 auto;min-width:100px;justify-content:center}
+.m71-page .m71-stock-actions .btn.red{background:linear-gradient(180deg,#a1ddec,#79bdd2)!important;color:#091823!important;border-color:#b3e6f2!important;box-shadow:none}
+.m71-page .m71-stock-actions .btn.flat{background:#11232d!important;border-color:#41697a!important;color:#b9d5e0!important}
+.m71-stock-actions .m71-remove-stock{min-width:94px}
+.m71-stock-actions .m71-remove-stock span{font-size:11px}
+.m71-stock-muted{font:400 11px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;color:#8ba7b4}
+.m71-page .m71-shop-title{border-color:#335566!important}
+@media(max-width:580px){
+ .m71-page .m71-stock-item{padding:13px;gap:10px}
+ .m71-stock-head{gap:7px}
+ .m71-stock-price{padding:6px 8px;min-width:58px}
+ .m71-stock-price strong{font-size:16px}
+ .m71-stock-copy>b{font-size:14px}
+ .m71-stock-actions>.btn{flex:1 1 110px}
+}
+@media(prefers-reduced-motion:reduce){.m71-page .m71-event.impact{animation:none!important}}

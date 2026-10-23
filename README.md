@@ -1,17 +1,17 @@
 <div align="center">
 
-# 🔪 SLASHER 7.1.2
+# 🔪 SLASHER
 
-### DUNMOORE HORROR STORY
+### DUNMOORE · MAINE
 
 **O que a cidade enterrou ainda sabe o seu nome.**
 
 *Um RPG de investigação e survival horror. Agora, com a mesa conectada.*
 
-![Versão](https://img.shields.io/badge/vers%C3%A3o-7.1-9d2639?style=for-the-badge&labelColor=111115)
-![Status](https://img.shields.io/badge/status-MVP%20experimental-702431?style=for-the-badge&labelColor=111115)
-![Tecnologias](https://img.shields.io/badge/HTML%20%2B%20CSS%20%2B%20JS-frontend-9d2639?style=for-the-badge&labelColor=111115)
-![Backend](https://img.shields.io/badge/Supabase-multiplayer-702431?style=for-the-badge&labelColor=111115)
+![Versão](https://img.shields.io/badge/edi%C3%A7%C3%A3o-VII-70b9d0?style=for-the-badge&labelColor=10212d)
+![Status](https://img.shields.io/badge/status-MVP%20experimental-476c80?style=for-the-badge&labelColor=10212d)
+![Tecnologias](https://img.shields.io/badge/HTML%20%2B%20CSS%20%2B%20JS-frontend-70b9d0?style=for-the-badge&labelColor=10212d)
+![Backend](https://img.shields.io/badge/Supabase-multiplayer-476c80?style=for-the-badge&labelColor=10212d)
 
 **[Conheça o projeto](#sobre-o-slasher) · [Funcionalidades](#o-que-já-existe) · [Como executar](#como-executar) · [Multiplayer](#ativando-o-multiplayer) · [Roadmap](#o-que-vem-depois)**
 
@@ -25,7 +25,7 @@
 
 ## Sobre o SLASHER
 
-**SLASHER 7.1.2: Dunmoore Horror Story** é uma plataforma web para jogar um RPG de **horror, investigação e sobrevivência**. Aqui, monstros não são sacos de pontos de vida, ferimentos deixam marcas e descobrir a verdade costuma ser mais importante do que vencer uma luta.
+**SLASHER** é uma plataforma web para jogar um RPG de **horror, investigação e sobrevivência**. Aqui, monstros não são sacos de pontos de vida, ferimentos deixam marcas e descobrir a verdade costuma ser mais importante do que vencer uma luta.
 
 A versão 7.1 leva o sistema para uma mesa digital: jogadores acompanham seus sobreviventes enquanto o mestre organiza a campanha, administra recursos, registra acontecimentos e conduz o terror de Dunmoore.
 
@@ -43,7 +43,22 @@ A proposta é simples: **facilitar a vida de quem narra sem tirar dos jogadores 
 <p align="center"><img src="assets/preview-mobile.png" alt="Interface responsiva do SLASHER 7.1 no celular" width="350"></p>
 </details>
 
-*As capturas mostram o modo de demonstração. A aparência é a mesma no modo conectado.*
+*As capturas existentes mostram a interface anterior. A nova identidade usa azul-gelo, montanhas, pinheiros e névoa animada. Confira `SLASHER_Dunmoore_Demo_Local.html` para visualizar o novo tema.*
+
+## Nova identidade e dados locais (edição VII)
+
+O nome do produto agora aparece simplesmente como **SLASHER**. A edição é informada discretamente em **algarismos romanos** no rodapé. A estética visual é inspirada na atmosfera de Dunmoore: **preto azulado, azul-gelo, montanhas, pinheiros e camadas de névoa**. O destaque vermelho fica reservado a alertas, e as animações respeitam `prefers-reduced-motion`.
+
+O D20 e o dado de dano são sorteados **imediatamente no navegador** usando `crypto.getRandomValues`, sem aguardar a resposta do Supabase para exibir o dado. Os resultados são enviados ao banco em segundo plano. O servidor ainda valida as permissões, o equipamento equipado, a defesa e o HP antes de registrar um ataque e alterar a ficha. Se a sincronização falhar, a interface informa que o dado **não foi registrado**.
+
+### Ativar as rolagens locais no multiplayer
+
+1. Abra [`migrate_dice_local.sql`](migrate_dice_local.sql), clique em **Raw** e copie o conteúdo.
+2. No projeto Supabase já configurado, entre em **SQL Editor → New query** e execute o script. **Não apague nem refaça `schema.sql`**.
+3. Recarregue o site com `Ctrl + F5`, abra a Mesa Atual e teste uma rolagem. Depois teste um combate com duas contas reais.
+
+> [!CAUTION]
+> O navegador é uma origem **não confiável** para resultados aleatórios: um usuário técnico pode manipulá-los. O banco confere números válidos e autorização, mas **não pode provar que o D20 foi sorteado honestamente**. Use este modo para mesas privadas e confiáveis. Para mesas públicas/competitivas, mantenha rolagens autoritativas no servidor ou implemente outra forma auditável de sorteio. A migração preserva as funções antigas para compatibilidade.
 
 ## Catálogo inicial e criação de monstros (7.1.2)
 
@@ -68,7 +83,7 @@ A página **Mesa Atual** é a central jogável do SLASHER, inspirada em painéis
 - **Retrato em destaque:** vida, stamina, estresse, efeitos e item equipado; o mestre pode alternar também entre fichas de NPCs e criaturas.
 - **Docks personalizados:** inventário, rolagem rápida, combate, loja, log de ataques e notas. Arraste os painéis no desktop ou use as setas; recolha os que não precisa. A ordem é salva no navegador por usuário e campanha.
 - **Inventário com armas reais:** o mestre concede uma arma e informa o dado de dano. O jogador a equipa e o ataque utiliza esse dado automaticamente.
-- **Combate compartilhado:** o mestre abre o combate. Ações usam D20 no servidor, conferem defesa e aplicam o dano ao HP correto. O histórico mostra atacante, alvo, foto, defesa, acerto e **barra animada com HP antes e depois**.
+- **Combate compartilhado:** o mestre abre o combate. O navegador sorteia D20 e dado de dano; o servidor recebe os resultados e confere arma, defesa, permissão e HP antes de aplicar o golpe. O histórico mostra atacante, alvo, foto, defesa, acerto e **barra animada com HP antes e depois**.
 - **Monstros persistentes:** cada criatura tem HP, defesa e dado de ataque próprio, armazenados no Supabase.
 - **Loja da cena:** o mestre cadastra itens, preços e estoque, e decide quando abrir. Compras verificam permissões, saldo e estoque no banco.
 
@@ -85,7 +100,7 @@ A página **Mesa Atual** é a central jogável do SLASHER, inspirada em painéis
 
 **Conta de jogador:** a entrada rápida por username permanece disponível, desde que **Anonymous Sign-Ins** esteja habilitado em Authentication no Supabase. A identidade pertence à sessão do navegador, não apenas ao apelido.
 
-**Teste sem banco:** abra [`SLASHER_7_1_Demo.html`](SLASHER_7_1_Demo.html). A demo funciona sem conta nem servidor e já vem com duas criaturas, uma arma e uma pequena loja de exemplo. O banco online não é modificado pelo modo demo.
+**Teste sem banco:** abra [`SLASHER_Dunmoore_Demo_Local.html`](SLASHER_7_1_Demo.html). A demo funciona sem conta nem servidor e já vem com duas criaturas, uma arma e uma pequena loja de exemplo. O banco online não é modificado pelo modo demo.
 
 ## O que já existe
 
@@ -104,7 +119,7 @@ A página **Mesa Atual** é a central jogável do SLASHER, inspirada em painéis
 
 ### Sobre o combate
 
-O SLASHER foi pensado para que **fugir, investigar, preparar uma armadilha ou encontrar um esconderijo** sejam escolhas tão importantes quanto atacar. A edição 7.0 aproveita as regras do SLASHER 6.0 e inclui um manual na própria aplicação.
+O SLASHER foi pensado para que **fugir, investigar, preparar uma armadilha ou encontrar um esconderijo** sejam escolhas tão importantes quanto atacar. A edição VII aproveita as regras do SLASHER 6.0 e inclui um manual na própria aplicação.
 
 ## Como executar
 
@@ -112,7 +127,7 @@ Você não precisa instalar React, Node.js ou dependências de build.
 
 ### 1. Testar a demonstração
 
-Baixe o repositório e abra **`SLASHER_7_1_Demo.html`** no navegador. Esse arquivo é independente e funciona sem Supabase.
+Baixe o repositório e abra **`SLASHER_Dunmoore_Demo_Local.html`** no navegador. Esse arquivo é independente e funciona sem Supabase.
 
 Para servir a aplicação principal localmente, na raiz do projeto execute:
 
@@ -171,6 +186,10 @@ SLASHER-7.0/
 ├── config.js                  # Configuração pública do Supabase
 ├── schema.sql                 # Estrutura e permissões base do banco
 ├── migrate_7_1.sql           # Migração aditiva para a Mesa Atual
+├── migrate_dice_local.sql     # Funções para rolagens locais com validação
+├── dice-local.js             # Sorteio do D20 e dados no navegador
+├── dunmoore.css              # Tema glacial, paisagem e microanimações
+├── SLASHER_Dunmoore_Demo_Local.html # Preview sem servidor
 ├── CATALOGO_DUNMOORE.md      # Referências da novelização, monstros, armas e itens
 ├── SLASHER_7_1_Demo.html      # Demonstração independente
 ├── manual-6.html              # Manual completo da edição anterior
@@ -217,7 +236,7 @@ Ideias, relatos de bugs e sugestões de mecânicas são bem-vindos pelas **Issue
 
 <div align="center">
 
-### SLASHER 7.1 · DUNMOORE HORROR STORY
+### SLASHER · DUNMOORE
 
 *Você não precisa derrotar o monstro.*  
 **Precisa sobreviver tempo suficiente para descobrir quem o deixou entrar.**
