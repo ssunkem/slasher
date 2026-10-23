@@ -107,3 +107,21 @@ button.m71-target.defeated{opacity:.46;filter:grayscale(.45);cursor:not-allowed}
 .m71-form button[data-m71-attack-submit]:disabled{background:#30242a;color:#b5a7aa;border-color:#53424a;cursor:not-allowed;opacity:.72;box-shadow:none}
 @media(max-width:600px){.m71-target-heading{align-items:start;flex-direction:column}.m71-target-label{font-size:9px}}
 @media(prefers-reduced-motion:reduce){button.m71-combatant.m71-target{transition:none}button.m71-target:not(:disabled):hover{transform:none}}
+
+/* SLASHER 7.1.2 · Catálogo inicial, exclusivo do mestre */
+.m71-library{display:grid;gap:15px}
+.m71-library details{border:1px solid #49303a;background:linear-gradient(130deg,#141116,#101013);border-radius:11px;overflow:hidden}
+.m71-library summary{cursor:pointer;padding:15px 17px;font:600 16px Georgia;color:#f5e5e8;list-style-position:inside}
+.m71-library summary:focus-visible{outline:2px solid #dc4358;outline-offset:-3px}
+.m71-library details>p,.m71-library details>.m71-inline-buttons{margin:0 14px 13px}
+.m71-library-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:10px;padding:0 13px 14px}
+.m71-library-card{background:#0b0b0e;border:1px solid #3a3035;border-radius:9px;padding:13px;display:grid;align-content:start;gap:9px;min-width:0}
+.m71-library-card p{font-size:12px;line-height:1.6;color:#c5b7bc}
+.m71-lib-head{display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:8px}
+.m71-lib-head h4{font:600 16px/1.25 Georgia;margin:5px 0 0;color:#f7e7e9}
+.m71-lib-head .m71-pill{font:600 10px/1.4 ui-monospace,Consolas,monospace;white-space:nowrap}
+.m71-lib-foot{margin-top:auto;display:grid;gap:8px}
+.m71-lib-foot>small{color:#a8a0a5;font-size:11px}
+.m71-lib-foot>.btn{justify-self:start}
+.m71-lib-foot>.row{display:flex;gap:6px;flex-wrap:wrap}
+.m71-library .m71-help{font-size:12px}

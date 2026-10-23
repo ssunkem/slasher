@@ -45,3 +45,11 @@ Após executar `migrate_7_1.sql`, atualize o site via `Ctrl + F5`.
 - Dados antigos como itens de texto da 7.0 são exibidos no inventário, mas não viram armas automaticamente. Conceda uma versão com dado de dano no painel da 7.1 para permitir ataques automáticos.
 - Retratos existentes dos jogadores e NPCs aparecem na nova mesa. Monstros criados pela versão inicial usam um ícone até receberem suporte de imagem específico.
 - A demo usa os dados locais e **não é multiplayer**. A migração SQL e a autorização real ainda precisam ser testadas no seu projeto Supabase.
+
+## Regressão 7.1.2 · Monstros e catálogo inicial
+
+Execute `node tests/catalogo-dunmoore.cjs`, além de `node tests/formularios-mesa71.cjs`.
+
+O novo teste simula o evento real do formulário **Criar monstro**, o botão **Invocar** de um modelo do catálogo, a entrega de arma/item, o cadastramento do modelo na loja, o abastecimento de estoque sem duplicações e a ocultação do catálogo para jogadores. Também valida o HTML do formulário que estava com uma aspa faltando.
+
+**Roteiro Supabase real:** como mestre, escolha uma campanha existente, invoque um Escavado pelo novo catálogo e confirme que aparece no combate; selecione um sobrevivente e entregue uma Lanterna; use o botão de abastecimento da loja, abra a loja no painel do mestre e confirme o estoque com uma conta de jogador. O patch reaproveita as funções SQL da 7.1, não sendo necessário rodar migrações adicionais.

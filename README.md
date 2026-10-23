@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🔪 SLASHER 7.1
+# 🔪 SLASHER 7.1.2
 
 ### DUNMOORE HORROR STORY
 
@@ -25,7 +25,7 @@
 
 ## Sobre o SLASHER
 
-**SLASHER 7.1: Dunmoore Horror Story** é uma plataforma web para jogar um RPG de **horror, investigação e sobrevivência**. Aqui, monstros não são sacos de pontos de vida, ferimentos deixam marcas e descobrir a verdade costuma ser mais importante do que vencer uma luta.
+**SLASHER 7.1.2: Dunmoore Horror Story** é uma plataforma web para jogar um RPG de **horror, investigação e sobrevivência**. Aqui, monstros não são sacos de pontos de vida, ferimentos deixam marcas e descobrir a verdade costuma ser mais importante do que vencer uma luta.
 
 A versão 7.1 leva o sistema para uma mesa digital: jogadores acompanham seus sobreviventes enquanto o mestre organiza a campanha, administra recursos, registra acontecimentos e conduz o terror de Dunmoore.
 
@@ -44,6 +44,16 @@ A proposta é simples: **facilitar a vida de quem narra sem tirar dos jogadores 
 </details>
 
 *As capturas mostram o modo de demonstração. A aparência é a mesma no modo conectado.*
+
+## Catálogo inicial e criação de monstros (7.1.2)
+
+A Mesa Atual ganhou o dock **Catálogo de Dunmoore**, com **7 modelos de criaturas, 9 armas e 14 itens**. O mestre pode invocar uma criatura, entregar equipamentos ao sobrevivente selecionado, cadastrar produtos individuais na loja ou abastecê-la com um kit inicial em um clique. Tudo sem precisar digitar nome e dano a cada sessão.
+
+O formulário **Criar monstro** também foi corrigido: faltava uma aspa no atributo `data-mesa-form`, impedindo a ação de ser reconhecida. O cadastro manual continua disponível.
+
+Os objetos e ameaças usam como referência a novelização do projeto, renomeada para **O Rei Oculto** e ambientada em **Dunmoore**. Estatísticas, preços e nomes de oponentes são adaptações de gameplay; consulte [CATALOGO_DUNMOORE.md](CATALOGO_DUNMOORE.md) para origem e descrições. Nenhuma criatura é revelada aos jogadores ao abrir a campanha: o mestre escolhe quando invocar.
+
+**Não há SQL novo nesta atualização.** Execute `migrate_7_1.sql` apenas se ainda não tiver instalado a Mesa Atual no Supabase.
 
 ## Correção de formulários da Mesa Atual (7.1.1)
 
@@ -161,6 +171,7 @@ SLASHER-7.0/
 ├── config.js                  # Configuração pública do Supabase
 ├── schema.sql                 # Estrutura e permissões base do banco
 ├── migrate_7_1.sql           # Migração aditiva para a Mesa Atual
+├── CATALOGO_DUNMOORE.md      # Referências da novelização, monstros, armas e itens
 ├── SLASHER_7_1_Demo.html      # Demonstração independente
 ├── manual-6.html              # Manual completo da edição anterior
 ├── assets/
@@ -182,6 +193,8 @@ SLASHER-7.0/
 - [x] Monstros persistentes com HP, defesa e ataque
 - [x] Loja, equipamentos e combate com dano automático
 - [x] Mesa Atual com docks rearranjáveis
+- [x] Catálogo mestre com criaturas, armas e itens iniciais
+- [x] Criação personalizada de monstros corrigida
 - [ ] Perseguições e efeitos sobrenaturais avançados
 - [ ] Mensagens privadas e manifestações sobrenaturais na interface
 - [ ] Catálogo reutilizável de itens e habilidades por campanha
