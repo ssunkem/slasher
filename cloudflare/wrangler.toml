@@ -1,0 +1,15 @@
+name = "slasher-p2p"
+main = "src/worker.js"
+compatibility_date = "2026-10-23"
+workers_dev = true
+
+[vars]
+ALLOWED_ORIGINS = "https://ssunkem.github.io,http://localhost:8787,http://127.0.0.1:8787"
+
+[[durable_objects.bindings]]
+name = "ROOMS"
+class_name = "SlasherRoom"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["SlasherRoom"]

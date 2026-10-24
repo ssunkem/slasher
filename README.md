@@ -21,7 +21,7 @@ RPG digital de **survival horror, investigação e mistério**. Menus inspirados
 
 ## ⌁ O que mudou?
 
-O **SLASHER 10.1 (P2P experimental)** funciona por padrão **sem Supabase**. O site é estático no GitHub Pages, mas as fichas, rolagens e alterações da sessão são sincronizadas via **WebRTC DataChannels**. O navegador do **mestre** é o host e mantém os dados oficiais da campanha.
+O **SLASHER 10.2 (P2P + Cloudflare opcional)** funciona por padrão **sem Supabase**. O site é estático no GitHub Pages, mas as fichas, rolagens e alterações da sessão são sincronizadas via **WebRTC DataChannels**. O navegador do **mestre** é o host e mantém os dados oficiais da campanha.
 
 - **Mestre:** cria ou abre uma campanha local, oferece conexões e mantém sua aba aberta.
 - **Jogadores:** abrem o mesmo endereço, escolhem "Entrar na mesa do mestre" e participam sem criar contas.
@@ -30,40 +30,86 @@ O **SLASHER 10.1 (P2P experimental)** funciona por padrão **sem Supabase**. O s
 - **Persistência:** a campanha fica no navegador do host, com opção de exportar/importar um arquivo JSON de backup.
 
 > [!IMPORTANT]
-> **É um beta P2P com diagnóstico de conexão.** A conexão foi testada com um transporte WebRTC simulado e com a interface mestre/jogador no navegador. Ainda falta validar ICE/NAT com duas redes reais. Alguns roteadores ou operadoras precisam de retransmissão TURN, que não está configurada nesta versão. O modo P2P não garante conexão em qualquer rede.
+> **É um beta P2P; sala curta e TURN exigem implantação própria do Cloudflare Worker.** A conexão foi testada com um transporte WebRTC simulado e com a interface mestre/jogador no navegador. Ainda falta validar ICE/NAT com duas redes reais. Alguns roteadores ou operadoras precisam de retransmissão TURN, que não está configurada nesta versão. O modo P2P não garante conexão em qualquer rede.
 
 
 > **10.1.3: Conexões manuais não usam TTL de convite.** O navegador tenta ICE enquanto o código de resposta ainda está sendo copiado. Antes de o mestre colar a resposta, `checking` ou até um `failed` precoce **não prova que o convite expirou**. O SLASHER agora mostra *Aguardando o mestre* durante essa etapa e ignora erros de convites antigos. O aviso de **45 segundos começa somente depois que o mestre aplica a resposta**. Se der falha após completar a troca, crie dois códigos novos.
 
 ## 🔪 Jogar P2P
 
-Não há SQL, conta, token, `config.js` ou instalação de Supabase.
+O SLASHER usa WebRTC e **não precisa de Supabase**. O conteúdo da campanha fica no navegador do mestre. Quando o Worker Cloudflare estiver configurado, os jogadores entram com apenas **nove caracteres** (exemplo fictício `KD4RX8M2N`). Os detalhes de oferta/resposta e candidatos ICE são transmitidos automaticamente por um canal de sinalização.
 
-### No computador do mestre
+### Mestre
 
-1. Abra **[ssunkem.github.io/slasher](https://ssunkem.github.io/slasher/)** e escolha **Hospedar como mestre**.
-2. Abra uma campanha existente ou clique em **Criar campanha**. Os arquivos ficam salvos neste dispositivo.
-3. Na barra lateral, entre em **Sala P2P → Gerar convite para jogador**.
-4. Copie o código longo do convite e envie **somente à pessoa que quer convidar**.
-5. Quando o jogador enviar a resposta, cole-a em **Resposta** e clique em **Concluir conexão**.
-6. Para adicionar outra pessoa, gere um novo convite. Não feche a aba do mestre durante a sessão.
+1. Abra [SLASHER](https://ssunkem.github.io/slasher/), clique em **Hospedar como mestre**, crie ou abra uma campanha.
+2. Na **Sala P2P**, clique em **Abrir sala com código curto**.
+3. Envie o código de nove caracteres para os participantes. A sala aceita até seis jogadores nesta primeira implementação.
+4. Mantenha a aba aberta. Faça backup da campanha no menu **Campanhas**.
 
-### No navegador do jogador
+### Jogadores
 
-1. Abra o **mesmo endereço** e escolha **Entrar na mesa do mestre**.
-2. Informe seu apelido, cole o código recebido do mestre e clique em **Gerar resposta de conexão**.
-3. Envie a resposta ao mestre. Assim que ele concluir a conexão, a **Mesa Atual** abre automaticamente.
-4. Crie seu sobrevivente. O mestre pode acompanhar sua ficha, controlar monstros, itens e loja.
+1. Abrem o mesmo link, escolhem **Entrar na mesa do mestre** e informam apelido e código curto.
+2. O navegador troca automaticamente os detalhes WebRTC. Se a conexão direta não funcionar e TURN estiver habilitado, o relay pode ser utilizado.
+3. A ficha e as ações são transmitidas ao host por um **WebRTC DataChannel**; o Worker não recebe fichas ou notas da campanha.
 
-> A troca manual de dois códigos é a **sinalização** do WebRTC. Um código simples de sala ou convite em um clique exigiria um serviço de sinalização (mesmo que pequeno). Servidores **STUN públicos** são utilizados apenas para descobrir rotas de conexão; os dados da sessão não são enviados ao Supabase. Em redes que não permitem conexão direta, seria necessário um serviço **TURN**.
+**Antes de implantar a Cloudflare**, o modo manual continua em **Conexão avançada / código manual**. É a mesma troca longa de convite/resposta que já tínhamos.
+
+## ☁️ Ativar Cloudflare (uma vez, pelo dono do site)
+
+> Sem a conta Cloudflare configurada, a opção de código curto permanece desativada. **Publicar o código no GitHub não implanta o Worker automaticamente.** Não coloque tokens secretos no GitHub nem no JavaScript público.
+
+### 1. Criar e implantar o Worker
+
+Crie uma conta no [Cloudflare Dashboard](https://dash.cloudflare.com/). Entre na pasta `cloudflare/` do projeto e execute:
+
+```bash
+npm install
+npx wrangler login
+npx wrangler deploy
+```
+
+Este projeto usa um **Worker + Durable Object com armazenamento SQLite**, compatível com o plano gratuito do Workers. O Durable Object segura conexões WebSocket para repassar ofertas, respostas e candidatos ICE. **Não armazena dados da campanha**. O `wrangler.toml` já restringe as origens ao GitHub Pages do SLASHER e aos endereços locais de desenvolvimento.
+
+Ao final do deploy, copie a URL pública `https://slasher-p2p.<seu-subdominio>.workers.dev`.
+
+### 2. Habilitar TURN para redes difíceis
+
+No painel Cloudflare, acesse **Realtime → TURN**, crie uma **TURN Key** e obtenha o **TURN Key ID** e o **API Token** da chave. Eles são **segredos permanentes**, não credenciais para enviar aos jogadores.
+
+Na pasta `cloudflare/`, salve-os como *secrets* do Worker:
+
+```bash
+npx wrangler secret put TURN_KEY_ID
+npx wrangler secret put TURN_API_TOKEN
+```
+
+Cole cada valor quando o terminal solicitar. O Worker pedirá credenciais ICE **temporárias** à API oficial da Cloudflare. As credenciais de curta duração serão entregues apenas a navegadores conectados a uma sala ativa, com um token de sessão efêmero.
+
+> A Cloudflare anuncia uma franquia mensal compartilhada de **1.000 GB** de Realtime (TURN/SFU), com cobrança a partir do excedente. Confira a franquia, os preços e os avisos de uso no painel antes de colocar o Worker em produção. Workers e Durable Objects têm limites próprios.
+
+### 3. Apontar o GitHub Pages para o Worker
+
+Edite **`signal-config.js`** na raiz do projeto e coloque somente a **URL pública do Worker**:
+
+```js
+window.SLASHER_SIGNAL_URL = 'https://slasher-p2p.SEUSUBDOMINIO.workers.dev';
+```
+
+Faça commit dessa alteração. A partir daí, **Hospedar** e **Entrar** mostram o fluxo de código curto. Não há SQL, Supabase ou servidor próprio para administrar fichas.
+
+### 4. Validar
+
+Teste duas janelas independentes e, depois, PC + celular com configurações normais de privacidade. No diagnóstico ICE, uma rota `relay` significa que candidatos TURN foram oferecidos; conexão `connected` e `DataChannel: open` confirmam que a mesa realmente conectou. O Worker tem a rota pública `/health` para verificar se o serviço e o TURN estão configurados.
+
+**Restrições atuais:** sem reconexão de identidade persistente; o código da sala é um convite com acesso à sessão (não publique); máximo de seis jogadores; sem áudio/vídeo e sem banco de dados da campanha na Cloudflare. O host precisa continuar online. O código curto não garante conexão se a Cloudflare não estiver disponível.
 
 ## 🧰 Conexão não abriu?
 
-O **SLASHER 10.1.3** mostra as rotas ICE encontradas, o estado da negociação e falhas de conexão. Se o código de convite não tiver nenhuma rota WebRTC, ele avisa imediatamente em vez de deixar o jogador aguardando para sempre.
+O **SLASHER 10.2** mostra as rotas ICE encontradas, o estado da negociação e falhas de conexão. Se o código de convite não tiver nenhuma rota WebRTC, ele avisa imediatamente em vez de deixar o jogador aguardando para sempre.
 
 1. Teste primeiro com **PC e celular no mesmo Wi-Fi**, sem rede de convidados nem isolamento de dispositivos.
 2. Desligue temporariamente VPN, bloqueios de WebRTC e conexões de dados móveis no celular.
-3. Faça a troca **completa**: convite do mestre → resposta do jogador → mestre clica em **Concluir conexão**.
+3. Se o Worker estiver configurado, entre usando o código curto. Caso contrário, faça a troca manual completa: convite → resposta → aceitação.
 4. Mantenha ambas as abas abertas; não recarregue após gerar os códigos.
 5. Se aparecer **0 rotas** ou ICE **failed**, tente outro navegador ou rede. Algumas combinações de NAT/CGNAT precisam de um servidor TURN e não podem ser resolvidas apenas com código no GitHub Pages.
 
@@ -127,7 +173,7 @@ python -m http.server 8000
 
 O comando acima serve apenas para desenvolvimento local. No GitHub Pages, não é necessário operar um servidor de aplicação; o navegador do mestre é o host da sessão. O uso normal exige navegadores com WebRTC, uma conexão HTTPS (como GitHub Pages) e conectividade P2P entre os participantes.
 
-**Limites atuais:** convite por troca manual de códigos, dependência de STUN público para conexão na internet, ausência de TURN, host sempre presente, sem autenticação persistente de identidade e sem testes de carga entre muitas pessoas. Compartilhe convites apenas com participantes de confiança. Conexões WebRTC podem expor endereços de rede entre os participantes.
+**Limites atuais:** código curto exige implantação do Worker Cloudflare; TURN exige criação de chave e credenciais; host sempre presente, sem identidade persistente dos jogadores e sem testes de carga entre muitas pessoas. Compartilhe convites apenas com participantes de confiança. Conexões WebRTC podem expor endereços de rede entre os participantes.
 
 ## 🎛️ Configurações
 
@@ -148,12 +194,14 @@ Há testes da geração de dados, catálogo, formulários, controles CRT/SFX e f
 | Arquivo | Função |
 | :-- | :-- |
 | `index.html` | Entrada do aplicativo no GitHub Pages |
-| `p2p.js` | Transporte WebRTC e sinalização por código |
+| `p2p.js` | Transporte WebRTC e sinalização automática/manual |
+| `signal-config.js` | URL **pública** do Cloudflare Worker; sem segredos |
+| `cloudflare/` | Worker + Durable Object para código curto e TURN temporário |
 | `app.js`, `mesa71.js` | Regras e interface de mesa |
 | `crt.js`, `crt.css` | Monitor CRT e efeitos |
 | `sfx.js`, `sfx.css` | Sons sintetizados |
 | `settings-page.js`, `settings.css` | Aba Configurações |
-| `SLASHER_P2P_Preview_Local.html` | Demo P2P em HTML único, sem arquivos externos |
+| `SLASHER_P2P_Preview_Local.html` | Demo local da interface P2P; integração curta depende de Worker |
 | `SLASHER_Demo_Offline.html` | Demonstração individual anterior |
 | `install.sql`, `schema.sql` | Arquivos históricos opcionais da integração Supabase; **não necessários para o P2P** |
 
@@ -174,4 +222,4 @@ Há testes da geração de dados, catálogo, formulários, controles CRT/SFX e f
 
 ### Diagnóstico ICE 10.1.3
 
-A Sala P2P agora informa separadamente ICE, estado da conexão e do DataChannel, e lista apenas os **tipos** de candidatos locais e remotos (`host`, `srflx`, `relay`, mDNS), sem expor endereços IP. Isso ajuda a distinguir falhas de sinalização e bloqueios de rede, mas não dispensa TURN quando necessário.
+A Sala P2P informa separadamente ICE, estado da conexão e do DataChannel, e lista apenas os **tipos** de candidatos locais e remotos (`host`, `srflx`, `relay`, mDNS), sem expor endereços IP. Isso ajuda a distinguir falhas de sinalização e bloqueios de rede, mas não dispensa TURN quando necessário.

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#030409"><meta name="description" content="SLASHER: RPG de survival horror multiplayer com interface CRT, inventário e combate online." >
-<title>SLASHER | P2P 10.1.1</title>
-<style>
+<title>SLASHER | P2P & Cloudflare Preview</title>
+<style data-origin="styles.css">
 :root{--bg:#08111a;--bg2:#0d1823;--bg3:#11212c;--bg4:#162c39;--line:#294454;--red:#8ed9ee;--red2:#5fa8c2;--text:#edf8fb;--muted:#98afbb;--dim:#68808c;--good:#93ccb8;--warn:#d7bf8a;--radius:11px;--shadow:0 18px 45px #0008}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:20;background:repeating-linear-gradient(0deg,transparent 0,transparent 3px,#fff1 4px);opacity:.08}button,input,textarea,select{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.5}a{color:inherit}::selection{background:#d53c5470}h1,h2,h3,h4,p{margin:0}h1,h2,h3,.wordmark,.display,.number{font-family:Georgia,"Times New Roman",serif}h1{font-size:clamp(38px,5vw,78px);letter-spacing:.05em;line-height:.98}h2{font-size:30px;font-weight:500;letter-spacing:.01em}h3{font-size:21px;font-weight:500}p{line-height:1.7}small,.muted{color:var(--muted)}.eyebrow{text-transform:uppercase;letter-spacing:.2em;color:var(--red);font-size:10px;font-weight:800}.lead{max-width:690px;font-size:15px;color:#bfb9bb}.mono{font-family:ui-monospace,Consolas,monospace;font-variant-numeric:tabular-nums}.accent{color:var(--red)}.tiny{font-size:11px}.text-right{text-align:right}.nowrap{white-space:nowrap}.hidden{display:none!important}
 button,.btn{background:var(--bg3);border:1px solid #393036;border-radius:7px;color:var(--text);padding:10px 14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:680;text-decoration:none;transition:.15s;line-height:1.2;min-height:39px}button:hover:not(:disabled),.btn:hover{border-color:#b73e52;background:#242026}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--red);outline-offset:3px}.btn.red{background:var(--red2);border-color:var(--red);color:white}.btn.red:hover{background:#c33146}.btn.soft{background:#291419;border-color:#612532;color:#efb0b9}.btn.flat{background:transparent;border-color:var(--line)}.btn.ghost{border:0;background:transparent;color:var(--muted);padding:8px}.btn.small{padding:6px 9px;min-height:30px;font-size:12px}.btn.wide{width:100%}.btn.negative{color:#ee9da7}.chip,.tag{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:99px;padding:4px 9px;color:var(--muted);font-size:11px;line-height:1.2}.chip.red{border-color:#722836;color:#ff8799;background:#280f14}.chip.good{color:var(--good);border-color:#315043}.live-dot{width:6px;height:6px;background:var(--good);border-radius:50%;box-shadow:0 0 10px #80b9a066;display:inline-block}.sep{border:0;border-top:1px solid var(--line);margin:20px 0}.empty{border:1px dashed #40373d;padding:34px 25px;text-align:center;border-radius:12px;color:var(--muted);background:#101014}.empty b{display:block;color:var(--text);margin-bottom:6px}.hint{font-size:12px;color:var(--muted)}.error{border:1px solid #7f3340;color:#ffb6be;padding:12px;border-radius:9px;background:#2b1118}
@@ -65,7 +65,7 @@ input::placeholder,textarea::placeholder{color:#6f8693}
 .result-damage{color:#d7bf8a}
 
 </style>
-<style>
+<style data-origin="mesa71.css">
 /* SLASHER 7.1 · Mesa Atual · aparência de arquivo de horror interativo */
 .m71-page{--m71-ink:#08090c;--m71-panel:#111114;--m71-line:#39262d;--m71-red:#ca3449;display:grid;gap:21px;min-width:0}
 .m71-page *{min-width:0}
@@ -293,7 +293,7 @@ button.m71-target.selected:before{background:#8ed9ee}
 @media(prefers-reduced-motion:reduce){.m71-page .m71-event.impact{animation:none!important}}
 
 </style>
-<style>
+<style data-origin="dunmoore.css">
 /* Silent Hill inspired visual identity + UX pass */
 /* Survival-horror menu pass inspired by early-2000s psychological horror inventory UIs */
 :root{
@@ -498,7 +498,7 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 
 </style>
-<style>
+<style data-origin="p2p.css">
 /* SLASHER / P2P room UX. Does not modify CRT/SFX settings. */
 .ambient-scene { position:fixed!important; inset:0!important; height:100vh!important; width:100%!important; min-height:0!important; margin:0!important; pointer-events:none!important; }
 #app { position:relative; z-index:2; }
@@ -520,8 +520,23 @@ textarea[name="offer"]:focus-visible,
 body .login-hero { overflow:hidden!important; }
 body .ambient-scene { overflow:hidden!important; }
 
+/* Diagnóstico de conexão P2P para mestre e jogador */
+.p2p-diagnostic{border:1px solid #38577e;padding:12px 14px;background:rgba(9,19,34,.75);font-size:14px;line-height:1.5;color:#dce8fa;overflow-wrap:anywhere}
+.p2p-diagnostic strong{display:block;font-weight:600;margin-bottom:3px;color:#b3d0ff}
+.p2p-diagnostic small{display:block;font:11px/1.5 ui-monospace,monospace;color:#8e9fb9;margin-top:5px}
+.p2p-diagnostic-error{border-color:#9a3547;background:rgba(42,10,17,.82);color:#f6c6ce}
+.p2p-diagnostic-error strong{color:#f8afbb}
+
+/* Cloudflare short-code joining */
+.p2p-short-field{font:600 clamp(24px,4vw,34px)/1.25 Georgia,serif!important;letter-spacing:.16em!important;text-align:center;max-width:100%;color:#b4ffba!important;background:#050a0a!important;border:1px solid #316647!important;text-transform:uppercase!important;padding:13px!important}
+.p2p-short-invite{padding:18px;display:grid;gap:11px;border:1px solid #36644a;background:rgba(3,18,12,.5);text-align:center}
+.p2p-legacy{border-top:1px solid #28436a;padding-top:12px;margin-top:14px}
+.p2p-legacy summary{cursor:pointer;color:#b8c3d8;padding:10px 0;font-size:14px}
+.p2p-legacy form{display:grid;gap:12px;margin-top:14px}
+.p2p-legacy textarea{font-family:ui-monospace,monospace;font-size:11px;word-break:break-all}
+
 </style>
-<style>
+<style data-origin="crt.css">
 /* SLASHER CRT / subtle scanlines, phosphor, and analog display finish.
    Entirely visual: never filters or degrades actual game text/images. */
 body::before { opacity: 0 !important; } /* disable original unconfigurable scanlines */
@@ -653,7 +668,7 @@ html:not([data-crt='off']) .crt-led {
 @media print{.crt-fx-panel{display:none!important}}
 
 </style>
-<style>
+<style data-origin="sfx.css">
 /* SLASHER / UI Audio controls, beside the CRT presets. */
 .crt-control #slasher-audio-toggle,
 .crt-control #slasher-audio-toggle:hover:not(:disabled){min-width:62px!important;min-height:42px!important;padding:9px!important}
@@ -681,7 +696,7 @@ html:not([data-crt='off']) .crt-led {
 @media print{.sfx-panel,#slasher-audio-toggle{display:none!important}}
 
 </style>
-<style>
+<style data-origin="settings.css">
 /* The System Options page has its own layout, not a floating CRT/SFX menu. */
 .settings-page{--opt-line:rgba(70,92,164,.64);--opt-ink:#e9ebef;--opt-muted:#a0a8b8;color:var(--opt-ink);max-width:1240px;margin:0 auto 60px;font-family:Georgia,'Times New Roman',serif;position:relative}
 .settings-page *{box-sizing:border-box}
@@ -766,35 +781,6 @@ html:not([data-crt='off']) .crt-led {
 @media(prefers-reduced-motion:reduce){.settings-blink,.settings-audio-signal i{animation:none!important}.settings-switch:before,.settings-mode{transition:none!important}}
 @media print{.settings-page{color:#111}.settings-chapters,.settings-guest-head{display:none}}
 
-
-/* SLASHER / P2P room UX. Does not modify CRT/SFX settings. */
-.ambient-scene { position:fixed!important; inset:0!important; height:100vh!important; width:100%!important; min-height:0!important; margin:0!important; pointer-events:none!important; }
-#app { position:relative; z-index:2; }
-.login-shell { min-height:100vh; }
-#p2p-offer-code,#p2p-response-code,#p2p-answer,textarea[name="offer"] {
-  width:100%; font:12px/1.55 ui-monospace,Consolas,"Courier New",monospace!important;
-  overflow-wrap:anywhere; word-break:break-all; resize:vertical; min-height:106px;
-  color:#dbe4fb!important; border-color:rgba(80,109,188,.7)!important;
-}
-button[data-action^="p2p-"]:focus-visible,
-#p2p-backup-file:focus-visible,
-textarea[name="offer"]:focus-visible,
-#p2p-response-code:focus-visible { outline:2px solid #76baff; outline-offset:3px; }
-.login-card .panel.stack p.hint { line-height:1.55; }
-@media(max-width:760px) {
-  #p2p-offer-code,#p2p-response-code,#p2p-answer,textarea[name="offer"] { min-height:96px; font-size:11px!important; }
-}
-/* Keep the oversized archival numeral inside the hero; no blank scroll area beneath the screen. */
-body .login-hero { overflow:hidden!important; }
-body .ambient-scene { overflow:hidden!important; }
-
-/* Diagnóstico de conexão P2P para mestre e jogador */
-.p2p-diagnostic{border:1px solid #38577e;padding:12px 14px;background:rgba(9,19,34,.75);font-size:14px;line-height:1.5;color:#dce8fa;overflow-wrap:anywhere}
-.p2p-diagnostic strong{display:block;font-weight:600;margin-bottom:3px;color:#b3d0ff}
-.p2p-diagnostic small{display:block;font:11px/1.5 ui-monospace,monospace;color:#8e9fb9;margin-top:5px}
-.p2p-diagnostic-error{border-color:#9a3547;background:rgba(42,10,17,.82);color:#f6c6ce}
-.p2p-diagnostic-error strong{color:#f8afbb}
-
 </style>
 </head>
 <body>
@@ -829,7 +815,12 @@ body .ambient-scene { overflow:hidden!important; }
 
 <div id="app"><div class="boot">SLASHER <span>X</span><small>ESTABELECENDO SISTEMA P2P...</small></div></div>
 <div id="toast" role="status" aria-live="polite"></div>
-<script>
+<scriptNone data-origin="signal-config.js">
+/* Preencha só com a URL PUBLICA do Worker após deploy. Não coloque token aqui. */
+window.SLASHER_SIGNAL_URL = "";
+
+</script>
+<scriptNone data-origin="p2p.js">
 /* SLASHER P2P: manual WebRTC signaling, host authoritative game session.
    No Supabase / centralized signaling. Public STUN only, TURN not included.
    The host must keep this browser tab open. */
@@ -842,8 +833,23 @@ body .ambient-scene { overflow:hidden!important; }
  const NO_ROUTE='O navegador não encontrou rotas WebRTC. Confira se PC e celular estão na mesma rede Wi-Fi, sem VPN, e tente novamente. Em algumas redes é necessário um servidor TURN.';
  const hasRoute=sdp=>/^a=candidate:/m.test(String(sdp||''));
  const routeCount=sdp=>(String(sdp||'').match(/^a=candidate:/gm)||[]).length;
- let diagnostic={phase:'idle',message:'Pronto para negociar a conexão.',candidateCount:0,ice:'new',connection:'new'};
- const report=(phase,message,who)=>{diagnostic={phase,message,candidateCount:who?.candidateCount??diagnostic.candidateCount,ice:who?.pc?.iceConnectionState||diagnostic.ice,connection:who?.pc?.connectionState||diagnostic.connection};callbacks.status?.({...diagnostic})};
+ // Contagem por tipo, sem revelar IP privado, mDNS ou endereco publico.
+ const routeTypes=sdp=>{
+  const groups={host:0,srflx:0,relay:0,prflx:0}, lines=String(sdp||'').split(/\r?\n/).filter(x=>x.startsWith('a=candidate:'));
+  let mdns=0;
+  for(const line of lines){const type=line.match(/\btyp (host|srflx|relay|prflx)\b/);if(type)groups[type[1]]++;if(/\.local(?:\s|$)/.test(line))mdns++;}
+  const parts=Object.entries(groups).filter(([,n])=>n).map(([type,n])=>type+':'+n);
+  return parts.length?parts.join(', ')+(mdns?' (mDNS:'+mdns+')':''):'nenhuma';
+ };
+ let diagnostic={phase:'idle',message:'Pronto para negociar a conexão.',candidateCount:0,ice:'new',connection:'new',channel:'novo',localRoutes:'nenhuma',remoteRoutes:'nenhuma'};
+ const report=(phase,message,who)=>{diagnostic={phase,message,
+  candidateCount:who?.candidateCount??diagnostic.candidateCount,
+  ice:who?.pc?.iceConnectionState||diagnostic.ice,
+  connection:who?.pc?.connectionState||diagnostic.connection,
+  channel:who?who.dc?.readyState||'não criado':diagnostic.channel,
+  localRoutes:who?.pc?routeTypes(who.pc.localDescription?.sdp):diagnostic.localRoutes,
+  remoteRoutes:who?.pc?routeTypes(who.pc.remoteDescription?.sdp):diagnostic.remoteRoutes
+ };callbacks.status?.({...diagnostic})};
  const pending=new Map(),live=new Map(),pendingRPC=new Map(),pieces=new Map();
  // Uma negociação manual pode aguardar o usuário copiar/colar a resposta.
  // Um ICE 'failed' antes da aplicação da resposta não equivale a convite expirado.
@@ -976,11 +982,120 @@ body .ambient-scene { overflow:hidden!important; }
  function close(){for(const who of [...pending.values(),...live.values(),client].filter(Boolean))retire(who);
   pending.clear();live.clear();client=null;report('idle','Sala desconectada.');for(const [id,p] of pendingRPC){clearTimeout(p.timer);p.reject(Error('Mesa encerrada'));pendingRPC.delete(id)}
  }
- window.SLASHER_P2P={hostOffer,joinOffer,acceptAnswer,snapshot,call,close,on:(type,cb)=>callbacks[type]=cb,peers:()=>Array.from(live.values()).map(w=>({id:w.id,nick:w.nick,state:w.dc?.readyState})),isClientReady:()=>!!client?.id,diagnostics:()=>({...diagnostic,hostPeers:live.size,pendingOffers:pending.size,clientReady:!!client?.id})};
+ // Cloudflare-assisted signaling: short invite codes; old manual mode remains available.
+ // The Worker forwards *only* SDP/ICE. Campaign state always stays in DataChannel.
+ const signalingBase=()=>String(window.SLASHER_SIGNAL_URL||'').trim().replace(/\/+$/,'');
+ const hasSignaling=()=>/^https:\/\//.test(signalingBase()) || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(signalingBase());
+ let signalRoom=null,signalSocket=null,signalIce=[...ICE.iceServers],signalRole=null;
+ const emit=(message)=>{if(!signalSocket||signalSocket.readyState!==WebSocket.OPEN)throw Error('Sinalização Cloudflare desconectada');signalSocket.send(JSON.stringify(message))};
+ const endpoint=(path)=>signalingBase()+path;
+ async function jsonRequest(path,options={}){
+  const response=await fetch(endpoint(path),{...options,headers:{'content-type':'application/json',...(options.headers||{})}});
+  let data;try{data=await response.json()}catch{data={error:'Resposta inválida da Cloudflare'}}
+  if(!response.ok)throw Error(data.error||'Falha no serviço de conexão');return data;
+ }
+ function socketReady(code,role,token){return new Promise((resolve,reject)=>{
+  const url=new URL(endpoint('/v1/rooms/'+code+'/ws'));url.protocol=url.protocol==='https:'?'wss:':'ws:';
+  url.searchParams.set('role',role);if(token)url.searchParams.set('token',token);
+  const ws=new WebSocket(url);ws._slasherQueued=[];ws._slasherActive=false;let complete=false;
+  const timeout=setTimeout(()=>{if(!complete){complete=true;ws.close();reject(Error('Cloudflare não respondeu em 12 segundos'))}},12000);
+  ws.onmessage=e=>{
+   let msg;try{msg=JSON.parse(e.data)}catch{return}
+   if(msg.type==='ready'&&!complete){complete=true;clearTimeout(timeout);resolve({ws,code,role,auth:msg.auth,peerId:msg.peerId});return}
+   if(complete){if(!ws._slasherActive)ws._slasherQueued.push(msg);else Promise.resolve(onSignalMessage(msg)).catch(err=>report('error',err.message||'Falha no WebRTC'));}
+  };
+  ws.onerror=()=>{if(!complete){complete=true;clearTimeout(timeout);reject(Error('Não foi possível abrir a sala Cloudflare'))}};
+  ws.onclose=()=>{if(!complete){complete=true;clearTimeout(timeout);reject(Error('Sala inexistente, cheia ou mestre indisponível'))}else if(signalSocket===ws){signalSocket=null;report('error','A sala de sinalização foi desconectada. Será necessário entrar novamente.')}};
+ })}
+ async function iceCredentials(code,auth){
+  try{const response=await jsonRequest('/v1/rooms/'+code+'/ice',{method:'POST',headers:{authorization:'Bearer '+auth}});return response.iceServers?.length?response:({iceServers:[...ICE.iceServers],turn:false})}
+  catch(err){console.warn('SLASHER Cloudflare TURN indisponível:',err.message);return {iceServers:[...ICE.iceServers],turn:false}}
+ }
+ function candidates(who){
+  who.pc.onicecandidate=e=>{if(!who.closed&&e.candidate&&signalSocket?.readyState===WebSocket.OPEN){try{emit({type:'candidate',to:who.role==='host'?who.key:'host',candidate:e.candidate.toJSON()})}catch{}}};
+ }
+ async function remoteCandidate(who,candidate){
+  if(!who||who.closed||!candidate)return;
+  if(!who.pc.remoteDescription){(who.pendingCandidates??=[]).push(candidate);return}
+  try{await who.pc.addIceCandidate(candidate)}catch(err){console.warn('SLASHER ICE:',err.message)}
+ }
+ async function flushCandidates(who){for(const ice of who.pendingCandidates||[])await remoteCandidate(who,ice);who.pendingCandidates=[]}
+ async function startHostPeer(peerId){
+  if(live.has(peerId)||pending.has(peerId))return;
+  const pc=new RTCPeerConnection({iceServers:signalIce}),dc=pc.createDataChannel('slasher-sync',{ordered:true});
+  const who={key:peerId,pc,dc,role:'host',id:null,nick:null,stage:'checking',closed:false,pendingCandidates:[],restarts:0};
+  pending.set(peerId,who);listen(dc,who);watch(pc,who);candidates(who);
+  dc.onopen=()=>{who.stage='connected';clearTimeout(who.connectionTimer);report('connected','Jogador conectado via Cloudflare / WebRTC!',who)};
+  pc.addEventListener('iceconnectionstatechange',()=>{
+   if(pc.iceConnectionState==='failed'&&who.restarts<2&&!who.closed){who.restarts++;setTimeout(()=>makeHostOffer(who,true).catch(console.error),500*who.restarts)}
+  });
+  await makeHostOffer(who,false);
+ }
+ async function makeHostOffer(who,restart){
+  if(who.closed)return;
+  const offer=await who.pc.createOffer(restart?{iceRestart:true}:{});
+  await who.pc.setLocalDescription(offer);
+  emit({type:'offer',to:who.key,description:{type:'offer',sdp:who.pc.localDescription.sdp}});
+  report('connecting',restart?'Reiniciando ICE automaticamente...':'Convite curto aceito. Negociando com o jogador...',who);
+ }
+ async function onSignalMessage(msg){
+  if(msg.type==='peer-joined'&&signalRole==='host')return startHostPeer(msg.peerId);
+  if(msg.type==='peer-left'&&signalRole==='host'){
+   const who=pending.get(msg.peerId)||live.get(msg.peerId);retire(who);pending.delete(msg.peerId);live.delete(msg.peerId);callbacks.disconnected?.(who||{role:'host'});return;
+  }
+  if(signalRole==='host'){
+   const who=pending.get(msg.from)||live.get(msg.from);if(!who)return;
+   if(msg.type==='answer'){await who.pc.setRemoteDescription(msg.description);await flushCandidates(who)}
+   else if(msg.type==='candidate')await remoteCandidate(who,msg.candidate);
+   return;
+  }
+  if(signalRole==='guest'&&client){
+   const who=client;
+   if(msg.type==='offer'){
+    await who.pc.setRemoteDescription(msg.description);await flushCandidates(who);
+    const answer=await who.pc.createAnswer();await who.pc.setLocalDescription(answer);
+    emit({type:'answer',to:'host',description:{type:'answer',sdp:who.pc.localDescription.sdp}});
+    report('connecting','Resposta enviada automaticamente. Estabelecendo canal...',who);
+   }else if(msg.type==='candidate')await remoteCandidate(who,msg.candidate)
+  }
+ }
+ async function activateSocket(ws){ws._slasherActive=true;for(const message of ws._slasherQueued.splice(0))await onSignalMessage(message)}
+ async function createRoom(){
+  if(!hasSignaling())throw Error('Cloudflare ainda não configurada. Use o convite manual ou configure signal-config.js.');
+  if(signalSocket)signalSocket.close();signalSocket=null;
+  const created=await jsonRequest('/v1/rooms',{method:'POST',body:'{}'});
+  const ready=await socketReady(created.code,'host',created.hostToken);
+  signalSocket=ready.ws;signalRole='host';signalRoom=created.code;
+  const credentials=await iceCredentials(created.code,ready.auth);signalIce=credentials.iceServers;
+  await activateSocket(ready.ws);
+  report('offer','Sala '+created.code+' aberta. Compartilhe apenas este código. '+(credentials.turn?'TURN disponível.':'TURN ainda indisponível: conexão direta apenas.'));
+  return {code:created.code,turn:credentials.turn};
+ }
+ async function joinRoom(code,nick){
+  if(!hasSignaling())throw Error('Cloudflare ainda não configurada.');
+  const room=String(code||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+  if(!/^[A-HJ-NP-Z2-9]{9}$/.test(room))throw Error('Código inválido: digite os nove caracteres da sala.');
+  if(signalSocket)signalSocket.close();signalSocket=null;retire(client);client=null;
+  const ready=await socketReady(room,'guest',null);
+  signalSocket=ready.ws;signalRoom=room;signalRole='guest';
+  const credentials=await iceCredentials(room,ready.auth);signalIce=credentials.iceServers;
+  const pc=new RTCPeerConnection({iceServers:signalIce});
+  const who={key:'client-'+room,pc,dc:null,role:'client',stage:'checking',id:null,nick:String(nick||'Sobrevivente').trim().slice(0,32),closed:false,pendingCandidates:[],restarts:0};
+  client=who;watch(pc,who);candidates(who);
+  pc.ondatachannel=e=>{who.dc=e.channel;listen(who.dc,who);who.dc.onopen=()=>{who.stage='connected';report('connected','Canal aberto. Confirmando identidade com o mestre...',who);transmit(who.dc,{type:'hello',nick:who.nick})}};
+  await activateSocket(ready.ws);
+  report('connecting','Sala encontrada. Aguardando conexão com o mestre... '+(credentials.turn?'TURN pronto.':'Sem relay TURN configurado.'),who);
+  return {code:room,turn:credentials.turn};
+ }
+ const originalClose=close;
+ function closeAll(){if(signalSocket){const ws=signalSocket;signalSocket=null;ws.close()}signalRoom=null;signalRole=null;originalClose()}
+ const roomStatus=()=>({enabled:hasSignaling(),code:signalRoom,role:signalRole,active:signalSocket?.readyState===WebSocket.OPEN});
+
+ window.SLASHER_P2P={hostOffer,joinOffer,acceptAnswer,createRoom,joinRoom,roomStatus,hasSignaling,snapshot,call,close:closeAll,on:(type,cb)=>callbacks[type]=cb,peers:()=>Array.from(live.values()).map(w=>({id:w.id,nick:w.nick,state:w.dc?.readyState})),isClientReady:()=>!!client?.id,diagnostics:()=>({...diagnostic,hostPeers:live.size,pendingOffers:pending.size,clientReady:!!client?.id})};
 })();
 
 </script>
-<script>
+<scriptNone data-origin="crt.js">
 /* SLASHER CRT / display effects, persisted locally. Events survive page rerenders. */
 (function(){
  'use strict';
@@ -1032,8 +1147,9 @@ body .ambient-scene { overflow:hidden!important; }
  document.addEventListener('input',e=>{for(const key of Object.keys(FX_KEYS))if(e.target.id==='slasher-fx-'+key)setFx(key,e.target.value)});
  window.SLASHER_CRT={set:mode=>{if(ORDER.includes(mode))apply(mode,true)},get:()=>document.documentElement.dataset.crt,effects:()=>({...fxState}),setFx,sync:()=>apply(document.documentElement.dataset.crt)};
 })();
+
 </script>
-<script>
+<scriptNone data-origin="sfx.js">
 /* SLASHER / UI AUDIO: original procedural retro/lo-fi sounds.
    No samples, no autoplay, no external files. All notes start on user gesture. */
 (function(){
@@ -1192,8 +1308,9 @@ body .ambient-scene { overflow:hidden!important; }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});else setup();
  window.SLASHER_SFX={play,get:()=>({...setting}),setEnabled:v=>{setting.enabled=Boolean(v);persist();applyUi()},setVolume:v=>{setting.volume=clamp(v);persist();applyUi()},sync:applyUi};
 })();
+
 </script>
-<script>
+<scriptNone data-origin="settings-page.js">
 /* SLASHER | Options / system settings: one page for video and audio preferences. */
 (function(){
  'use strict';
@@ -1229,8 +1346,9 @@ body .ambient-scene { overflow:hidden!important; }
  }
  window.SLASHER_SETTINGS={render};
 })();
+
 </script>
-<script>
+<scriptNone data-origin="dice-local.js">
 /* SLASHER / dados locais; resultado rápido com envio assíncrono ao Supabase.
  * Uma rolagem feita no cliente NÃO é verificável como aleatória por terceiros.
  * O servidor ainda valida permissões, arma, alvo e regras de dano. */
@@ -1245,8 +1363,9 @@ function face(sides){
 function build(p){const natural=face(20),sides=Number(p.damage_sides||0),damage=p.kind!=='test'&&sides>0?face(sides):0;return {natural,damage,modifier:Number(p.modifier||0),total:natural+Number(p.modifier||0)}}
 window.SLASHER_DICE={face,build};
 })();
+
 </script>
-<script>
+<scriptNone data-origin="mesa71.js">
 /* SLASHER · Dunmoore · Mesa Atual
    Complemento sem build. A autorização real é validada nas funções SQL. */
 (function(){
@@ -1529,8 +1648,9 @@ function animateCounters(){document.querySelectorAll('[data-m71-from][data-m71-t
 function attachDrag(s){animateCounters();const board=document.getElementById('m71-board');if(!board||board.dataset.init)return;board.dataset.init='1';let dragged=null;board.addEventListener('dragstart',e=>{const el=e.target.closest('.m71-dock');if(!el)return;dragged=el.dataset.dock;el.classList.add('dragging');e.dataTransfer?.setData('text/plain',dragged);if(e.dataTransfer)e.dataTransfer.effectAllowed='move'});board.addEventListener('dragover',e=>{if(!dragged)return;e.preventDefault();const target=e.target.closest('.m71-dock');if(target&&target.dataset.dock!==dragged)target.classList.add('drop-target')});board.addEventListener('dragleave',e=>{e.target.closest('.m71-dock')?.classList.remove('drop-target')});board.addEventListener('drop',e=>{e.preventDefault();const t=e.target.closest('.m71-dock');if(!t||!dragged)return;const l=getLayout(s),from=l.order.indexOf(dragged),to=l.order.indexOf(t.dataset.dock);if(from>=0&&to>=0&&from!==to){l.order.splice(to,0,l.order.splice(from,1)[0]);setLayout(s,l)}dragged=null;document.querySelectorAll('.m71-dock').forEach(el=>el.classList.remove('drop-target','dragging'));s._mesaRender?.()});board.addEventListener('dragend',()=>{dragged=null;document.querySelectorAll('.m71-dock').forEach(el=>el.classList.remove('drop-target','dragging'))})}
 window.SLASHER71={load,render,action,submit,focusChanged:onFocus,attachDrag,roleGM,remote:(s,op,args,id)=>demoRpc({...s,user:{id},gmPreview:false},op,args)};
 })();
+
 </script>
-<script>
+<script type="module" data-origin="app.js">
 // SLASHER | Dunmoore | frontend modular sem build step
 'use strict';
 const $=s=>document.querySelector(s);
@@ -1632,7 +1752,9 @@ const api=ONLINE?new SupaAPI():new DemoAPI();
 const P2P=window.SLASHER_P2P||{on(){},peers(){return []},snapshot(){},call(){return Promise.reject(Error('WebRTC indisponível'))}};
 let p2pOffer='',p2pAnswer='',p2pWait='',p2pNickname='';
 
-function p2pDiagnostics(){const d=P2P.diagnostics?.()||{};return `<div class="p2p-diagnostic ${d.phase==='error'?'p2p-diagnostic-error':''}" id="p2p-diagnostic" role="status" aria-live="polite"><strong>Estado da conexão:</strong> ${esc(d.message||'Aguardando...')}<small>Rotas: ${Number(d.candidateCount)||0} · ICE: ${esc(d.ice||'new')} · Canal: ${esc(d.connection||'new')}</small></div>`}
+function p2pDiagDetails(d){return '<small>Rotas locais: '+(Number(d.candidateCount)||0)+' · ICE: '+esc(d.ice||'new')+' · Conexão: '+esc(d.connection||'new')+' · DataChannel: '+esc(d.channel||'novo')+'</small>'+
+ '<small>Candidatos locais: '+esc(d.localRoutes||'nenhuma')+' · Remotos: '+esc(d.remoteRoutes||'nenhuma')+'</small>'}
+function p2pDiagnostics(){const d=P2P.diagnostics?.()||{};return `<div class="p2p-diagnostic ${d.phase==='error'?'p2p-diagnostic-error':''}" id="p2p-diagnostic" role="status" aria-live="polite"><strong>Estado da conexão:</strong> ${esc(d.message||'Aguardando...')}${p2pDiagDetails(d)}</div>`}
 
 // ---- Interface ----
 function updateConnectionStatus(){const el=$('#connection');if(el)el.innerHTML=state.mode==='p2p-host'?'<span class="chip good">P2P / MESTRE</span>':state.mode==='p2p-client'?`<span class="chip ${state.connection==='live'?'good':'red'}">P2P / ${state.connection==='live'?'CONECTADO':'DESCONECTADO'}</span>`:state.mode==='demo'?'<span class="chip red">DEMONSTRAÇÃO LOCAL</span>':`<span class="chip ${state.connection==='live'?'good':'red'}"><span class="live-dot"></span>${esc(state.connection==='live'?'AO VIVO':state.connection.toUpperCase())}</span>`}
@@ -1642,9 +1764,10 @@ function oldRenderLogin(){return `<div class="login-shell"><section class="login
  state.authTab==='quick'?`<form id="quick-auth-form"><label class="field">Nome de usuário<input name="nickname" autocomplete="nickname" minlength="2" maxlength="32" required placeholder="Seu nome na mesa"></label><button type="submit" class="btn red wide">Entrar em Dunmoore ↗</button></form><div class="onboarding">Este acesso cria uma sessão única no navegador. Se você sair ou apagar os dados do site, não será possível recuperar as fichas digitando apenas o mesmo nome.</div><button type="button" class="btn flat wide" data-action="auth-tab" data-value="login">Já tenho conta com e-mail</button>`:`<div class="login-switch"><button class="${state.authTab==='login'?'active':''}" data-action="auth-tab" data-value="login">Entrar</button><button class="${state.authTab==='register'?'active':''}" data-action="auth-tab" data-value="register">Criar conta</button></div><form id="auth-form"><label class="field">E-mail<input name="email" type="email" autocomplete="email" required placeholder="voce@email.com"></label><label class="field">Senha<input name="password" type="password" autocomplete="${state.authTab==='register'?'new-password':'current-password'}" required minlength="6" placeholder="Mínimo de 6 caracteres"></label><button class="btn red wide" type="submit">${state.authTab==='register'?'Criar conta':'Acessar campanhas'} ↗</button></form><button type="button" class="btn flat wide" data-action="auth-tab" data-value="quick">← Entrar sem e-mail</button><div class="onboarding">${state.authTab==='register'?'Dependendo da configuração do Supabase, você receberá um e-mail de confirmação.':'Use seu e-mail cadastrado. Cada pessoa recebe permissões próprias na campanha.'}</div>`}
  <div class="settings-login-access"><button type="button" class="btn flat" data-action="go" data-value="settings">⚙ Configurações de imagem e áudio</button></div></div></section></div>`}
 
-function renderP2PLanding(){return `<div class="login-shell"><section class="login-hero"><div class="hero-content"><div class="eyebrow">DUNMOORE / MAINE / ARQUIVO Nº X</div><div class="hero-line"></div><div class="hero-title">SLASHER</div><div class="hero-sub">DUNMOORE</div><p class="lead">O mestre abre a porta. O restante da mesa decide se entra.</p><div class="row" style="margin-top:24px"><span class="chip">P2P / WEBRTC</span><span class="chip">SEM SUPABASE</span><span class="chip">EDIÇÃO X</span></div></div><div class="hero-foot">EDIÇÃO X. · O QUE A MONTANHA ENGOLIU AINDA ESTÁ ESCUTANDO.</div></section><section class="login-side"><div class="login-card"><div class="eyebrow">REDE LOCAL / SESSÃO PRIVADA</div><h2>Escolha como entrar.</h2><p class="lead">O mestre hospeda os arquivos no próprio navegador. Jogadores se conectam diretamente, sem cadastro e sem banco remoto.</p><div class="panel stack" style="margin-top:22px"><button class="btn red wide" data-action="p2p-host">✝ Hospedar como mestre ↗</button><button class="btn flat wide" data-action="p2p-join">⌁ Entrar na mesa do mestre</button><p class="hint">Conexão inicial por troca de códigos. Sem TTL no convite, mas conclua a troca rapidamente. WebRTC exige que a rede permita uma rota direta.</p><p class="hint">O mestre deve manter a aba aberta. Salve backups da campanha no computador.</p></div><div class="settings-login-access"><button type="button" class="btn flat" data-action="go" data-value="settings">⚙ Configurações de imagem e áudio</button></div></div></section></div>`}
-function renderP2PJoin(){return `<div class="login-shell"><section class="login-hero"><div class="hero-content"><div class="eyebrow">CONEXÃO DIRETA / SOBREVIVENTE</div><div class="hero-line"></div><div class="hero-title">SLASHER</div><div class="hero-sub">P2P / JOGADOR</div><p class="lead">Peça um convite ao mestre, envie sua resposta e mantenha esta aba aberta. Não há TTL no convite, mas um ICE failed antes da confirmação ainda pode acontecer.</p></div></section><section class="login-side"><div class="login-card"><div class="eyebrow">WEBRTC / SINALIZAÇÃO MANUAL</div><h2>Entrar na mesa</h2><form id="p2p-join-form"><label class="field">Como você quer ser chamado?<input name="nick" required minlength="2" maxlength="32" value="${esc(p2pNickname)}" placeholder="Seu apelido"></label><label class="field">Convite enviado pelo mestre<textarea name="offer" rows="5" required placeholder="Cole aqui o código longo gerado pelo mestre"></textarea></label><button type="submit" class="btn red wide">Gerar resposta de conexão ↗</button></form>${p2pDiagnostics()}${p2pAnswer?`<div class="panel stack" style="margin-top:16px"><label class="field">Sua resposta: copie e mande ao mestre<textarea rows="5" readonly id="p2p-answer">${esc(p2pAnswer)}</textarea></label><button class="btn flat wide" data-action="p2p-copy" data-target="p2p-answer">Copiar resposta</button><p class="hint">${esc(p2pWait||'Aguardando o mestre aplicar a resposta...')}</p></div>`:''}<button class="btn flat wide" data-action="p2p-back" style="margin-top:16px">← Voltar</button></div></section></div>`}
-function renderP2PRoom(){let host=state.mode==='p2p-host';let peers=P2P.peers();return `${titleBlock('WEBRTC / CONEXÃO DIRETA','Sala P2P',host?'Você é a autoridade da sessão. Compartilhe o código e aceite a resposta do jogador.':'Você está conectado diretamente ao mestre.')}<div class="grid2"><section class="panel stack"><div class="panel-title"><h3>${host?'✝ Controle do mestre':'⌁ Conexão com o mestre'}</h3><span class="tag">${host?peers.length+' CONECTADOS':'JOGADOR'}</span></div>${host?`<p>Campanha hospedada: <b>${esc(state.campaign?.name||'')}</b></p><p class="hint">Os dados são salvos neste navegador. Cada novo jogador precisa receber um convite separado. Não existe prazo de validade do convite enquanto esta aba estiver aberta; finalize a troca prontamente.</p><button class="btn red" data-action="p2p-offer">+ Gerar convite para jogador</button>${p2pDiagnostics()}${p2pOffer?`<label class="field">1. Envie o convite<textarea readonly rows="5" id="p2p-offer-code">${esc(p2pOffer)}</textarea></label><button class="btn flat" data-action="p2p-copy" data-target="p2p-offer-code">Copiar convite</button><label class="field">2. Cole a resposta que o jogador devolveu<textarea id="p2p-response-code" rows="5" placeholder="Resposta do jogador"></textarea></label><button class="btn red" data-action="p2p-accept">Concluir conexão ↗</button>`:''}`:`<p><b>Conectado como ${esc(state.user?.user_metadata?.display_name||'Sobrevivente')}</b></p><p class="hint">O mestre controla a campanha. Seus dados não são salvos na nuvem nem no Supabase.</p>`}</section><section class="panel stack"><div class="panel-title"><h3>Participantes</h3></div>${host?peers.map(x=>`<div class="m71-item"><strong>${esc(x.nick)}</strong><span class="chip good">${esc(x.state)}</span></div>`).join('')||'<p class="hint">Nenhum participante conectado por WebRTC ainda.</p>':`<p class="hint">Conexão P2P ativa. Abra a Mesa Atual para ver as fichas e jogar.</p>`}<button class="btn flat" data-action="go" data-value="mesa">◈ Ir para Mesa Atual</button><p class="hint">Sem servidor TURN, algumas combinações de roteadores e redes móveis não conseguem estabelecer conexão direta.</p></section></div>`}
+function renderP2PLanding(){return `<div class="login-shell"><section class="login-hero"><div class="hero-content"><div class="eyebrow">DUNMOORE / MAINE / ARQUIVO Nº X</div><div class="hero-line"></div><div class="hero-title">SLASHER</div><div class="hero-sub">DUNMOORE</div><p class="lead">O mestre abre a porta. O restante da mesa decide se entra.</p><div class="row" style="margin-top:24px"><span class="chip">P2P / WEBRTC</span><span class="chip">SEM SUPABASE</span><span class="chip">EDIÇÃO X</span></div></div><div class="hero-foot">EDIÇÃO X. · O QUE A MONTANHA ENGOLIU AINDA ESTÁ ESCUTANDO.</div></section><section class="login-side"><div class="login-card"><div class="eyebrow">REDE LOCAL / SESSÃO PRIVADA</div><h2>Escolha como entrar.</h2><p class="lead">O mestre hospeda os arquivos no próprio navegador. Jogadores se conectam diretamente, sem cadastro e sem banco remoto.</p><div class="panel stack" style="margin-top:22px"><button class="btn red wide" data-action="p2p-host">✝ Hospedar como mestre ↗</button><button class="btn flat wide" data-action="p2p-join">⌁ Entrar na mesa do mestre</button><p class="hint">Convite por código curto quando a Cloudflare estiver configurada. A troca manual permanece como opção avançada.</p><p class="hint">O mestre deve manter a aba aberta. Salve backups da campanha no computador.</p></div><div class="settings-login-access"><button type="button" class="btn flat" data-action="go" data-value="settings">⚙ Configurações de imagem e áudio</button></div></div></section></div>`}
+function renderP2PJoin(){const online=P2P.hasSignaling();return `<div class="login-shell"><section class="login-hero"><div class="hero-content"><div class="eyebrow">CONEXÃO P2P / SOBREVIVENTE</div><div class="hero-line"></div><div class="hero-title">SLASHER</div><div class="hero-sub">DUNMOORE / SALA PRIVADA</div><p class="lead">Uma sala, nove caracteres. O mestre mantém a campanha no próprio navegador.</p></div></section><section class="login-side"><div class="login-card"><div class="eyebrow">SINALIZAÇÃO ASSISTIDA</div><h2>Entrar na mesa.</h2><form id="p2p-short-join-form" class="stack"><label class="field">Seu apelido<input name="nick" required minlength="2" maxlength="32" value="${esc(p2pNickname)}" placeholder="Como vão te chamar"></label><label class="field">Código curto da sala<input name="room" class="p2p-short-field" required maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="AB3D5FGH9"></label><button type="submit" class="btn red wide" ${online?'':'disabled'}>⌁ Conectar à sala ↗</button></form>${online?'<p class="hint">O código faz a negociação automaticamente. Se a conexão direta falhar, Cloudflare TURN poderá retransmitir os dados.</p>':'<p class="m71-info">Conexão por código curto ainda não ativada. O administrador precisa implantar o Worker Cloudflare e definir o endereço de sinalização. Use a alternativa manual abaixo.</p>'}<details class="p2p-legacy"><summary>Conexão avançada / código manual</summary><form id="p2p-join-form"><label class="field">Apelido<input name="nick" minlength="2" maxlength="32" value="${esc(p2pNickname)}" required></label><label class="field">Código completo do mestre<textarea name="offer" rows="4" required placeholder="Cole o código longo do convite manual"></textarea></label><button type="submit" class="btn flat wide">Gerar resposta manual</button></form>${p2pAnswer?`<label class="field">Resposta para devolver ao mestre<textarea readonly id="p2p-answer" rows="4">${esc(p2pAnswer)}</textarea></label><button class="btn flat" data-action="p2p-copy" data-target="p2p-answer">Copiar resposta</button>`:''}</details>${p2pDiagnostics()}<button class="btn flat wide" data-action="p2p-back" style="margin-top:16px">← Voltar</button></div></section></div>`}
+function renderP2PRoom(){const host=state.mode==='p2p-host',peers=P2P.peers(),room=P2P.roomStatus();return `${titleBlock('WEBRTC / CONEXÃO DIRETA','Sala P2P',host?'O mestre é a autoridade. Compartilhe apenas o código curto; a conexão acontece automaticamente.':'Conexão P2P com o mestre.')}<div class="grid2"><section class="panel stack"><div class="panel-title"><h3>${host?'✝ Controle do mestre':'⌁ Conexão com o mestre'}</h3><span class="tag">${host?peers.length+' CONECTADOS':'JOGADOR'}</span></div>${host?`<p>Campanha: <b>${esc(state.campaign?.name||'')}</b></p><p class="hint">As fichas ficam neste navegador. Os dados da negociação passam pela Cloudflare, não o conteúdo da campanha.</p>${P2P.hasSignaling()?`<button class="btn red" data-action="p2p-create-room" ${room.active?'disabled':''}>${room.active?'Sala curta aberta ✓':'✚ Abrir sala com código curto'}</button>${room.active?`<div class="p2p-short-invite"><span class="eyebrow">CÓDIGO PARA A TURMA</span><input id="p2p-short-code" class="p2p-short-field" value="${esc(room.code||'')}" readonly aria-label="Código da sala"><button class="btn flat" data-action="p2p-copy" data-target="p2p-short-code">Copiar código</button><p class="hint">Jogadores escolhem Entrar na mesa e digitam estes nove caracteres.</p></div>`:''}`:'<p class="m71-info">Cloudflare ainda não configurada. A opção manual continua disponível enquanto o Worker não é implantado.</p>'}<details class="p2p-legacy"><summary>Conexão avançada / código manual</summary><button class="btn flat" data-action="p2p-offer">Gerar convite manual</button>${p2pOffer?`<label class="field">Convite<textarea readonly rows="4" id="p2p-offer-code">${esc(p2pOffer)}</textarea></label><button class="btn flat" data-action="p2p-copy" data-target="p2p-offer-code">Copiar convite</button><label class="field">Resposta do jogador<textarea rows="4" id="p2p-response-code" placeholder="Cole a resposta"></textarea></label><button class="btn flat" data-action="p2p-accept">Concluir conexão manual</button>`:''}</details>${p2pDiagnostics()}`:`<p><b>Conectado como ${esc(state.user?.user_metadata?.display_name||'Sobrevivente')}</b></p><p class="hint">O mestre controla a campanha. O conteúdo não é armazenado pela Cloudflare.</p>`}</section><section class="panel stack"><div class="panel-title"><h3>Participantes</h3></div>${host?peers.map(x=>`<div class="m71-item"><strong>${esc(x.nick)}</strong><span class="chip good">${esc(x.state)}</span></div>`).join('')||'<p class="hint">Ainda não há jogadores conectados.</p>':'<p class="hint">Conexão P2P ativa. Abra a Mesa Atual para jogar.</p>'}<button class="btn flat" data-action="go" data-value="mesa">◈ Ir para Mesa Atual</button></section></div>`}
+
 function p2pPublicSnapshot(){
  const camp=state.campaignId,dat=api.data;
  const raw=state.mesa71||{};
@@ -1721,7 +1844,7 @@ function guestMethods(){
  api.remoteMesa=(op,args)=>P2P.call('mesa',[op,args]);
 }
 P2P.on('status',info=>{
- p2pWait=info.message;const el=document.getElementById('p2p-diagnostic');if(el){el.classList.toggle('p2p-diagnostic-error',info.phase==='error');el.innerHTML='<strong>Estado da conexão:</strong> '+esc(info.message)+'<small>Rotas: '+(Number(info.candidateCount)||0)+' · ICE: '+esc(info.ice||'new')+' · Canal: '+esc(info.connection||'new')+'</small>'}
+ p2pWait=info.message;const el=document.getElementById('p2p-diagnostic');if(el){el.classList.toggle('p2p-diagnostic-error',info.phase==='error');el.innerHTML='<strong>Estado da conexão:</strong> '+esc(info.message)+p2pDiagDetails(info)}
 });
 P2P.on('hello',who=>{
  if(state.mode!=='p2p-host'||!state.campaignId)return;
@@ -1749,7 +1872,7 @@ P2P.on('disconnected',who=>{
 });
 
 const navItems=[['p2p-room','⌁','Sala P2P'],['mesa','◈','Mesa Atual'],['dashboard','▦','Visão geral'],['characters','♟','Sobreviventes'],['sheet','▤','Ficha digital'],['dice','⬡','Rolagens'],['gm','✝','Painel do mestre'],['rules','☷','Regras rápidas']];
-function renderShell(content){return `<div class="shell"><aside class="sidebar"><div class="brand"><div class="wordmark">SLASHER</div><small>DUNMOORE, MAINE</small></div><div class="side-group-label">ARQUIVOS DA CAMPANHA</div><nav class="side-nav" aria-label="Navegação"><button data-action="go" data-value="lobby" class="${state.page==='lobby'?'active':''}">⌂ Campanhas</button>${state.campaign?navItems.filter(([id])=>id!=='gm'||isGM()).map(([id,icon,title])=>`<button data-action="go" data-value="${id}" class="${state.page===id?'active':''}">${icon} ${title}</button>`).join(''):''}</nav><div class="side-group-label">SISTEMA</div><nav class="side-nav" aria-label="Configurações"><button data-action="go" data-value="settings" class="${state.page==='settings'?'active':''}">⚙ Configurações</button></nav><div class="side-foot"><div class="eyebrow">STATUS DO ARQUIVO</div><p class="tiny" style="margin:8px 0">A cidade nunca esquece. Ela apenas muda os registros.</p><span class="edition-footnote">edição x. · versão 10.1.2 p2p</span></div></aside><div class="main"><header class="topbar"><div><div class="eyebrow">${state.campaign?'CAMPANHA ATIVA':'ARQUIVO CENTRAL'}</div><b>${esc(state.campaign?.name||'Dunmoore Horror Story')}</b></div><div class="topbar-right"><span id="connection">${state.mode==='demo'?'<span class="chip red">DEMO LOCAL</span>':'<span class="chip">CONECTANDO</span>'}</span><span class="user-email tiny muted">${esc(state.user?.user_metadata?.display_name||state.user?.email||'Mestre de teste')}</span>${state.mode==='demo'?`<button class="btn small flat" data-action="switch-role">${state.gmPreview?'Visão do mestre':'Visualizar como jogador'}</button>`:`<button class="btn small flat" data-action="logout">Sair</button>`}</div></header><main class="main-body">${content}</main></div></div>`}
+function renderShell(content){return `<div class="shell"><aside class="sidebar"><div class="brand"><div class="wordmark">SLASHER</div><small>DUNMOORE, MAINE</small></div><div class="side-group-label">ARQUIVOS DA CAMPANHA</div><nav class="side-nav" aria-label="Navegação"><button data-action="go" data-value="lobby" class="${state.page==='lobby'?'active':''}">⌂ Campanhas</button>${state.campaign?navItems.filter(([id])=>id!=='gm'||isGM()).map(([id,icon,title])=>`<button data-action="go" data-value="${id}" class="${state.page===id?'active':''}">${icon} ${title}</button>`).join(''):''}</nav><div class="side-group-label">SISTEMA</div><nav class="side-nav" aria-label="Configurações"><button data-action="go" data-value="settings" class="${state.page==='settings'?'active':''}">⚙ Configurações</button></nav><div class="side-foot"><div class="eyebrow">STATUS DO ARQUIVO</div><p class="tiny" style="margin:8px 0">A cidade nunca esquece. Ela apenas muda os registros.</p><span class="edition-footnote">edição x. · versão 10.2 p2p</span></div></aside><div class="main"><header class="topbar"><div><div class="eyebrow">${state.campaign?'CAMPANHA ATIVA':'ARQUIVO CENTRAL'}</div><b>${esc(state.campaign?.name||'Dunmoore Horror Story')}</b></div><div class="topbar-right"><span id="connection">${state.mode==='demo'?'<span class="chip red">DEMO LOCAL</span>':'<span class="chip">CONECTANDO</span>'}</span><span class="user-email tiny muted">${esc(state.user?.user_metadata?.display_name||state.user?.email||'Mestre de teste')}</span>${state.mode==='demo'?`<button class="btn small flat" data-action="switch-role">${state.gmPreview?'Visão do mestre':'Visualizar como jogador'}</button>`:`<button class="btn small flat" data-action="logout">Sair</button>`}</div></header><main class="main-body">${content}</main></div></div>`}
 function titleBlock(k,title,desc,actions=''){return `<header class="section-head"><div><div class="eyebrow">${k}</div><h2>${title}</h2><p>${desc}</p></div>${actions?`<div class="row">${actions}</div>`:''}</header>`}
 function rosterCard(ch,action='select-char'){const pc=Math.round(ch.hp/ch.hp_max*100);return `<button class="survivor-card ${state.selected===ch.id?'active':''}" data-action="${action}" data-id="${ch.id}">${avatar(ch)}<div class="info"><b>${esc(ch.name)}</b><small>${esc(cls(ch.class_key)[1])} · ${ch.owner_id?'Jogador':'NPC'}</small><div class="meter"><span style="width:${pc}%"></span></div><small class="mono">HP ${ch.hp}/${ch.hp_max} · EST ${ch.stress}</small></div><span class="accent">↗</span></button>`}
 function renderLobby(){const items=state.campaigns.map(m=>`<button class="survivor-card" data-action="open-campaign" data-id="${m.campaign_id}"><div class="avatar" style="font:30px Georgia">⌂</div><div class="info"><b>${esc(m.campaign?.name||'Campanha')}</b><small>${m.role==='gm'?'MESTRE':'JOGADOR'} · ${esc(m.nickname)}</small><small class="mono">${esc(m.campaign?.invite_code||'')}</small></div><span class="accent">↗</span></button>`).join('');return `${titleBlock('SLASHER / ARQUIVOS LOCAIS','Suas campanhas','Abra uma campanha e depois acesse Sala P2P para convidar amigos.')}<section class="hero-panel"><div><div class="eyebrow">DUNMOORE / MESA CONECTADA</div><h2>Dunmoore continua esperando.</h2><p>Acesse as fichas, distribua itens e conduza uma campanha com seus jogadores conectados.</p><div class="row" style="margin-top:22px"><button class="btn red" data-action="modal" data-value="create-campaign">+ Criar campanha</button>${state.mode==='p2p-host'?'':`<button class="btn flat" data-action="modal" data-value="join-campaign">Entrar com convite</button>`}</div></div></section><div class="panel"><div class="panel-title"><h3>Arquivos disponíveis</h3><span class="tag">${state.campaigns.length} CAMPANHAS</span></div><div class="grid2">${items||'<div class="empty full"><b>Nenhuma campanha encontrada</b>Crie uma campanha para assumir o papel de mestre.</div>'}</div>${state.mode==='p2p-host'?`<div class="panel stack" style="margin-top:16px"><h3>Arquivo local do mestre</h3><p class="hint">Salve backups regularmente. O navegador não substitui um HD e o SLASHER não envia cópias à nuvem.</p><div class="row"><button class="btn flat" data-action="p2p-export">↓ Exportar backup</button><label class="btn flat" style="cursor:pointer">↑ Restaurar backup<input type="file" id="p2p-backup-file" accept="application/json,.json" style="display:none"></label></div></div>`:''}</div>`}
@@ -1825,6 +1948,7 @@ document.addEventListener('click',async e=>{
  case 'p2p-host':state.mode='p2p-host';state.user=api.me;await loadLobby();return;
  case 'p2p-join':state.page='p2p-join';render();return;
  case 'p2p-back':p2pAnswer='';p2pWait='';state.page='lobby';render();return;
+ case 'p2p-create-room':if(state.mode!=='p2p-host'||!state.campaignId)throw Error('Abra uma campanha primeiro');await P2P.createRoom();render();toast('Sala criada. Copie o código curto para os jogadores!');return;
  case 'p2p-offer':if(state.mode!=='p2p-host'||!state.campaignId)throw Error('Abra uma campanha primeiro');p2pOffer=await P2P.hostOffer();render();return;
  case 'p2p-accept':if(state.mode!=='p2p-host')throw Error('Apenas o mestre pode aceitar');await P2P.acceptAnswer($('#p2p-response-code')?.value.trim());toast('Resposta aceita. Aguardando o jogador conectar.');render();return;
  case 'p2p-copy':{const field=document.getElementById(btn.dataset.target);if(field)await copyText(field.value);return}
@@ -1865,6 +1989,7 @@ document.addEventListener('submit',async e=>{
  e.preventDefault();const form=e.target;const formId=form.getAttribute('id');if(!formId&&!form.dataset.mesaForm)return;const dat=Object.fromEntries(new FormData(form).entries());const submit=form.querySelector('button[type=submit]');if(submit?.disabled)return;if(submit)submit.disabled=true;
  try{
  if(form.dataset.mesaForm){await window.SLASHER71.submit(form,{state,api,refreshCampaign,render,toast},e.submitter);return}
+ if(formId==='p2p-short-join-form'){p2pNickname=safeInput(dat.nick,32);await P2P.joinRoom(dat.room,p2pNickname);p2pWait='Aguardando conexão com o mestre...';render();return;}
  if(formId==='p2p-join-form'){p2pNickname=safeInput(dat.nick,32);p2pWait='Aguardando o mestre aceitar a conexão...';p2pAnswer=await P2P.joinOffer(String(dat.offer||'').trim(),p2pNickname);render();return;}
  if(formId==='quick-auth-form'){
   if(state.mode!=='online')throw Error('Acesso rápido indisponível na demonstração');const result=await api.anonymousAuth(dat.nickname);state.user=result.user;await loadLobby();toast('Acesso criado como '+dat.nickname);return;

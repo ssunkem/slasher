@@ -25,3 +25,11 @@ body .ambient-scene { overflow:hidden!important; }
 .p2p-diagnostic small{display:block;font:11px/1.5 ui-monospace,monospace;color:#8e9fb9;margin-top:5px}
 .p2p-diagnostic-error{border-color:#9a3547;background:rgba(42,10,17,.82);color:#f6c6ce}
 .p2p-diagnostic-error strong{color:#f8afbb}
+
+/* Cloudflare short-code joining */
+.p2p-short-field{font:600 clamp(24px,4vw,34px)/1.25 Georgia,serif!important;letter-spacing:.16em!important;text-align:center;max-width:100%;color:#b4ffba!important;background:#050a0a!important;border:1px solid #316647!important;text-transform:uppercase!important;padding:13px!important}
+.p2p-short-invite{padding:18px;display:grid;gap:11px;border:1px solid #36644a;background:rgba(3,18,12,.5);text-align:center}
+.p2p-legacy{border-top:1px solid #28436a;padding-top:12px;margin-top:14px}
+.p2p-legacy summary{cursor:pointer;color:#b8c3d8;padding:10px 0;font-size:14px}
+.p2p-legacy form{display:grid;gap:12px;margin-top:14px}
+.p2p-legacy textarea{font-family:ui-monospace,monospace;font-size:11px;word-break:break-all}

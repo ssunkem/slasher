@@ -159,5 +159,114 @@
  function close(){for(const who of [...pending.values(),...live.values(),client].filter(Boolean))retire(who);
   pending.clear();live.clear();client=null;report('idle','Sala desconectada.');for(const [id,p] of pendingRPC){clearTimeout(p.timer);p.reject(Error('Mesa encerrada'));pendingRPC.delete(id)}
  }
- window.SLASHER_P2P={hostOffer,joinOffer,acceptAnswer,snapshot,call,close,on:(type,cb)=>callbacks[type]=cb,peers:()=>Array.from(live.values()).map(w=>({id:w.id,nick:w.nick,state:w.dc?.readyState})),isClientReady:()=>!!client?.id,diagnostics:()=>({...diagnostic,hostPeers:live.size,pendingOffers:pending.size,clientReady:!!client?.id})};
+ // Cloudflare-assisted signaling: short invite codes; old manual mode remains available.
+ // The Worker forwards *only* SDP/ICE. Campaign state always stays in DataChannel.
+ const signalingBase=()=>String(window.SLASHER_SIGNAL_URL||'').trim().replace(/\/+$/,'');
+ const hasSignaling=()=>/^https:\/\//.test(signalingBase()) || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(signalingBase());
+ let signalRoom=null,signalSocket=null,signalIce=[...ICE.iceServers],signalRole=null;
+ const emit=(message)=>{if(!signalSocket||signalSocket.readyState!==WebSocket.OPEN)throw Error('Sinalização Cloudflare desconectada');signalSocket.send(JSON.stringify(message))};
+ const endpoint=(path)=>signalingBase()+path;
+ async function jsonRequest(path,options={}){
+  const response=await fetch(endpoint(path),{...options,headers:{'content-type':'application/json',...(options.headers||{})}});
+  let data;try{data=await response.json()}catch{data={error:'Resposta inválida da Cloudflare'}}
+  if(!response.ok)throw Error(data.error||'Falha no serviço de conexão');return data;
+ }
+ function socketReady(code,role,token){return new Promise((resolve,reject)=>{
+  const url=new URL(endpoint('/v1/rooms/'+code+'/ws'));url.protocol=url.protocol==='https:'?'wss:':'ws:';
+  url.searchParams.set('role',role);if(token)url.searchParams.set('token',token);
+  const ws=new WebSocket(url);ws._slasherQueued=[];ws._slasherActive=false;let complete=false;
+  const timeout=setTimeout(()=>{if(!complete){complete=true;ws.close();reject(Error('Cloudflare não respondeu em 12 segundos'))}},12000);
+  ws.onmessage=e=>{
+   let msg;try{msg=JSON.parse(e.data)}catch{return}
+   if(msg.type==='ready'&&!complete){complete=true;clearTimeout(timeout);resolve({ws,code,role,auth:msg.auth,peerId:msg.peerId});return}
+   if(complete){if(!ws._slasherActive)ws._slasherQueued.push(msg);else Promise.resolve(onSignalMessage(msg)).catch(err=>report('error',err.message||'Falha no WebRTC'));}
+  };
+  ws.onerror=()=>{if(!complete){complete=true;clearTimeout(timeout);reject(Error('Não foi possível abrir a sala Cloudflare'))}};
+  ws.onclose=()=>{if(!complete){complete=true;clearTimeout(timeout);reject(Error('Sala inexistente, cheia ou mestre indisponível'))}else if(signalSocket===ws){signalSocket=null;report('error','A sala de sinalização foi desconectada. Será necessário entrar novamente.')}};
+ })}
+ async function iceCredentials(code,auth){
+  try{const response=await jsonRequest('/v1/rooms/'+code+'/ice',{method:'POST',headers:{authorization:'Bearer '+auth}});return response.iceServers?.length?response:({iceServers:[...ICE.iceServers],turn:false})}
+  catch(err){console.warn('SLASHER Cloudflare TURN indisponível:',err.message);return {iceServers:[...ICE.iceServers],turn:false}}
+ }
+ function candidates(who){
+  who.pc.onicecandidate=e=>{if(!who.closed&&e.candidate&&signalSocket?.readyState===WebSocket.OPEN){try{emit({type:'candidate',to:who.role==='host'?who.key:'host',candidate:e.candidate.toJSON()})}catch{}}};
+ }
+ async function remoteCandidate(who,candidate){
+  if(!who||who.closed||!candidate)return;
+  if(!who.pc.remoteDescription){(who.pendingCandidates??=[]).push(candidate);return}
+  try{await who.pc.addIceCandidate(candidate)}catch(err){console.warn('SLASHER ICE:',err.message)}
+ }
+ async function flushCandidates(who){for(const ice of who.pendingCandidates||[])await remoteCandidate(who,ice);who.pendingCandidates=[]}
+ async function startHostPeer(peerId){
+  if(live.has(peerId)||pending.has(peerId))return;
+  const pc=new RTCPeerConnection({iceServers:signalIce}),dc=pc.createDataChannel('slasher-sync',{ordered:true});
+  const who={key:peerId,pc,dc,role:'host',id:null,nick:null,stage:'checking',closed:false,pendingCandidates:[],restarts:0};
+  pending.set(peerId,who);listen(dc,who);watch(pc,who);candidates(who);
+  dc.onopen=()=>{who.stage='connected';clearTimeout(who.connectionTimer);report('connected','Jogador conectado via Cloudflare / WebRTC!',who)};
+  pc.addEventListener('iceconnectionstatechange',()=>{
+   if(pc.iceConnectionState==='failed'&&who.restarts<2&&!who.closed){who.restarts++;setTimeout(()=>makeHostOffer(who,true).catch(console.error),500*who.restarts)}
+  });
+  await makeHostOffer(who,false);
+ }
+ async function makeHostOffer(who,restart){
+  if(who.closed)return;
+  const offer=await who.pc.createOffer(restart?{iceRestart:true}:{});
+  await who.pc.setLocalDescription(offer);
+  emit({type:'offer',to:who.key,description:{type:'offer',sdp:who.pc.localDescription.sdp}});
+  report('connecting',restart?'Reiniciando ICE automaticamente...':'Convite curto aceito. Negociando com o jogador...',who);
+ }
+ async function onSignalMessage(msg){
+  if(msg.type==='peer-joined'&&signalRole==='host')return startHostPeer(msg.peerId);
+  if(msg.type==='peer-left'&&signalRole==='host'){
+   const who=pending.get(msg.peerId)||live.get(msg.peerId);retire(who);pending.delete(msg.peerId);live.delete(msg.peerId);callbacks.disconnected?.(who||{role:'host'});return;
+  }
+  if(signalRole==='host'){
+   const who=pending.get(msg.from)||live.get(msg.from);if(!who)return;
+   if(msg.type==='answer'){await who.pc.setRemoteDescription(msg.description);await flushCandidates(who)}
+   else if(msg.type==='candidate')await remoteCandidate(who,msg.candidate);
+   return;
+  }
+  if(signalRole==='guest'&&client){
+   const who=client;
+   if(msg.type==='offer'){
+    await who.pc.setRemoteDescription(msg.description);await flushCandidates(who);
+    const answer=await who.pc.createAnswer();await who.pc.setLocalDescription(answer);
+    emit({type:'answer',to:'host',description:{type:'answer',sdp:who.pc.localDescription.sdp}});
+    report('connecting','Resposta enviada automaticamente. Estabelecendo canal...',who);
+   }else if(msg.type==='candidate')await remoteCandidate(who,msg.candidate)
+  }
+ }
+ async function activateSocket(ws){ws._slasherActive=true;for(const message of ws._slasherQueued.splice(0))await onSignalMessage(message)}
+ async function createRoom(){
+  if(!hasSignaling())throw Error('Cloudflare ainda não configurada. Use o convite manual ou configure signal-config.js.');
+  if(signalSocket)signalSocket.close();signalSocket=null;
+  const created=await jsonRequest('/v1/rooms',{method:'POST',body:'{}'});
+  const ready=await socketReady(created.code,'host',created.hostToken);
+  signalSocket=ready.ws;signalRole='host';signalRoom=created.code;
+  const credentials=await iceCredentials(created.code,ready.auth);signalIce=credentials.iceServers;
+  await activateSocket(ready.ws);
+  report('offer','Sala '+created.code+' aberta. Compartilhe apenas este código. '+(credentials.turn?'TURN disponível.':'TURN ainda indisponível: conexão direta apenas.'));
+  return {code:created.code,turn:credentials.turn};
+ }
+ async function joinRoom(code,nick){
+  if(!hasSignaling())throw Error('Cloudflare ainda não configurada.');
+  const room=String(code||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+  if(!/^[A-HJ-NP-Z2-9]{9}$/.test(room))throw Error('Código inválido: digite os nove caracteres da sala.');
+  if(signalSocket)signalSocket.close();signalSocket=null;retire(client);client=null;
+  const ready=await socketReady(room,'guest',null);
+  signalSocket=ready.ws;signalRoom=room;signalRole='guest';
+  const credentials=await iceCredentials(room,ready.auth);signalIce=credentials.iceServers;
+  const pc=new RTCPeerConnection({iceServers:signalIce});
+  const who={key:'client-'+room,pc,dc:null,role:'client',stage:'checking',id:null,nick:String(nick||'Sobrevivente').trim().slice(0,32),closed:false,pendingCandidates:[],restarts:0};
+  client=who;watch(pc,who);candidates(who);
+  pc.ondatachannel=e=>{who.dc=e.channel;listen(who.dc,who);who.dc.onopen=()=>{who.stage='connected';report('connected','Canal aberto. Confirmando identidade com o mestre...',who);transmit(who.dc,{type:'hello',nick:who.nick})}};
+  await activateSocket(ready.ws);
+  report('connecting','Sala encontrada. Aguardando conexão com o mestre... '+(credentials.turn?'TURN pronto.':'Sem relay TURN configurado.'),who);
+  return {code:room,turn:credentials.turn};
+ }
+ const originalClose=close;
+ function closeAll(){if(signalSocket){const ws=signalSocket;signalSocket=null;ws.close()}signalRoom=null;signalRole=null;originalClose()}
+ const roomStatus=()=>({enabled:hasSignaling(),code:signalRoom,role:signalRole,active:signalSocket?.readyState===WebSocket.OPEN});
+
+ window.SLASHER_P2P={hostOffer,joinOffer,acceptAnswer,createRoom,joinRoom,roomStatus,hasSignaling,snapshot,call,close:closeAll,on:(type,cb)=>callbacks[type]=cb,peers:()=>Array.from(live.values()).map(w=>({id:w.id,nick:w.nick,state:w.dc?.readyState})),isClientReady:()=>!!client?.id,diagnostics:()=>({...diagnostic,hostPeers:live.size,pendingOffers:pending.size,clientReady:!!client?.id})};
 })();
