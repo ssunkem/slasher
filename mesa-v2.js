@@ -30,7 +30,7 @@ function render(s){
  return '<header class="section-head"><div><div class="eyebrow">DUNMOOR / SITUAÇÃO ATUAL</div><h2>Mesa Atual · Sobrevivência</h2><p>Ações, risco e consequência. O narrador descreve os sinais antes dos dados.</p></div></header>'+
  '<div class="grid2"><section class="panel"><h3>Sobrevivente em campo</h3><label class="field">Ficha selecionada<select id="m71-focus">'+options(fighter).replace('value="'+esc(c?.id)+'"','value="'+esc(c?.id)+'" selected')+'</select></label>'+
  (c?'<div class="v2-three-meters">'+tag('Vitalidade',c.vitality,6)+tag('Fôlego',c.stamina,5)+tag('Tensão',c.tension,6)+'</div><p class="hint">Ferimentos: '+(c.wounds?.map(w=>esc(w.type)).join(', ')||'nenhum')+' · Preparo: '+c.preparations+'/2 · Risco de Morte: '+c.deathRisk+'/3</p>'+
- '<h4>Inventário · '+R.inventorySpaces(c.inventory)+'/6 Espaços</h4><ul>'+(c.inventory||[]).map(i=>'<li>'+esc(i.name)+' · '+i.slots+' espaço(s)'+(i.damageBase?' · dano '+i.damageBase:'')+'</li>').join('')+'</ul>':'<p>Nenhuma ficha 2.0 atribuída.</p>')+'</section>'+
+ '<h4>Inventário · '+R.inventorySpaces(c.inventory)+'/6 Espaços'+(R.inventorySpaces(c.inventory)>6?' · SOBRECARREGADO':'')+'</h4><ul>'+(c.inventory||[]).map(i=>'<li>'+esc(i.name)+' · '+i.slots+' espaço(s)'+(i.damageBase?' · dano '+i.damageBase:'')+'</li>').join('')+'</ul>':'<p>Nenhuma ficha 2.0 atribuída.</p>')+'</section>'+
  '<section class="panel"><h3>Confronto</h3><p><b>'+(d.encounter?.active?'Cena perigosa ativa · Rodada '+d.encounter.round:'Sem confronto ativo')+'</b></p>'+
  (master?'<div class="row"><button class="btn small red" data-action="mesa-v2-toggle">'+(d.encounter?.active?'Encerrar confronto':'Iniciar confronto')+'</button><button class="btn small flat" data-action="mesa-v2-next">Próxima rodada</button></div>':'')+
  '<div class="v2-threat-list">'+(threats.map(t=>'<div class="v2-threat"><b>'+esc(t.name)+'</b> <small>'+esc(t.type)+'</small>'+
@@ -84,6 +84,7 @@ function remote(s,op,p,actorId){
   const skill=att==='PER'?'Armas de Fogo':'Luta';
   const i=Number(p.itemIndex),item=i>=0?c.inventory?.[i]:null;
   if(i>=0&&(!item||Number(item.damageBase)<1||Number(item.damageBase)>4))throw Error('Arma não consta no inventário');
+  if(att==='PER'&&(!item||Number(item.damageBase)<3))throw Error('Armas de Fogo exigem uma arma adequada no inventário');
   const attack=R.rollForCharacter(c,{attribute:att,skill,circumstance:Number(p.circumstance||0),difficulty:'normal'});
   let dodge=null,hit=attack.success;
   if(t.dodge>0&&t.stamina>0&&t.reactedRound!==d.encounter.round){
@@ -124,6 +125,7 @@ function remote(s,op,p,actorId){
  else if(op==='v2-start-chase'){d.chase={active:true,round:0,distance:R.clamp(p.distance,0,4),speed:['lento','equivalente','rapido'].includes(p.speed)?p.speed:'equivalente',exit:String(p.exit||'').slice(0,200),status:'ativa'};}
  else if(op==='v2-stop-chase')d.chase.active=false;
  else if(op==='v2-threat-attack'){
+  if(!d.encounter?.active)throw Error('Inicie um confronto antes de atacar');
   const t=d.threats.find(x=>x.id===p.threat&&x.type==='humano'&&x.vitality>0),v=own(p.victim);
   if(!t)throw Error('Agressor indisponível');
   const attack=R.calculateTest({attribute:50,training:0,circumstance:0,difficulty:'normal',natural:R.die100()});
@@ -142,7 +144,7 @@ function remote(s,op,p,actorId){
  else if(op==='v2-grant'){
   const c=own(p.character),item={name:String(p.name||'').trim().slice(0,100),slots:Number(p.slots),damageBase:R.clamp(p.damageBase,0,4)};
   if(!item.name||![1,2,3].includes(item.slots))throw Error('Item inválido');
-  if(R.inventorySpaces(c.inventory)+item.slots>6)throw Error('Inventário excede seis Espaços');
+  if(R.inventorySpaces(c.inventory)+item.slots>12)throw Error('Carga acima do limite de transporte improvisado (12 Espaços)');
   c.inventory.push(item);outcome=item;
  }
  else throw Error('Operação desconhecida');
