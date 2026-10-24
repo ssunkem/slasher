@@ -1,4 +1,18 @@
-# Histórico de versões
+# SLASHER · Histórico de alterações
+
+## 2.0.0-beta · Livro Básico, Edição de Teste I
+
+- Migração da interface principal de D20 para D100, com Alvo 10–90, dificuldades e graus.
+- Substituição de 12 classes por 12 Históricos, atributos FOR/AGI/PER/RAC/PRE/FIR e Competências.
+- Ficha completa: Contato, Vínculos, Inventário, Preparo, Vitalidade, Fôlego, Tensão, Marcas, Risco de Morte e Ferimentos.
+- Mesa Atual reescrita: ameaças humanas vs. anomalias, ataque e dano fixo, reação de esquiva, relógios configuráveis e caçadas.
+- Nova aba de investigação com pistas, hipóteses e perguntas compartilhadas; notas secretas do narrador locais.
+- Sincronização WebRTC mantida, com autorização centralizada para alteração de fichas e ações de jogadores.
+- Compatibilidade preservada: fichas e módulos legados ficam armazenados sem conversão mecânica automática.
+- Testes percentuais e de integração iniciais adicionados. Lançamento experimental, sujeito a playtest.
+
+---
+
 
 ## 1.0.0 · Lançamento público (24 de outubro de 2026)
 
