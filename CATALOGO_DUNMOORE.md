@@ -1,5 +1,5 @@
 # ☠ Arquivo de Dunmoore
-### Catálogo inicial do SLASHER 7.1.2 | O Rei Oculto
+### Criaturas, armas e pistas | O Rei Oculto
 
 > **Uso na mesa:** este arquivo contém pistas narrativas e sugestões de monstros. O catálogo visual fica no dock **Catálogo de Dunmoore**, exclusivo do mestre. Os monstros **não aparecem automaticamente** para os jogadores. O mestre decide quando invocá-los.
 
@@ -73,6 +73,6 @@ Os itens de evidência com preço zero não são adicionados automaticamente à 
 ### Restrições atuais
 
 - O catálogo é predefinido no código, não um editor completo de bestiário. O mestre ainda pode cadastrar monstros personalizados no formulário já existente.
-- Inventário e loja usam as funções e permissões SQL da migração **`migrate_7_1.sql`**, previamente instalada na 7.1. **Este patch 7.1.2 não requer SQL novo.**
+- No modo atual, inventário e loja são mantidos na campanha local do mestre e sincronizados com a mesa por WebRTC. As migrações SQL antigas foram preservadas em `legacy/supabase/`.
 - As descrições de criaturas e dicas estão no catálogo do frontend, não em tabelas de lore protegidas; portanto não devem ser tratadas como segredos inacessíveis a quem examina o código-fonte público.
-- A versão multiplayer depende das funções existentes do Supabase. O modo demonstração permite experimentar tudo em uma única sessão sem servidor.
+- A versão multiplayer usa P2P e sinalização Cloudflare. O mestre precisa manter a sessão aberta e fazer backups da campanha.

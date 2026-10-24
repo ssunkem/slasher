@@ -33,3 +33,9 @@ body .ambient-scene { overflow:hidden!important; }
 .p2p-legacy summary{cursor:pointer;color:#b8c3d8;padding:10px 0;font-size:14px}
 .p2p-legacy form{display:grid;gap:12px;margin-top:14px}
 .p2p-legacy textarea{font-family:ui-monospace,monospace;font-size:11px;word-break:break-all}
+
+/* Informações técnicas acessíveis sem ocupar a interface principal. */
+.p2p-technical{margin-top:9px;border-top:1px solid rgba(134,170,208,.24);padding-top:7px}
+.p2p-technical summary{font-size:12px;color:#abc5e8;cursor:pointer;list-style:revert}
+.p2p-technical summary:focus-visible{outline:2px solid #76baff;outline-offset:3px}
+.p2p-technical small{margin-top:8px}

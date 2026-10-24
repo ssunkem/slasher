@@ -10,3 +10,10 @@ node_modules/
 .vscode/
 *.sqlite
 *.db
+
+# Cloudflare / arquivos locais
+.wrangler/
+.dev.vars
+.dev.vars.*
+*.zip
+*.bak

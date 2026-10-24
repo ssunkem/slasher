@@ -1,7 +1,7 @@
 'use strict';
 const assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs'),path=require('node:path');
 const root=path.join(__dirname,'..'),read=f=>fs.readFileSync(path.join(root,f),'utf8');
-const html=read('SLASHER_Demo_Offline.html'),online=read('index.html'),ui=read('settings-page.js');
+const html=read('legacy/SLASHER_Demo_Offline.html'),online=read('index.html'),ui=read('settings-page.js');
 for(const name of ['slasher-audio-enabled','slasher-audio-volume','slasher-audio-test','slasher-audio-mute'])assert(ui.includes(name),name);
 assert(online.includes('src="sfx.js"')&&online.includes('src="settings-page.js"'));
 assert(html.includes('data-file="sfx.js"')&&html.includes('data-file="settings-page.js"'));

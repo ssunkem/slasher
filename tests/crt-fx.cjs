@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const root=path.join(__dirname,'..');
 const read=f=>fs.readFileSync(path.join(root,f),'utf8');
-const css=read('crt.css'),js=read('crt.js'),settings=read('settings-page.js'),index=read('index.html'),local=read('SLASHER_Demo_Offline.html');
+const css=read('crt.css'),js=read('crt.js'),settings=read('settings-page.js'),index=read('index.html'),local=read('legacy/SLASHER_Demo_Offline.html');
 assert(css.includes('var(--crt-bloom-core)')&&css.includes('var(--crt-chroma-left)'));
 assert(js.includes("addEventListener('input'")&&js.includes('slasher-crt-bloom-v1')&&js.includes('slasher-crt-chroma-v1'));
 for(const token of ['slasher-fx-bloom','slasher-fx-chroma','slasher-fx-reset','data-crt-mode','Imagem / CRT'])assert(settings.includes(token),token);
