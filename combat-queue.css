@@ -1,0 +1,56 @@
+/* SLASHER 1.1 · FILA DE AÇÃO
+   A fila é uma ajuda visual, não acrescenta regras ao combate D20. */
+.m71-turns{position:relative;isolation:isolate;overflow:hidden;border:1px solid #61404c;border-radius:13px;background:linear-gradient(145deg,rgba(24,20,27,.98),rgba(9,11,16,.97) 65%);box-shadow:0 24px 65px #0005,0 0 0 1px #ad435522;display:grid;gap:16px;padding:20px;min-width:0}
+.m71-turns::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,#aa3045,#e07a68 42%,transparent);z-index:-1}
+.m71-turn-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.m71-turn-head h3{margin:4px 0;font:700 clamp(22px,2.4vw,32px)/1.12 Georgia,serif;color:#fff5f2}
+.m71-turn-head p{margin:6px 0 0;font-size:13px;color:#aba0a6;line-height:1.5}
+.m71-turn-head p strong{color:#f1d6d9}
+.m71-turn-head .eyebrow{color:#d39499;font-size:10px;letter-spacing:.18em}
+.m71-turn-round{display:inline-block;vertical-align:middle;border:1px solid #68404b;border-radius:4px;color:#f3c1b9;background:#521c2a66;padding:6px 9px;margin-left:9px;font:700 10px/1.15 ui-monospace,Consolas,monospace;letter-spacing:.1em}
+.m71-turn-controls{display:flex;gap:9px;flex-wrap:wrap}
+.m71-turn-controls button{min-height:42px}
+.m71-turn-controls button:disabled{opacity:.45;cursor:not-allowed}
+.m71-turn-readonly{font-size:10px;letter-spacing:.12em;color:#a58f99;border:1px solid #40353e;border-radius:5px;padding:10px}
+.m71-turn-current{display:flex;align-items:center;flex-wrap:wrap;gap:10px;padding:11px 14px;border:1px solid #6b3942;background:linear-gradient(90deg,#4e1e2ac9,#1b161cc9);border-radius:8px;min-height:56px;color:#e5bdba;font:700 11px ui-monospace,Consolas,monospace;letter-spacing:.07em}
+.m71-turn-current>strong{font:700 17px Georgia,serif;letter-spacing:0;color:#fff2ea;overflow-wrap:anywhere}
+.m71-turn-live-dot{width:9px;height:9px;border-radius:50%;background:#ffad9c;box-shadow:0 0 0 5px #ea665523,0 0 15px #f66a64a8;animation:m71-blink 1.6s ease-in-out infinite}
+@keyframes m71-blink{50%{opacity:.45;box-shadow:0 0 0 2px #ea66551a}}
+.m71-turn-line{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(174px,1fr);grid-template-columns:none;gap:9px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;padding:4px 2px 12px;scrollbar-color:#643743 #17151b;scrollbar-width:thin}
+.m71-turn-card{scroll-snap-align:start;display:flex;flex-direction:column;gap:12px;padding:12px;border:1px solid #433440;border-radius:9px;background:linear-gradient(145deg,#202026,#14141b);opacity:.85;transition:background .2s ease,border-color .2s ease,transform .2s ease,opacity .2s ease;min-width:0}
+.m71-turn-card.current{opacity:1;border-color:#ff9e91;box-shadow:0 0 0 1px #dc655787,0 0 22px #ad2f3740;background:linear-gradient(145deg,#4a2330,#251a26)}
+.m71-turn-card.acted{opacity:.54}
+.m71-turn-card.fallen{opacity:.62;filter:grayscale(.75);border-style:dashed}
+.m71-turn-card.enemy{border-left:3px solid #a55766}
+.m71-turn-card.survivor{border-left:3px solid #667f97}
+.m71-turn-card.current{border-left-color:#ffad92}
+.m71-turn-card-top,.m71-turn-card-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;min-width:0}
+.m71-turn-order{font:800 14px ui-monospace,Consolas,monospace;color:#e3b5bc}
+.m71-turn-side{font:700 9px ui-monospace,Consolas,monospace;letter-spacing:.06em;color:#baacb3;text-align:right}
+.m71-turn-profile{display:flex;align-items:center;gap:10px;min-height:46px}
+.m71-turn-profile .m71-portrait,.m71-turn-current .m71-portrait{width:42px;height:42px;min-width:42px;max-width:42px;overflow:hidden;border-radius:6px}
+.m71-turn-profile .m71-portrait img,.m71-turn-current .m71-portrait img{width:100%;height:100%;object-fit:cover}
+.m71-turn-person{display:grid;gap:6px;min-width:0}
+.m71-turn-person b{font:700 14px/1.2 Georgia,serif;color:#f9edf0;overflow-wrap:anywhere}
+.m71-turn-person>span{font:600 10px ui-monospace,Consolas,monospace;color:#b6aeb5}
+.m71-turn-status{display:inline-block;font:800 10px ui-monospace,Consolas,monospace;letter-spacing:.04em;border:1px solid #66505b;border-radius:4px;padding:5px 7px;color:#d8c9ce;white-space:nowrap}
+.m71-turn-card.current .m71-turn-status{background:#ce4c51;color:#fff;border-color:#e8837b}
+.m71-turn-card.acted .m71-turn-status{color:#a6a0a7}
+.m71-turn-card.fallen .m71-turn-status{background:#392329;color:#eca8a5}
+.m71-turn-substats{color:#9d949b;font:600 9px ui-monospace,Consolas,monospace;white-space:nowrap}
+.m71-turn-last{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px 15px;padding:12px 15px;background:#10141b;border:1px solid #343a43;border-radius:8px}
+.m71-turn-mini{font:800 10px ui-monospace,Consolas,monospace;letter-spacing:.12em;color:#ad9da8;white-space:nowrap}
+.m71-turn-last-people{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:14px;color:#f2e0e2;min-width:0}
+.m71-turn-last-people b{overflow-wrap:anywhere}
+.m71-turn-arrow{color:#d46f76}
+.m71-turn-last-numbers{display:flex;align-items:center;justify-content:flex-end;gap:12px;flex-wrap:wrap}
+.m71-turn-result{border:1px solid #715359;color:#cdb9bc;padding:5px 7px;border-radius:4px;font:800 10px ui-monospace,Consolas,monospace;white-space:nowrap}
+.m71-turn-result.success{border-color:#ad555d;color:#ffb7ab;background:#742f383d}
+.m71-turn-result.fail{border-color:#495365;color:#b4c2d1}
+.m71-turn-roll{font:600 10px ui-monospace,Consolas,monospace;letter-spacing:.025em;color:#a7afb9;white-space:nowrap}
+.m71-turn-roll b{color:#f2e4e4}
+.m71-turn-damage{font:800 17px ui-monospace,Consolas,monospace;color:#e77e75;white-space:nowrap}
+.m71-turn-footnote{font-size:11px;line-height:1.5;color:#857d89}
+@media(max-width:1080px){.m71-turn-last{grid-template-columns:1fr}.m71-turn-last-numbers{justify-content:flex-start}.m71-turn-line{grid-auto-columns:minmax(175px,42%)}}
+@media(max-width:610px){.m71-turns{padding:14px;gap:13px}.m71-turn-head{align-items:stretch}.m71-turn-head h3{font-size:25px}.m71-turn-controls{width:100%}.m71-turn-controls button{flex:1 1 145px}.m71-turn-line{grid-auto-columns:minmax(174px,76%)}.m71-turn-current{padding:10px;font-size:10px}.m71-turn-current>strong{font-size:15px}.m71-turn-roll{white-space:normal;line-height:1.7}}
+@media(prefers-reduced-motion:reduce){.m71-turn-live-dot{animation:none}.m71-turn-card{transition:none}}
