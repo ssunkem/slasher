@@ -1,0 +1,25 @@
+name: SLASHER 1.1 Combat Queue
+on:
+  push:
+    branches:
+      - feat/slasher-1-1-combat-queue
+  pull_request:
+    paths:
+      - combat-queue.js
+      - combat-queue.css
+      - mesa71.js
+      - index.html
+      - tests/combat-queue.cjs
+      - .github/workflows/verify-combat-queue.yml
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Testar fila visual e permissões
+        run: node tests/combat-queue.cjs
+      - name: Testar sistema D20 da 1.0
+        run: node tests/dados-locais.cjs
