@@ -1,0 +1,46 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
+const base=path.join(__dirname,'..');
+const values=new Map();
+const listeners=new Map();
+const elems={};
+const element = (id,extra={}) => (elems[id]??={id,value:'',textContent:'',dataset:{},style:{setProperty(){}},disabled:false,checked:false,setAttribute(){},querySelector(){return null},classList:{toggle(){},add(){},remove(){}},...extra});
+const doc={readyState:'loading',hidden:false,documentElement:{dataset:{},style:{setProperty(k,v){this[k]=v}}},getElementById:id=>elems[id]||null,querySelectorAll:selector=>selector==='[data-crt-mode]'?Object.values(elems).filter(x=>x.dataset.crtMode):[],addEventListener(name,fn){if(!listeners.has(name))listeners.set(name,[]);listeners.get(name).push(fn)}};
+const scope={document:doc,window:{},localStorage:{getItem:k=>values.get(k)??null,setItem:(k,v)=>values.set(k,String(v))},console,performance:{now:()=>10000},Date,Number,Math,JSON,Uint32Array,MutationObserver:undefined};scope.window=scope;
+vm.createContext(scope);
+for(const file of ['crt.js','sfx.js','settings-page.js'])vm.runInContext(fs.readFileSync(path.join(base,file),'utf8'),scope,{filename:file});
+for(const fn of listeners.get('DOMContentLoaded')||[])fn();
+assert.equal(scope.SLASHER_CRT.get(),'classic');
+assert.equal(scope.SLASHER_CRT.effects().bloom,35);
+assert.equal(scope.SLASHER_SFX.get().volume,30);
+const guestMarkup=scope.SLASHER_SETTINGS.render({guest:true});
+for(const key of ['settings-page','settings-guest-head','slasher-fx-bloom','slasher-fx-chroma','slasher-audio-volume','slasher-audio-enabled','slasher-audio-test','data-crt-mode="off"'])assert.ok(guestMarkup.includes(key),key);
+assert.ok(guestMarkup.includes('Voltar ao início'));
+// Demo login and sidebar routing exist.
+const app=fs.readFileSync(path.join(base,'app.js'),'utf8');
+assert.ok(app.includes('data-value="settings"'));
+assert.ok(app.includes("page!=='settings'"));
+assert.ok(app.includes('window.SLASHER_SETTINGS.render({guest:true})'));
+// Simulate login -> settings rerenders with dynamically created controls.
+for(const key of ['slasher-fx-bloom','slasher-fx-chroma','slasher-fx-bloom-value','slasher-fx-chroma-value','settings-crt-status','slasher-audio-volume','slasher-audio-volume-value','slasher-audio-enabled','settings-audio-status','slasher-audio-mute','slasher-audio-test'])element(key);
+for(const key of ['soft','classic','strong','off'])element('crt-mode-'+key,{dataset:{crtMode:key},classList:{toggle(){}}});
+const dispatch=(type,target,extras={})=>{for(const fn of listeners.get(type)||[])fn({target,...extras})};
+function clickable(selector,id){return {id,closest(query){return query===selector?this:null},dataset:{crtMode:id}}}
+const mode={dataset:{crtMode:'strong'},querySelector(){return null},setAttribute(){},classList:{toggle(){}}};
+dispatch('click',{closest:sel=>sel==='[data-crt-mode]'?mode:null});
+assert.equal(scope.SLASHER_CRT.get(),'strong');
+assert.equal(values.get('slasher-crt-intensity-v1'),'strong');
+dispatch('input',{id:'slasher-fx-bloom',value:'70'});
+assert.equal(scope.SLASHER_CRT.effects().bloom,70);
+assert.equal(values.get('slasher-crt-bloom-v1'),'70');
+dispatch('change',{id:'slasher-audio-enabled',checked:false,closest:()=>null,matches:()=>true});
+assert.equal(scope.SLASHER_SFX.get().enabled,false);
+assert.equal(element('settings-audio-status').textContent,'MUDO');
+dispatch('input',{id:'slasher-audio-volume',value:'15',closest:()=>null});
+assert.equal(scope.SLASHER_SFX.get().volume,15);
+assert.equal(element('slasher-audio-volume-value').textContent,'OFF');
+assert.ok(scope.SLASHER_SETTINGS.render().includes('70%'));
+assert.ok(scope.SLASHER_SETTINGS.render().includes('15%'));
+console.log('PASS: Configurações guest/logged-in, render dinâmico, seleção CRT, bloom, áudio, persistência e rotas.');

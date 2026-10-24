@@ -1,198 +1,177 @@
-/* SLASHER | Dunmoore — paleta glacial e composição revisada */
-/* Acabamento da prévia. Ciano glacial, negro azulado, névoa de Dunmoore. */
-:root {
-  --bg: #07111a; --bg2: #0c1923; --bg3: #112430; --bg4: #173140;
-  --line: #2b5263; --red: #a3dbea; --red2: #65adc4;
-  --text: #eef7fb; --muted: #a0b9c5; --dim: #7895a2;
-  --good: #a4d0bd; --warn: #dec69b;
+/* Silent Hill inspired visual identity + UX pass */
+/* Survival-horror menu pass inspired by early-2000s psychological horror inventory UIs */
+:root{
+  --bg:#020304;--bg2:#07080a;--bg3:#0d0f12;--bg4:#14181d;
+  --line:#223778;--line-soft:#16305f;--glow:#2a4ea0;--green:#39a64d;--green-soft:#5fd76a;
+  --text:#e7e7eb;--muted:#a2a6b2;--dim:#72798b;--danger:#b33746;--warn:#bfb38e;
+  --shadow:0 18px 45px rgba(0,0,0,.75)
 }
-body {
-  background:
-    radial-gradient(ellipse at 80% 0%,rgba(55,122,150,.12),transparent 55%),
-    radial-gradient(ellipse at 12% 60%,rgba(50,102,130,.10),transparent 60%),
-    #07111a;
-}
-.login-hero {
-  background:
-    radial-gradient(ellipse at 67% 30%,rgba(128,201,228,.19),transparent 28%),
-    radial-gradient(ellipse at 40% 85%,rgba(41,92,118,.27),transparent 65%),
-    linear-gradient(135deg,#0c2331,#07131e 65%,#050b12) !important;
-}
-.login-hero:before {display:none}
-.hero-panel:after { content:'DUNMOORE'; font-size:clamp(90px,14vw,185px); right:-25px; top:-24px; color:#bdeefa0b }
-.hero-title {letter-spacing:.025em; text-shadow:0 1px 28px #a8e8fc28}
-.hero-sub {letter-spacing:.37em; color:#c4e1ec}
-.hero-foot,.edition-footnote {
- color:#82a7b7; font:10px/1.6 ui-monospace,Consolas,monospace;
- letter-spacing:.13em; text-transform:uppercase;
-}
-.edition-footnote{display:inline-block;margin-top:10px}
-.brand .wordmark {color:#f3fbff;letter-spacing:.15em}
-.sidebar,.topbar {border-color:#254354}
-.sidebar {background:linear-gradient(180deg,#0d202b,#08131b)!important}
-.side-nav button.active{background:#162e3b!important;border-color:#4c8298!important}
-.panel,.kpi,.metric,.attr,.rule-section {
- background:linear-gradient(145deg,#12242f,#0c1921)!important;
- border-color:#284a5b!important;
-}
-.btn.red {
- background:linear-gradient(180deg,#9cd9e9,#69adc4)!important;
- color:#06121c!important;
- border-color:#addfeb!important;
- box-shadow:0 2px 14px #64b7d51a;
-}
-.btn.red:hover {background:linear-gradient(180deg,#b9e7f2,#80c6db)!important}
-button:not(.btn):hover:not(:disabled),.btn.flat:hover:not(:disabled) {border-color:#84c9dc}
-.btn.soft,.chip.red,.tag{border-color:#386b7d}
-.chip.red {color:#d5f2fa!important;background:#143342!important}
-button,input,select,textarea{accent-color:#81c7dc}
-.survivor-card.active,.item,.preview,.invite,.dice-result {border-color:#426e80!important}
-.dice-box{background:#143a4b!important;border-color:#84cce0!important}
-.dice-shade{background:#020c16e6}
-.dice-dialog{background:#0b1b26;border-color:#3d7085}
-.modal{background:#10212c;border-color:#3d7085}
-.modal-backdrop{background:#041019d9}
-.m71-page {
- --m71-ink:#07111a; --m71-panel:#10232e; --m71-line:#315669;
- --m71-red:#9ed7e7;
-}
-.m71-hero {
- background:
- radial-gradient(ellipse at 50% 40%,#80d5ec16,transparent 58%),
- linear-gradient(145deg,#16303e,#09151d 68%)!important;
- border-color:#47778a!important;
-}
-.m71-hero:before{color:#b7eaf40a}
-.m71-hero-character{background:radial-gradient(ellipse at 50% 83%,#7dc8e02e,transparent 57%)!important}
-.m71-hero-label,.m71-page-title label,.m71-hero-copy>p{color:#a7c1cd}
-.m71-portrait,.m71-portrait.hero,.m71-portrait.monster{
- background:linear-gradient(160deg,#264e61,#0d1c27)!important;
- border-color:#5c93aa!important;color:#d8f4ff!important;
-}
-.m71-meter{background:#162f3d!important;border-color:#365f70!important}
-.m71-meter-fill{background:linear-gradient(90deg,#438fa8,#a8e2ef)!important}
-.m71-meter.stamina .m71-meter-fill{background:linear-gradient(90deg,#627e9d,#89b4d0)!important}
-.m71-meter.stress .m71-meter-fill{background:linear-gradient(90deg,#788c9a,#c2a8b6)!important}
-.m71-meter-ghost{background:#badde777!important}
-.m71-between,.m71-numeric{color:#e5f5fb}
-.m71-pill,.m71-info,.m71-target-hint {
- background:#102734!important;border-color:#3b6b7d!important;color:#c7e2ec!important;
-}
-.m71-pill.dangerous {background:#284353!important;color:#e4edfa!important}
-.m71-dock,.m71-library details,.m71-library-card,.m71-event,.m71-no-combat,.m71-item {
- background:linear-gradient(155deg,#112530,#0b1821)!important;
- border-color:#32596b!important;
-}
-.m71-dock-bar{
- background:linear-gradient(90deg,#173546,#0b1e29)!important;
- border-bottom-color:#376779!important;
-}
-.m71-dock-title>span,.m71-item-icon,.m71-event-arrow,.m71-no-combat>span {color:#a0dcec!important}
-.m71-dock-tools button,.m71-dock-tools>span {color:#a6c4d1!important}
-.m71-library summary {color:#e7f9fe!important}
-.m71-event.impact{animation:m71-event-hit-cold .65s ease}
-.m71-floating{color:#e6d4af!important;text-shadow:0 0 16px #d7c69a55!important}
-.m71-target.selected,.m71-target.selected:hover{
- background:linear-gradient(120deg,#204658,#0e202b)!important;
- border:2px solid #9bdcee!important;
- box-shadow:0 0 0 2px #9bdcee22,0 0 20px #8ad2e443!important;
-}
-.m71-target.selected:before{background:#9bdcee!important}
-.m71-target.selected .m71-target-label{color:#b8effd!important}
-.m71-target-hint.ready{background:#1d3a48!important;border-color:#82c9dd!important;color:#e6f8fe!important}
-.m71-library details,.m71-library-card{box-shadow:0 12px 26px #0003}
-@media(max-width:640px) {
- .hero-title{font-size:clamp(50px,14vw,78px)}
- .hero-foot{position:relative;bottom:auto;margin-top:26px;font-size:9px}
- .login-hero{min-height:350px}
- .login-hero .hero-content{padding-bottom:5px}
- .m71-hero{border-color:#365e70!important}
-}
-@media(prefers-reduced-motion: reduce) {
- *, *:before, *:after {animation-duration:.01ms!important;transition-duration:.01ms!important}
-}
-
-/* ═══ DUNMOORE • COLD THEME POLISH / MARKET & ALERTS ═══ */
-/* The interface is blue ice. Red is reserved for critical danger, HP damage and errors. */
-:root{--warning-red:#f17889;--warning-bg:#351a26;--ice-edge:#4e8397;--ice-strong:#a5dbe8}
-.m71-page{--m71-ink:#08131b;--m71-panel:#10212b;--m71-line:#31596a;--m71-red:#99daee}
-.m71-dock.dragging{opacity:.48}
-.m71-dock.drop-target{border-color:#9bd7e7!important;box-shadow:0 0 0 2px #7accdf55!important}
-.m71-page-title select{border-color:#45788b!important;color:#e8f5fb!important}
-.m71-evidence{border-left-color:#365f70!important;background:radial-gradient(ellipse at 50% 55%,#387e9a25,transparent 64%)!important}
-.m71-evidence-symbol{color:#94d7e8!important;text-shadow:0 0 40px #8ed9ee44!important}
-.m71-evidence-bottom{border-top-color:#416d80!important;color:#82a8b9!important}
-.m71-page .m71-form{border-color:#315263!important}
-.m71-page .m71-form label{color:#bbd3de!important}
-.m71-page .m71-form h4{color:#edf8fc!important}
-.m71-page .m71-item-copy small,.m71-page .m71-stock-item small{color:#9ebbc8!important}
-.m71-page .m71-portrait.monster{background:linear-gradient(145deg,#254759,#0c1b25)!important;border-color:#578ba1!important}
-.m71-page .m71-portrait.hero{background:linear-gradient(145deg,#2a5265,#0a1721)!important;border-color:#6595aa!important}
-.m71-page .m71-pill:not(.dangerous){border-color:#456f80!important;background:#112935!important;color:#badce9!important}
-.m71-page .m71-pill.closed{border-color:#405a68!important;background:#111e28!important;color:#809dab!important}
-.m71-page .m71-pill.dangerous{border-color:#a74760!important;background:var(--warning-bg)!important;color:#ffb2be!important}
-.m71-page .m71-error,.error{border-color:#b95a70!important;color:#ffc3cc!important;background:#331b27!important}
-.m71-page .m71-event.hit .eyebrow,.m71-page .m71-event.hit .m71-floating{color:#ff899d!important}
-.m71-page .m71-event.impact{animation:m71-danger-flash .62s ease!important}
-@keyframes m71-danger-flash{0%{box-shadow:inset 0 0 0 2px #d35168,0 0 28px #da385888;transform:translateX(-4px)}40%{transform:translateX(4px)}100%{box-shadow:none;transform:none}}
-.m71-page .m71-floating{color:#ff91a0!important;text-shadow:0 0 14px #dc4a67!important}
-.m71-page button.m71-target:focus-visible{outline-color:#a5e3f3!important}
-.m71-page .m71-target-label,.m71-page .m71-target-prompt{color:#a9c7d5!important}
-.m71-page button.m71-target:not(:disabled):hover{background:#173140!important}
-.m71-page .m71-target-hint.ready{background:#1b3b4b!important;border-color:#70b9d0!important;color:#e2f8fe!important}
-.m71-page .m71-library details{border-color:#396374!important;background:#0c1d27!important}
-.m71-page .m71-library summary{color:#e9f6fb!important}
-.m71-page .m71-library summary:focus-visible{outline-color:#9bdae9!important}
-.m71-page .m71-library-card{border-color:#355d6f!important;background:linear-gradient(155deg,#122631,#0c1b24)!important}
-.m71-page .m71-library-card p{color:#b9cfda!important}
-.m71-page .m71-lib-head h4{color:#f2fbff!important}
-.m71-page .m71-lib-foot>small{color:#a0bcc9!important}
-.m71-page .m71-event,.m71-page .m71-item,.m71-page .m71-combatant{border-color:#375b6c!important;background:#0e202a!important}
-.m71-page .m71-note{background:#0d2330!important;border-left-color:#80c9df!important}
-.m71-page .m71-note p{color:#b8d5e0!important}
-/* Shop layout: entire product uses full card width, no squashed title or overflowing buttons. */
-.m71-shop-title{gap:12px;flex-wrap:wrap;border-bottom-color:#335566!important}
-.m71-shop-title>span:first-child{min-width:0;overflow-wrap:anywhere}
-.m71-stock{display:grid;gap:12px;margin-top:14px}
-.m71-page .m71-stock-item{
- display:grid;grid-template-columns:minmax(0,1fr);gap:12px;
- padding:15px 16px;margin:0;align-items:stretch;
- border:1px solid #355e70!important;border-radius:11px;
- background:linear-gradient(140deg,#102531,#0b1c26)!important;
- box-shadow:inset 0 1px 0 #d6f6ff0b;
-}
-.m71-stock-head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:10px}
-.m71-stock-copy{display:grid;gap:5px;min-width:0;align-content:start}
-.m71-stock-copy>b{font:600 15px/1.35 system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:0;color:#edf8fc;overflow-wrap:anywhere}
-.m71-stock-type{font:600 10px/1.45 ui-monospace,Consolas,monospace!important;letter-spacing:.06em;text-transform:uppercase;color:#8faeba!important;overflow-wrap:anywhere}
-.m71-stock-description{font:400 12px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;color:#bad2dc!important;overflow-wrap:anywhere}
-.m71-stock-price{display:inline-flex;align-items:baseline;justify-content:flex-end;gap:4px;white-space:nowrap;color:#d2edf4;background:#183644;border:1px solid #426a7b;padding:7px 10px;border-radius:8px;min-width:69px;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums;line-height:1.1}
-.m71-stock-price .m71-currency{font:600 12px system-ui,-apple-system,"Segoe UI",sans-serif;opacity:.7;color:#a6d8e6}
-.m71-stock-price strong{font:700 17px/1.1 system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:-.03em;color:#e9f9ff}
-.m71-stock-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-start;align-items:center;border-top:1px solid #29495b;padding-top:11px}
-.m71-stock-actions>.btn{flex:0 0 auto;min-width:100px;justify-content:center}
-.m71-page .m71-stock-actions .btn.red{background:linear-gradient(180deg,#a1ddec,#79bdd2)!important;color:#091823!important;border-color:#b3e6f2!important;box-shadow:none}
-.m71-page .m71-stock-actions .btn.flat{background:#11232d!important;border-color:#41697a!important;color:#b9d5e0!important}
-.m71-stock-actions .m71-remove-stock{min-width:94px}
-.m71-stock-actions .m71-remove-stock span{font-size:11px}
-.m71-stock-muted{font:400 11px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;color:#8ba7b4}
-.m71-page .m71-shop-title{border-color:#335566!important}
-@media(max-width:580px){
- .m71-page .m71-stock-item{padding:13px;gap:10px}
- .m71-stock-head{gap:7px}
- .m71-stock-price{padding:6px 8px;min-width:58px}
- .m71-stock-price strong{font-size:16px}
- .m71-stock-copy>b{font-size:14px}
- .m71-stock-actions>.btn{flex:1 1 110px}
-}
-@media(prefers-reduced-motion:reduce){.m71-page .m71-event.impact{animation:none!important}}
-
-
-
-/* Ambientação estética de Dunmoore */
-html,body{min-height:100%}
-body{overflow-x:hidden}
+html,body{background:#010203!important;color:var(--text)!important}
+body{font-family:Georgia,"Times New Roman",serif!important;letter-spacing:.01em}
+body:before{background:repeating-linear-gradient(0deg,transparent 0,transparent 2px,rgba(255,255,255,.035) 3px)!important;opacity:.18!important}
+body:after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background:
+  radial-gradient(circle at 50% 50%,transparent 45%,rgba(0,0,0,.25) 100%),
+  radial-gradient(circle at 70% 18%,rgba(80,120,255,.045),transparent 20%),
+  radial-gradient(circle at 35% 78%,rgba(70,255,140,.028),transparent 22%);
+  mix-blend-mode:screen;opacity:.8}
 #app,#toast{position:relative;z-index:2}
+.ambient-scene{filter:saturate(.4) brightness(.62)!important;opacity:.74!important}
+.ambient-aurora{background:radial-gradient(ellipse at 18% 34%,rgba(58,90,160,.13),transparent 34%),radial-gradient(ellipse at 74% 12%,rgba(52,175,82,.07),transparent 24%),radial-gradient(ellipse at 55% 24%,rgba(124,143,186,.05),transparent 29%)!important;filter:blur(24px)!important}
+.ambient-stars{opacity:.16!important}
+.ambient-fog{opacity:.26!important;mix-blend-mode:screen!important}
+.ambient-fog.f1{background:radial-gradient(ellipse at center,rgba(190,200,235,.09),rgba(190,200,235,.04) 40%,transparent 70%)!important}
+.ambient-fog.f2{background:radial-gradient(ellipse at center,rgba(170,220,190,.07),rgba(170,220,190,.03) 42%,transparent 70%)!important}
+.ambient-fog.f3{background:radial-gradient(ellipse at center,rgba(80,110,150,.08),rgba(80,110,150,.03) 44%,transparent 72%)!important}
+.login-shell,.app-shell,.main,.main-body,.m71-page{background:transparent!important}
+.login-wrap,.app-shell,.m71-page{position:relative}
+.login-wrap:before,.app-shell:before,.m71-page:before{content:'';position:absolute;inset:-14px;border:1px solid rgba(37,68,145,.08);pointer-events:none;z-index:-1}
+.login-hero,.hero-panel,.panel,.metric,.kpi,.attr,.rule-section,.survivor-card,.topbar,.sidebar,.m71-panel,.m71-dock,.m71-library details,.m71-library-card,.m71-combatant,.m71-event,.m71-item,.m71-stock-item,.modal,.dice-dialog,.m71-hero,.m71-empty-hero{
+  background:rgba(0,0,0,.54)!important;border:1px solid rgba(39,64,136,.64)!important;border-radius:0!important;box-shadow:var(--shadow), inset 0 0 0 1px rgba(128,164,255,.05)!important;backdrop-filter:blur(4px) saturate(.82)!important;position:relative;overflow:visible!important}
+.login-hero:after,.hero-panel:after,.panel:after,.survivor-card:after,.m71-dock:after,.m71-stock-item:after,.m71-item:after,.m71-event:after,.m71-hero:after,.modal:after,.dice-dialog:after,.topbar:after,.sidebar:after{
+  content:'';position:absolute;inset:7px;pointer-events:none;border:1px solid rgba(39,64,136,.18)}
+.hero-title,.brand .wordmark,.m71-page-title h2,.m71-dock-title h3,h1,h2,h3,h4{font-family:Georgia,"Times New Roman",serif!important;font-weight:400!important;letter-spacing:.02em;text-shadow:0 0 12px rgba(255,255,255,.12),0 1px 0 #000}
+.hero-title{font-size:clamp(58px,8vw,124px)!important}
+.hero-sub,.brand small,.m71-page-title .eyebrow,.eyebrow,.hero-note,.hero-foot,.edition-footnote,.side-group-label,.m71-help,.m71-info,.m71-target-label,.m71-portrait-caption{font-family:Georgia,"Times New Roman",serif!important;letter-spacing:.14em!important;text-transform:none!important}
+.lead,.m71-help,.m71-info,.m71-target-prompt,.m71-stock-description,.m71-note p,.panel p,.hero-panel p,.survivor-card p{color:#bcc0ca!important;text-shadow:0 1px 8px rgba(0,0,0,.7)}
+.hero-line,.red-rule{height:3px!important;background:linear-gradient(90deg,rgba(36,74,180,.06),rgba(76,156,255,.8),rgba(36,74,180,.06))!important;box-shadow:0 0 14px rgba(58,110,255,.48)!important}
+.hero-sub,.m71-page-title label,.side-group-label,.hero-note,.hero-foot,.brand-note,.edition-footnote{color:#d2d5dc!important}
+.brand .wordmark{letter-spacing:.08em!important}
+.brand small,.brand-note{color:#9098a8!important}
+.sidebar{border-right:1px solid rgba(55,83,152,.45)!important}
+.topbar{border-bottom:1px solid rgba(55,83,152,.45)!important}
+.topbar-right .chip,.chip,.m71-pill,.tag{background:rgba(5,10,20,.72)!important;color:#d8dbe2!important;border:1px solid rgba(46,78,170,.55)!important;border-radius:999px!important;box-shadow:0 0 12px rgba(45,76,170,.14)}
+.btn,.side-nav button,.login-switch button,.m71-dock-tools button,button,input,select,textarea{border-radius:0!important}
+button,input,select,textarea{background:rgba(5,6,10,.72)!important;border:1px solid rgba(41,68,144,.6)!important;color:#edf0f4!important;box-shadow:inset 0 0 16px rgba(255,255,255,.02),0 0 0 1px rgba(10,10,10,.9)}
+input::placeholder,textarea::placeholder{color:#7e8595!important}
+.btn.red,.m71-form .btn.red,.chip.red,.m71-target.selected .m71-target-label,.login-switch button.active,.side-nav button.active,.m71-target-hint.ready,.m71-pill.dangerous:not(.safe-tone){
+  color:#b6ffb8!important;border-color:rgba(68,170,88,.82)!important;background:linear-gradient(180deg,rgba(8,18,8,.86),rgba(10,25,11,.64))!important;box-shadow:0 0 14px rgba(70,210,90,.22), inset 0 0 12px rgba(58,145,71,.12)!important;text-shadow:0 0 12px rgba(75,230,99,.18)}
+.side-nav button{position:relative;color:#d8dbe2!important;padding:11px 14px 13px 14px!important;background:transparent!important;border-color:transparent!important;text-shadow:0 0 10px rgba(255,255,255,.08)}
+.side-nav button:hover{color:#fff!important}
+.side-nav button.active{border-color:transparent!important}
+.side-nav button.active:before{content:''!important;position:absolute;left:14px;right:14px;bottom:6px;height:10px;border-radius:999px;background:radial-gradient(ellipse at center,rgba(51,212,89,.72),rgba(51,212,89,.1) 58%,transparent 72%);z-index:-1}
+.login-switch button.active{position:relative}
+.login-switch button.active:after{content:'';position:absolute;left:12px;right:12px;bottom:4px;height:8px;background:radial-gradient(ellipse at center,rgba(51,212,89,.7),transparent 68%)}
+.topbar .btn.red,.btn.red:hover,.m71-buy-button,.m71-form button[type=submit]{color:#d5d9e2!important}
+.btn.red:hover,.side-nav button.active:hover,.login-switch button.active:hover{filter:brightness(1.08)}
+.btn.flat,.btn.soft,.m71-remove-stock,.m71-form .btn.flat{background:rgba(5,10,20,.72)!important;color:#d6dae4!important;border-color:rgba(48,80,168,.65)!important;box-shadow:0 0 12px rgba(45,76,170,.14)!important}
+.btn.flat:hover,.m71-remove-stock:hover{background:rgba(8,15,32,.84)!important}
+.error,.m71-error,.danger,.toast.error{color:#f2d6da!important;border-color:rgba(156,55,73,.92)!important;background:rgba(40,8,14,.7)!important;box-shadow:0 0 14px rgba(170,40,70,.2)!important}
+.meter,.m71-meter{background:rgba(18,22,30,.85)!important;border:1px solid rgba(46,74,153,.4)!important}
+.meter>span,.m71-meter-fill{background:linear-gradient(90deg,rgba(37,64,136,.9),rgba(112,135,210,.92),rgba(160,220,245,.95))!important;box-shadow:0 0 12px rgba(112,135,210,.22)}
+.meter.sta>span,.m71-meter.stamina .m71-meter-fill{background:linear-gradient(90deg,rgba(50,108,84,.82),rgba(102,174,126,.88),rgba(168,240,170,.86))!important}
+.meter.stress>span,.m71-meter.stress .m71-meter-fill{background:linear-gradient(90deg,rgba(78,78,94,.84),rgba(126,122,165,.86),rgba(212,190,152,.84))!important}
+.m71-between strong,.m71-numeric,.number,.dice-face-value{font-family:Georgia,"Times New Roman",serif!important;font-weight:400!important;letter-spacing:.04em}
+.m71-event .m71-floating,.result-damage{color:#d8d2c3!important;text-shadow:0 0 10px rgba(255,240,200,.22)}
+.m71-target.selected,.survivor-card.active,.side-nav button.active,.login-switch button.active{outline:1px solid rgba(72,180,95,.32)!important}
+.m71-target.selected{background:rgba(7,16,8,.72)!important;border-color:rgba(72,180,95,.82)!important;box-shadow:0 0 18px rgba(72,180,95,.2), inset 0 0 20px rgba(72,180,95,.07)!important}
+.m71-target.selected:before{background:rgba(80,220,100,.92)!important}
+.m71-combatants{gap:18px!important}
+.m71-stock-item{padding:16px 18px 16px!important}
+.m71-stock-head{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:start!important;gap:10px 16px!important}
+.m71-stock-copy b,.m71-item-copy b,.m71-lib-head h4,.m71-stock-title,.m71-shop-title span,.m71-dock-title h3{font-size:clamp(21px,2.3vw,27px)!important;color:#eceef2!important}
+.m71-stock-type,.m71-item-copy small,.m71-stock-muted,.m71-lib-foot small{color:#9fa7b7!important}
+.m71-stock-description{margin:10px 0 14px!important;max-width:46ch}
+.m71-stock-price{align-self:start!important;min-width:88px;padding:6px 10px 8px!important;border:1px solid rgba(41,68,144,.72)!important;background:rgba(3,7,16,.84)!important;box-shadow:0 0 12px rgba(45,76,170,.12)!important;text-align:center!important;display:grid!important;place-items:center!important}
+.m71-stock-price .m71-currency{font-size:16px!important;line-height:1;color:#92a7db!important;display:block!important;text-shadow:0 0 10px rgba(84,130,255,.18)}
+.m71-stock-price strong{font:400 34px/1 Georgia,"Times New Roman",serif!important;letter-spacing:.05em!important;color:#eceef2!important;text-shadow:0 0 12px rgba(255,255,255,.08)}
+.m71-stock-actions{display:flex!important;align-items:center!important;gap:10px!important;flex-wrap:wrap!important;justify-content:flex-start!important}
+.m71-buy-button{min-width:130px!important}
+.m71-remove-stock{min-width:110px!important}
+.m71-shop-title{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:14px!important;margin-bottom:18px!important;padding-bottom:8px!important;border-bottom:1px solid rgba(36,63,135,.5)!important}
+.m71-item,.m71-library-card,.survivor-card{padding:14px 16px!important}
+.m71-library details>summary{padding:10px 12px!important;color:#eceef2!important}
+.m71-library-grid{gap:16px!important}
+.m71-dock-bar{background:rgba(2,4,10,.88)!important;border-bottom:1px solid rgba(37,64,136,.7)!important}
+.m71-dock-title>span,.m71-item-icon,.m71-event-arrow,.m71-no-combat>span,.hero-title em,.accent{color:#94abeb!important;text-shadow:0 0 12px rgba(100,140,255,.25)}
+.m71-note{border-left:2px solid rgba(37,64,136,.82)!important;background:rgba(2,3,8,.58)!important}
+.m71-no-combat,.m71-empty-hero{background:rgba(1,2,5,.72)!important}
+.avatar,.m71-portrait,.m71-portrait.hero,.m71-portrait.monster{background:linear-gradient(160deg,rgba(20,25,35,.92),rgba(6,8,12,.9))!important;border:1px solid rgba(37,64,136,.75)!important;color:#e8ebf3!important;box-shadow:inset 0 0 18px rgba(255,255,255,.02),0 0 18px rgba(35,60,130,.14)!important}
+.m71-portrait img{filter:saturate(.65) contrast(1.04) brightness(.92)}
+.hero-panel,.m71-hero{background:radial-gradient(ellipse at 35% 22%,rgba(255,255,255,.04),transparent 40%),rgba(0,0,0,.58)!important}
+.m71-hero .m71-evidence,.hero-panel .hero-foot{background:rgba(2,4,10,.72)!important;border-left:1px solid rgba(37,64,136,.48)!important}
+.field label,label{color:#dfe2e7!important}
+select option{background:#040509!important;color:#eceef2!important}
+.toast{background:rgba(1,2,5,.92)!important;border:1px solid rgba(37,64,136,.82)!important;color:#eceef2!important}
+/* Reduce the prior cyan / vivid ambient accents */
+.hero-note,.brand-note,.edition-footnote,.m71-portrait-caption,.m71-stock-type,.m71-target-label{color:#aab0be!important}
+@media (max-width: 900px){
+  .m71-stock-head{grid-template-columns:1fr!important}
+  .m71-stock-price{justify-self:start!important}
+  .m71-stock-actions{justify-content:flex-start!important}
+  .hero-title{font-size:clamp(44px,12vw,68px)!important}
+}
+
+
+/* UX refinement pass: first wave */
+:root{
+  --hit: 42px;
+  --panel-pad: 16px;
+  --panel-gap: 14px;
+}
+html{scroll-behavior:smooth}
+button,.btn,select,input,textarea{font-size:15px}
+.topbar{position:sticky;top:0;z-index:25}
+.sidebar{z-index:20}
+.side-nav button,.login-switch button,.m71-dock-tools button{min-height:var(--hit)}
+.m71-dock-bar{position:sticky;top:0;z-index:3}
+.panel-title,.m71-dock-title{gap:10px}
+.panel,.m71-panel,.m71-dock,.survivor-card,.m71-item,.m71-library-card,.m71-stock-item,.m71-event,.attr,.metric,.kpi{padding:var(--panel-pad)!important}
+.grid2,.grid3,.cards,.m71-grid,.m71-library-grid,.m71-stock-list,.m71-combatants,.m71-item-grid{gap:var(--panel-gap)!important}
+.field{gap:6px}
+.field-row{gap:12px}
+small,.hint,.m71-help,.m71-info,.m71-item-copy small,.m71-stock-type,.m71-target-label{line-height:1.45}
+.m71-shop-title{margin-bottom:12px!important}
+.m71-stock-item{display:grid!important;gap:12px!important;align-content:start!important}
+.m71-stock-copy{min-width:0}
+.m71-stock-copy b,.m71-item-copy b{display:block;line-height:1.15}
+.m71-stock-description,.m71-item-copy p{line-height:1.5!important}
+.m71-stock-actions .btn,.m71-stock-actions button,.m71-buy-button,.m71-remove-stock{min-height:42px!important;padding:10px 14px!important}
+.m71-buy-button{font-weight:600}
+.m71-stock-head{align-items:center!important}
+.m71-stock-price{justify-self:end}
+.m71-stock-price strong{white-space:nowrap}
+.m71-shop-title .tag,.m71-shop-title .chip{margin-left:auto}
+.m71-item,.m71-library-card,.survivor-card,.m71-target{transition:transform .16s ease, box-shadow .18s ease, border-color .18s ease, background-color .18s ease}
+.m71-item:hover,.m71-library-card:hover,.survivor-card:hover,.m71-target:hover{transform:translateY(-1px)}
+.m71-target{padding:14px!important}
+.m71-target-hint{padding:12px 14px!important}
+.m71-target-grid,.m71-combatants{align-items:start}
+.m71-hero{padding:20px!important}
+.m71-hero-head{gap:18px!important}
+.m71-hero-copy h2{line-height:1.05}
+.hero-panel,.login-hero{padding:24px!important}
+.hero-foot,.edition-footnote{opacity:.9}
+.empty,.m71-no-combat,.m71-empty-hero{padding:18px!important;line-height:1.55}
+.modal,.dice-dialog{max-width:min(92vw,700px)!important}
+.dice-dialog .dice-box{margin-inline:auto}
+#toast{z-index:80}
+.toast{max-width:min(92vw,420px);line-height:1.4}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:rgba(0,0,0,.55)}
+::-webkit-scrollbar-thumb{background:rgba(63,86,160,.8);border:2px solid rgba(0,0,0,.65)}
+::-webkit-scrollbar-thumb:hover{background:rgba(82,112,202,.9)}
+@media (max-width:1100px){
+  .sidebar{position:sticky;top:0}
+}
+@media (max-width:900px){
+  .m71-dock-bar{position:relative}
+  .panel,.m71-panel,.m71-dock,.survivor-card,.m71-item,.m71-library-card,.m71-stock-item,.m71-event,.attr,.metric,.kpi,.hero-panel,.login-hero,.m71-hero{padding:14px!important}
+  .m71-stock-price{justify-self:start}
+  .m71-stock-actions{width:100%}
+  .m71-stock-actions > *{flex:1 1 140px}
+}
+@media (max-width:640px){
+  :root{--hit:44px;--panel-pad:12px;--panel-gap:12px}
+  .hero-panel,.login-hero{padding:16px!important}
+  .m71-dock-tools button{min-width:38px}
+  .m71-stock-actions > *{flex:1 1 100%}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .m71-item,.m71-library-card,.survivor-card,.m71-target{transition:none!important}
+}
+
+/* AMBIENT BACKDROP : FIXED, OUTSIDE PAGE FLOW */
 .ambient-scene{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 .ambient-scene:before{content:'';position:absolute;inset:0;background:
  radial-gradient(circle at 50% -10%,rgba(177,232,247,.08),transparent 32%),
@@ -208,36 +187,16 @@ body{overflow-x:hidden}
 .ambient-fog.f1{bottom:18vh;background:radial-gradient(ellipse at center,rgba(161,212,226,.18),rgba(161,212,226,.08) 38%,transparent 70%);animation:fogShift1 22s linear infinite}
 .ambient-fog.f2{bottom:10vh;background:radial-gradient(ellipse at center,rgba(204,236,248,.12),rgba(204,236,248,.05) 42%,transparent 70%);animation:fogShift2 28s linear infinite reverse}
 .ambient-fog.f3{bottom:1vh;background:radial-gradient(ellipse at center,rgba(125,180,199,.09),rgba(125,180,199,.04) 44%,transparent 72%);animation:fogShift3 33s linear infinite}
-.login-wrap,.app-shell,.m71-page{position:relative;z-index:1}
-.panel,.hero-panel,.survivor-card,.m71-dock,.m71-panel,.m71-library details,.m71-library-card,.m71-event,.m71-item,.modal,.dice-dialog,.metric,.kpi,.attr,.rule-section{
- backdrop-filter: blur(7px) saturate(115%);
- position:relative;overflow:hidden;
+
+/* Reset flow sizing: the decorative scenery must never push the UI down. */
+.ambient-scene{position:fixed!important;inset:0!important;overflow:hidden!important;pointer-events:none!important;z-index:0!important}
+#app{position:relative;z-index:2}
+html,body{max-width:100%;overflow-x:hidden}
+
+/* Keep the character portrait in its own vertical zone on narrow displays. */
+@media(max-width:570px){
+ .m71-hero{display:grid!important;grid-template-columns:minmax(0,1fr)!important;padding:230px 14px 18px!important;min-height:0!important}
+ .m71-hero-character{position:absolute!important;top:0!important;left:0!important;right:0!important;height:225px!important;z-index:2!important}
+ .m71-hero-copy{padding:8px 4px 4px!important;position:relative!important;z-index:3!important}
+ .m71-hero-copy h2{font-size:clamp(25px,8vw,33px)!important}
 }
-.panel:before,.hero-panel:before,.survivor-card:before,.m71-dock:before,.m71-panel:before,.m71-library details:before,.m71-library-card:before,.m71-event:before,.m71-item:before,.modal:before,.dice-dialog:before,.metric:before,.kpi:before,.attr:before,.rule-section:before{
- content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.05),transparent 28%);pointer-events:none;opacity:.72}
-.panel:hover,.hero-panel:hover,.survivor-card:hover,.m71-dock:hover,.m71-panel:hover,.m71-library-card:hover,.m71-item:hover{transform:translateY(-1px);box-shadow:0 16px 34px rgba(0,0,0,.16),0 0 0 1px rgba(163,219,234,.07)}
-.hero-title,.m71-page-title h2,.brand .wordmark{position:relative}
-.hero-title:after,.m71-page-title h2:after,.brand .wordmark:after{content:'';position:absolute;left:0;bottom:-8px;width:88px;max-width:40%;height:1px;background:linear-gradient(90deg,rgba(163,219,234,.9),transparent)}
-.hero-sub,.m71-page-title label{ text-shadow:0 1px 18px rgba(141,204,226,.16)}
-button,.btn,.m71-dock-tools button,.side-nav button,.m71-pill{transition:transform .22s ease,box-shadow .24s ease,background-color .24s ease,border-color .24s ease,color .24s ease}
-button:hover:not(:disabled),.btn:hover:not(:disabled),.m71-dock-tools button:hover,.side-nav button:hover{transform:translateY(-1px)}
-.side-nav button.active,.m71-target.selected,.btn.red,.chip.red{box-shadow:0 0 0 1px rgba(163,219,234,.09),0 0 18px rgba(121,190,214,.15)}
-.m71-dock-bar{position:relative}
-.m71-dock-bar:after{content:'';position:absolute;inset:auto 0 -1px 0;height:1px;background:linear-gradient(90deg,transparent,rgba(163,219,234,.6),transparent)}
-.m71-page-title .eyebrow,.hero-note,.hero-foot,.brand-note,.edition-footnote{letter-spacing:.22em}
-.boot{position:relative;overflow:hidden}
-.boot:before{content:'';position:absolute;inset:0;background:linear-gradient(110deg,transparent 12%,rgba(255,255,255,.08) 24%,transparent 36%);transform:translateX(-120%);animation:bootSweep 2.8s ease-in-out infinite}
-@keyframes fogShift1{0%{transform:translateX(-6%) scale(1)}50%{transform:translateX(5%) scale(1.04)}100%{transform:translateX(-6%) scale(1)}}
-@keyframes fogShift2{0%{transform:translateX(9%) scale(1.03)}50%{transform:translateX(-4%) scale(1)}100%{transform:translateX(9%) scale(1.03)}}
-@keyframes fogShift3{0%{transform:translateX(-2%) scale(1)}50%{transform:translateX(4%) scale(1.03)}100%{transform:translateX(-2%) scale(1)}}
-@keyframes auroraDrift{0%{transform:translateX(-2%) translateY(0) scale(1)}100%{transform:translateX(2%) translateY(1.5%) scale(1.04)}}
-@keyframes starPulse{0%,100%{opacity:.28}50%{opacity:.46}}
-@keyframes bootSweep{0%{transform:translateX(-120%)}45%,100%{transform:translateX(130%)}}
-@media (max-width: 900px){.ambient-svg{height:min(31vh,210px)}.ambient-fog.f1{bottom:12vh}.ambient-fog.f2{bottom:7vh}}
-@media (prefers-reduced-motion: reduce){.ambient-aurora,.ambient-stars,.ambient-fog,.boot:before{animation:none!important}}
-
-/* Indicadores de sincronização dos dados */
-.dice-sync-note,.dice-pending-note{color:#a2cad8;font:12px/1.5 ui-monospace,Consolas,monospace;letter-spacing:.02em;margin-top:10px}
-.dice-sync-note.error{color:#f19b9e}
-
-#toast{position:fixed;bottom:22px;right:23px;z-index:70;}

@@ -1,0 +1,27 @@
+'use strict';
+const assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs'),path=require('node:path');
+const root=path.join(__dirname,'..'),read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const html=read('SLASHER_Demo_Offline.html'),online=read('index.html'),ui=read('settings-page.js');
+for(const name of ['slasher-audio-enabled','slasher-audio-volume','slasher-audio-test','slasher-audio-mute'])assert(ui.includes(name),name);
+assert(online.includes('src="sfx.js"')&&online.includes('src="settings-page.js"'));
+assert(html.includes('data-file="sfx.js"')&&html.includes('data-file="settings-page.js"'));
+assert(!online.includes('id="slasher-audio-toggle"'));
+let constructed=0,notes=0;
+const gain={value:0,setValueAtTime(){},linearRampToValueAtTime(){},exponentialRampToValueAtTime(){},setTargetAtTime(){}};
+const node=()=>({gain,frequency:{value:100,setValueAtTime(){},exponentialRampToValueAtTime(){}},Q:{value:1},connect(){},start(){notes++},stop(){},buffer:null});
+class AC{constructor(){constructed++;this.currentTime=1;this.state='running';this.sampleRate=44100;this.destination=node()}createGain(){return node()}createOscillator(){return node()}createBiquadFilter(){return node()}createBuffer(){return {getChannelData(){return new Float32Array(15435)}}}createBufferSource(){return node()}resume(){return Promise.resolve()}}
+const store=new Map(),handlers=new Map();
+const dom={};
+for(const id of ['slasher-audio-enabled','slasher-audio-volume','slasher-audio-volume-value','slasher-audio-test','slasher-audio-mute','settings-audio-status'])dom[id]={id,value:'30',checked:true,disabled:false,dataset:{},textContent:'',setAttribute(){}};
+const document={readyState:'complete',hidden:false,getElementById:id=>dom[id]||null,addEventListener(name,cb){(handlers.get(name)||handlers.set(name,[]).get(name)).push(cb)}};
+const scope={window:{AudioContext:AC},document,localStorage:{getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,String(v))},performance:{now:()=>1000},Float32Array,Math,Number,console};
+vm.runInNewContext(read('sfx.js'),scope,{filename:'sfx.js'});
+const snd=scope.window.SLASHER_SFX;
+assert.equal(constructed,0,'no autoplay');assert.equal(snd.get().volume,30);
+const click=target=>(handlers.get('click')||[]).forEach(fn=>fn({target}));
+const button={closest:sel=>sel==='#slasher-audio-test'?button:null};click(button);
+assert(constructed===1&&notes>0,'user click starts synthesized sound');
+snd.setEnabled(false);const prev=notes;assert.equal(snd.play('navigate'),false);assert.equal(notes,prev);
+snd.setEnabled(true);snd.setVolume(65);assert.equal(snd.get().volume,65);
+assert(store.has('slasher-ui-sound-v1'));snd.play('dice');snd.play('item');snd.play('purchase');snd.play('back');snd.play('error');assert(notes>prev);
+console.log('PASS: WebAudio starts only on gesture, test button, mute, volume, synth notes, saved preferences.');

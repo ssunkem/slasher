@@ -1,0 +1,24 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
+const root=path.join(__dirname,'..'),code=fs.readFileSync(path.join(root,'crt.js'),'utf8');
+const storage=new Map(),listeners=new Map(),fields=new Map();
+const make=id=>({id,value:'',textContent:'',dataset:{},classList:{toggle(){}},querySelector:()=>null,setAttribute(){}});
+const fieldsById=id=>fields.get(id)||null;
+for(const id of ['slasher-crt','settings-crt-status','slasher-fx-bloom','slasher-fx-bloom-value','slasher-fx-chroma','slasher-fx-chroma-value'])fields.set(id,make(id));
+const rootVars={};
+const doc={documentElement:{dataset:{},style:{setProperty(k,v){rootVars[k]=v}}},getElementById:fieldsById,querySelectorAll:()=>[make('soft'),make('classic'),make('strong'),make('off')].map((e,i)=>Object.assign(e,{dataset:{crtMode:['soft','classic','strong','off'][i]}})),addEventListener(name,fn){if(!listeners.has(name))listeners.set(name,[]);listeners.get(name).push(fn)}};
+const scope={document:doc,window:{},localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,String(v))}};
+vm.createContext(scope);vm.runInContext(code,scope);
+const api=scope.window.SLASHER_CRT;
+assert.equal(api.get(),'classic');assert.equal(api.effects().bloom,35);
+api.set('strong');assert.equal(api.get(),'strong');assert.equal(storage.get('slasher-crt-intensity-v1'),'strong');
+api.setFx('bloom',70);api.setFx('chroma',50);
+assert.equal(rootVars['--crt-chroma-right'],'0.90px');
+assert.equal(fieldsById('slasher-fx-bloom-value').textContent,'70%');
+assert.equal(storage.get('slasher-crt-bloom-v1'),'70');
+function fire(type,target){for(const fn of listeners.get(type)||[])fn({target})}
+const reset={closest:sel=>sel==='#slasher-fx-reset'?reset:null};fire('click',reset);
+assert.equal(api.effects().bloom,35);assert.equal(api.effects().chroma,30);
+const off={dataset:{crtMode:'off'}};fire('click',{closest:sel=>sel==='[data-crt-mode]'?off:null});
+assert.equal(api.get(),'off');assert.equal(fieldsById('settings-crt-status').textContent,'DESLIGADO');
+console.log('PASS: CRT modes, bloom, chromatic aberration, reset, saved preferences.');

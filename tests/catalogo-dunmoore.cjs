@@ -15,7 +15,7 @@ const document={querySelector:q=>q==='#app'?root:null,querySelectorAll:()=>[],ge
 const window={SLASHER_CONFIG:{supabaseUrl:'',supabaseAnonKey:''},addEventListener:()=>{}};
 const ctx={document,window,localStorage:storage,console,setTimeout,clearTimeout,setInterval:()=>0,clearInterval,confirm:()=>true,crypto:require('node:crypto').webcrypto,FormData:FakeFormData,navigator:{clipboard:{}},URL,Image:class{},performance};
 vm.createContext(ctx);
-for(const fname of ['mesa71.js','app.js'])vm.runInContext(fs.readFileSync(path.join(base,fname),'utf8'),ctx,{filename:fname});
+for(const fname of ['dice-local.js','mesa71.js','app.js'])vm.runInContext(fs.readFileSync(path.join(base,fname),'utf8'),ctx,{filename:fname});
 const get=expr=>vm.runInContext(expr,ctx);
 function form(name,fields){const button={disabled:false,isConnected:true};return {dataset:{mesaForm:name},getAttribute:()=>null,querySelector:sel=>sel==='button[type=submit]'?button:null,entries:fields,_button:button}}
 async function submit(name,fields){const f=form(name,fields);await events.submit({preventDefault(){},target:f,submitter:{value:'true'}});assert.equal(f._button.disabled,false,'Botão deve ser habilitado após submit')}

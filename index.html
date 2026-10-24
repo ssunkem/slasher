@@ -2,13 +2,19 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#08111a"><meta name="description" content="SLASHER: plataforma de RPG de horror cooperativo em Dunmoore">
+<meta name="theme-color" content="#030409"><meta name="description" content="SLASHER: RPG de survival horror multiplayer com interface CRT, inventário e combate online." >
 <title>SLASHER | Dunmoore</title>
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="mesa71.css">
 <link rel="stylesheet" href="dunmoore.css">
+<link rel="stylesheet" href="crt.css">
+<link rel="stylesheet" href="sfx.css">
+<link rel="stylesheet" href="settings.css">
 </head>
 <body>
+<div id="slasher-crt" class="crt-screen" data-mode="classic" aria-hidden="true">
+ <div class="crt-glow-field"></div><div class="crt-phosphor"></div><div class="crt-noise"></div><div class="crt-scanlines"></div><div class="crt-beam"></div><div class="crt-vignette"></div>
+</div>
 <div class="ambient-scene" aria-hidden="true">
   <div class="ambient-aurora"></div>
   <div class="ambient-stars"></div>
@@ -38,6 +44,9 @@
 <div id="app"><div class="boot">SLASHER <span>VII</span><small>CARREGANDO ARQUIVOS...</small></div></div>
 <div id="toast" role="status" aria-live="polite"></div>
 <script src="config.js"></script>
+<script src="crt.js"></script>
+<script src="sfx.js"></script>
+<script src="settings-page.js"></script>
 <script src="dice-local.js"></script>
 <script src="mesa71.js"></script>
 <script type="module" src="app.js"></script>

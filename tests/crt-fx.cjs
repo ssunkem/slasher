@@ -1,0 +1,12 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const root=path.join(__dirname,'..');
+const read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const css=read('crt.css'),js=read('crt.js'),settings=read('settings-page.js'),index=read('index.html'),local=read('SLASHER_Demo_Offline.html');
+assert(css.includes('var(--crt-bloom-core)')&&css.includes('var(--crt-chroma-left)'));
+assert(js.includes("addEventListener('input'")&&js.includes('slasher-crt-bloom-v1')&&js.includes('slasher-crt-chroma-v1'));
+for(const token of ['slasher-fx-bloom','slasher-fx-chroma','slasher-fx-reset','data-crt-mode','Imagem / CRT'])assert(settings.includes(token),token);
+assert(index.includes('settings.css')&&index.includes('settings-page.js'));
+for(const name of ['settings.css','settings-page.js','crt.js'])assert(local.includes(`data-file="${name}"`));
+assert(!index.includes('class="crt-control"'));
+console.log('PASS: FX markup, independent settings tab, responsive CSS and standalone aligned.');

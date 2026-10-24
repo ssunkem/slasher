@@ -17,7 +17,7 @@ const window={SLASHER_CONFIG:{supabaseUrl:'',supabaseAnonKey:''},addEventListene
 const context={document,window,localStorage:storage,console,setTimeout,clearTimeout,setInterval:()=>0,clearInterval,confirm:()=>true,crypto:require('node:crypto').webcrypto,FormData:FakeFormData,navigator:{clipboard:{}},URL,Image:class{},performance};
 vm.createContext(context);
 const base=path.resolve(__dirname,'..');
-for(const fname of ['mesa71.js','app.js'])vm.runInContext(fs.readFileSync(path.join(base,fname),'utf8'),context,{filename:fname});
+for(const fname of ['dice-local.js','mesa71.js','app.js'])vm.runInContext(fs.readFileSync(path.join(base,fname),'utf8'),context,{filename:fname});
 const get=(expr)=>vm.runInContext(expr,context);
 function newForm(formName,entries){
  const button={disabled:false,isConnected:true};

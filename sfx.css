@@ -1,0 +1,25 @@
+/* SLASHER / UI Audio controls, beside the CRT presets. */
+.crt-control #slasher-audio-toggle,
+.crt-control #slasher-audio-toggle:hover:not(:disabled){min-width:62px!important;min-height:42px!important;padding:9px!important}
+.crt-control #slasher-audio-toggle[aria-expanded='true']{border-color:#5a9b72!important;box-shadow:0 0 14px rgba(59,146,83,.3)!important}
+.sfx-led{width:6px;height:6px;background:#667186;box-shadow:none;display:inline-block;flex:none;border-radius:50%}
+.sfx-led[data-on='true']{background:#70ce86;box-shadow:0 0 10px rgba(93,224,123,.55)}
+.sfx-panel{position:absolute;right:0;bottom:calc(100% + 11px);width:min(318px,calc(100vw - 24px));
+ background:rgba(3,6,14,.98);border:1px solid rgba(73,100,174,.88);color:#e8eaf0;
+ padding:16px;display:grid;gap:15px;box-shadow:0 16px 40px rgba(0,0,0,.85),inset 0 0 22px rgba(39,55,111,.16);backdrop-filter:blur(8px);border-radius:0}
+.sfx-panel[hidden]{display:none!important}
+.sfx-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(67,94,161,.5);padding-bottom:10px}
+.sfx-header strong{font:400 19px/1.1 Georgia,'Times New Roman',serif;letter-spacing:.09em}
+.sfx-header small{display:inline!important;font:10px ui-monospace,Consolas,monospace;color:#94a3bc}
+.sfx-toggle-row{display:flex!important;align-items:center!important;gap:10px!important;font:13px Georgia,'Times New Roman',serif!important;color:#e4e7ee!important}
+.sfx-toggle-row input{appearance:auto!important;width:19px!important;height:19px!important;min-height:19px!important;flex:none;accent-color:#72c18b!important;cursor:pointer}
+.sfx-field{display:grid;gap:7px;color:#e4e7ee!important;font:13px/1.45 Georgia,'Times New Roman',serif!important}
+.sfx-field>span{display:flex;justify-content:space-between;gap:12px}
+.sfx-field output{font:12px ui-monospace,Consolas,monospace;color:#96b9d8}
+.sfx-field input[type='range']{appearance:auto!important;display:block;width:100%!important;min-height:25px!important;box-shadow:none!important;padding:0!important;border:0!important;background:transparent!important;accent-color:#80b8d2!important;cursor:pointer}
+.sfx-field input:disabled{opacity:.35}
+.sfx-actions{display:flex;gap:8px;flex-wrap:wrap}
+.crt-control .sfx-actions button,.crt-control .sfx-actions button:hover:not(:disabled){min-width:0!important;min-height:36px!important;flex:1 1 120px;padding:9px 10px!important;color:#dde4ef!important}
+.sfx-help{font:11px/1.5 ui-monospace,Consolas,monospace;color:#a1aac0;margin:0}
+@media(max-width:600px){.crt-control #slasher-audio-toggle{min-width:52px!important;padding:8px!important}.sfx-panel{padding:14px}.crt-control-row{gap:4px}}
+@media print{.sfx-panel,#slasher-audio-toggle{display:none!important}}
