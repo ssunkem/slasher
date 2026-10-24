@@ -47,7 +47,7 @@ class LocalAPI{
  async removeEffect(id){const e=this.data.effects.find(e=>e.id===id);if(!e)return;this.data.effects=this.data.effects.filter(e=>e.id!==id);this.audit(`Removeu ${e.kind}: ${e.title}`,e.character_id);this.save()}
  async setClock(k,v){this.data.campaigns.find(c=>c.id===state.campaignId)[k]=v;this.save()}
  async saveNote(t){this.data.notes[state.campaignId]=t;this.save()}
- async updateCharacter(ch){const c=this.data.characters.find(c=>c.id===ch.id);if(!c||c.schemaVersion!==2)throw Error('Ficha 2.0 não encontrada');const merged={...c,...ch,id:c.id,campaign_id:c.campaign_id,owner_id:c.owner_id,vitality:c.vitality,vitalityMax:c.vitalityMax,stamina:c.stamina,staminaMax:c.staminaMax,tension:c.tension,preparations:c.preparations,wounds:c.wounds,deathRisk:c.deathRisk,marks:c.marks,development:c.development};const errors=window.SLASHER_RULES.validateCharacter(merged);if(errors.length)throw Error(errors.join('; '));Object.assign(c,merged,{updated_at:dateNow()});this.audit('Ficha atualizada',c.id);this.save()}
+ async updateCharacter(ch){const c=this.data.characters.find(c=>c.id===ch.id);if(!c||c.schemaVersion!==2)throw Error('Ficha 2.0 não encontrada');const merged={...c,...ch,id:c.id,campaign_id:c.campaign_id,owner_id:c.owner_id,vitality:c.vitality,vitalityMax:c.vitalityMax,stamina:c.stamina,staminaMax:c.staminaMax,tension:c.tension,preparations:c.preparations,wounds:c.wounds,deathRisk:c.deathRisk,marks:c.marks,development:c.development};const errors=window.SLASHER_RULES.validateCharacter(merged,{allowOverload:true});if(errors.length)throw Error(errors.join('; '));Object.assign(c,merged,{updated_at:dateNow()});this.audit('Ficha atualizada',c.id);this.save()}
  async assignCharacter(chId,owner){this.data.characters.find(c=>c.id===chId).owner_id=owner;this.audit('Atribuição de ficha alterada',chId);this.save()}
  async roll(p){const c=this.data.characters.find(c=>c.id===p.character_id&&c.campaign_id===p.campaign_id);if(!c)throw Error('Selecione uma ficha da edição 2.0');const result=window.SLASHER_RULES.rollForCharacter(c,p);const r={...result,schemaVersion:2,id:uuid(),campaign_id:p.campaign_id,actor_id:p.actor_id||this.me.id,character_id:c.id,kind:'test',description:safeInput(p.description,160),created_at:dateNow()};this.data.rolls.push(r);this.save();return r}
 }
@@ -106,9 +106,13 @@ async function handleGuestRequest(who,method,args){
  let result;
  if(method==='createCharacter'){
    const p=a||{};if(!safeInput(p.name,90))throw Error('Nome obrigatório');
+   if((p.inventory||[]).some(i=>Number(i.damageBase||0)>2))throw Error('Equipamento de dano 3 ou 4 exige concessão do narrador');
    result=await api.createCharacter({...p,campaign_id:state.campaignId,owner_id:who.id,npc:false});
   }else if(method==='updateCharacter'){
-   owned(a?.id);result=await api.updateCharacter({...a,portrait:String(a.portrait||'').slice(0,170000),notes:String(a.notes||'').slice(0,5000)});
+   const current=owned(a?.id);
+   for(const k of ['attrs','skills','history','inventory','vitality','stamina','tension','wounds','deathRisk','development','preparations'])
+    if(JSON.stringify(a?.[k])!==JSON.stringify(current[k]))throw Error('Edição mecânica requer autorização do narrador');
+   result=await api.updateCharacter({...a,portrait:String(a.portrait||'').slice(0,170000),notes:String(a.notes||'').slice(0,5000)});
   }else if(method==='roll'){
    const p=a||{};owned(p.character_id);
    if(p.kind!=='test'||!['normal','dificil','extremo'].includes(p.difficulty||'normal'))throw Error('Tipo de rolagem inválido');
