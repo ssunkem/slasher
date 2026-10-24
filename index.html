@@ -2,8 +2,8 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#030409"><meta name="description" content="SLASHER: RPG de survival horror cooperativo ambientado em Dunmoore. Hospede mesas com código curto, personagens e combate em tempo real." >
-<title>SLASHER | Dunmoore</title>
+<meta name="theme-color" content="#030409"><meta name="description" content="SLASHER: RPG de survival horror cooperativo ambientado em Dunmoor. Hospede mesas com código curto, personagens e combate em tempo real." >
+<title>SLASHER | Dunmoor</title>
 <link rel="stylesheet" href="styles.css?v=1.0.0">
 <link rel="stylesheet" href="mesa71.css?v=1.0.0">
 <link rel="stylesheet" href="dunmoore.css?v=1.0.0">
@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="crt.css?v=1.0.0">
 <link rel="stylesheet" href="sfx.css?v=1.0.0">
 <link rel="stylesheet" href="settings.css?v=1.0.0">
+<link rel="stylesheet" href="slasher-v2.css?v=2.0.0">
 </head>
 <body>
 <div id="slasher-crt" class="crt-screen" data-mode="classic" aria-hidden="true">
@@ -42,14 +43,16 @@
   <div class="ambient-vignette"></div>
 </div>
 
-<div id="app"><div class="boot">SLASHER <span>1.0</span><small>ESTABELECENDO SISTEMA P2P...</small></div></div>
+<div id="app"><div class="boot">SLASHER <span>2.0 · TESTE</span><small>ESTABELECENDO SISTEMA P2P...</small></div></div>
 <div id="toast" role="status" aria-live="polite"></div>
 <script src="signal-config.js?v=1.0.0"></script>
 <script src="p2p.js?v=1.0.0"></script>
 <script src="crt.js?v=1.0.0"></script>
 <script src="sfx.js?v=1.0.0"></script>
 <script src="settings-page.js?v=1.0.0"></script>
-<script src="dice-local.js?v=1.0.0"></script>
-<script src="mesa71.js?v=1.0.0"></script>
-<script type="module" src="app.js?v=1.0.0"></script>
+<script src="rules-engine.js?v=2.0.0"></script>
+<script src="slasher-v2.js?v=2.0.0"></script>
+<script src="investigation.js?v=2.0.0"></script>
+<script src="mesa-v2.js?v=2.0.0"></script>
+<script type="module" src="app.js?v=2.0.0"></script>
 </body></html>

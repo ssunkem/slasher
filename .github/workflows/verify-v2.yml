@@ -1,0 +1,27 @@
+name: Verify SLASHER v2
+on:
+  push:
+    branches:
+      - feat/slasher-v2-rules
+  pull_request:
+    paths:
+      - "rules-engine.js"
+      - "slasher-v2.js"
+      - "mesa-v2.js"
+      - "investigation.js"
+      - "app.js"
+      - "index.html"
+      - "tests/**"
+      - ".github/workflows/verify-v2.yml"
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Regras e ficha
+        run: node tests/rules-v2.cjs
+      - name: Mesa autoritativa e investigação
+        run: node tests/mesa-v2.cjs

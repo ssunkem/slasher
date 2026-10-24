@@ -1,0 +1,29 @@
+/* SLASHER v2: widgets criados a partir do Livro Básico */
+.v2-form{display:grid;gap:14px;max-height:min(70vh,780px);overflow:auto;padding:3px 7px 3px 2px}
+.v2-form-step{border:1px solid var(--line,rgba(255,255,255,.12));border-radius:9px;padding:14px;background:rgba(255,255,255,.025);display:grid;gap:10px}
+.v2-form-step h3{margin:0 0 3px;letter-spacing:.08em;font-size:.9rem}
+.v2-form-step textarea,.v2-form-step select{width:100%}
+.v2-sheet{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:15px}
+.v2-sheet>.panel,.v2-sheet>.stack{min-width:0}
+.v2-sheet h3{margin:18px 0 7px;font-size:1rem}
+.v2-sheet ul{margin:4px 0;padding-left:20px;line-height:1.65}
+.v2-portrait{object-fit:cover;max-height:260px;width:100%;border-radius:8px;margin-bottom:16px}
+.v2-attributes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:14px}
+.v2-attr{border:1px solid var(--line,rgba(255,255,255,.13));border-radius:7px;padding:11px;background:rgba(0,0,0,.2);display:grid;gap:5px}
+.v2-attr small{font-size:.67rem;opacity:.78;line-height:1.35}
+.v2-attr strong{font-size:1.55rem;letter-spacing:.04em}
+.v2-meter{margin:10px 0}
+.v2-three-meters{display:grid;gap:5px}
+.v2-threat-list,.v2-evidence-list{display:grid;gap:10px;margin:14px 0}
+.v2-threat,.v2-evidence{padding:12px;border:1px solid var(--line,rgba(255,255,255,.13));background:rgba(0,0,0,.22);border-radius:7px}
+.v2-threat h4,.v2-evidence h4{margin:6px 0}
+.v2-evidence{display:flex;align-items:start;justify-content:space-between;gap:10px}
+.v2-evidence p,.v2-threat p{line-height:1.5;margin:5px 0}
+.v2-evidence small{opacity:.7}
+.v2-clock{padding:11px 0;border-bottom:1px solid var(--line,rgba(255,255,255,.13))}
+.v2-clock-step{flex:1;min-width:10px;text-align:center;border:1px solid var(--line,rgba(255,255,255,.13));opacity:.25;border-radius:3px}
+.v2-clock-step.active{opacity:1;background:rgba(176,42,55,.4);color:#fff}
+.v2-distance{padding:12px;background:rgba(255,255,255,.035);margin:10px 0;border-radius:6px}
+.v2-photo img{max-height:130px;max-width:150px;object-fit:cover;border-radius:6px}
+@media(max-width:800px){.v2-sheet{grid-template-columns:1fr}.v2-attributes{grid-template-columns:repeat(3,minmax(0,1fr))}.v2-form-step .grid3{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:470px){.v2-attributes{grid-template-columns:repeat(2,minmax(0,1fr))}.v2-form-step .grid3{grid-template-columns:1fr}.v2-form{max-height:75vh}}
