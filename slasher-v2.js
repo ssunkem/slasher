@@ -57,7 +57,7 @@ function parseCharacterForm(dat,previous={}){
  const c=R.newCharacter({...previous,name:dat.name,age:Number(dat.age),occupation:dat.occupation,
  concept:dat.concept,traits:dat.traits,concern:dat.concern,attrs:values,history:dat.history,
  skills,contact:dat.contact,bonds:[dat.bond_0,dat.bond_1,dat.bond_2],home:dat.home,
- responsibility:dat.responsibility,meaningfulItem:dat.meaningfulItem,inventory,notes:dat.notes});
+ responsibility:dat.responsibility,meaningfulItem:dat.meaningfulItem,inventory,notes:dat.notes},{allowOverload:previous?.schemaVersion===R.VERSION});
  if(previous?.schemaVersion===R.VERSION){
   for(const k of ['id','campaign_id','owner_id','vitality','vitalityMax','stamina','staminaMax','tension','preparations','wounds','deathRisk','marks','development','portrait'])c[k]=previous[k];
  }
