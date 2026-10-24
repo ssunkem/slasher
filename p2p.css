@@ -1,0 +1,20 @@
+/* SLASHER / P2P room UX. Does not modify CRT/SFX settings. */
+.ambient-scene { position:fixed!important; inset:0!important; height:100vh!important; width:100%!important; min-height:0!important; margin:0!important; pointer-events:none!important; }
+#app { position:relative; z-index:2; }
+.login-shell { min-height:100vh; }
+#p2p-offer-code,#p2p-response-code,#p2p-answer,textarea[name="offer"] {
+  width:100%; font:12px/1.55 ui-monospace,Consolas,"Courier New",monospace!important;
+  overflow-wrap:anywhere; word-break:break-all; resize:vertical; min-height:106px;
+  color:#dbe4fb!important; border-color:rgba(80,109,188,.7)!important;
+}
+button[data-action^="p2p-"]:focus-visible,
+#p2p-backup-file:focus-visible,
+textarea[name="offer"]:focus-visible,
+#p2p-response-code:focus-visible { outline:2px solid #76baff; outline-offset:3px; }
+.login-card .panel.stack p.hint { line-height:1.55; }
+@media(max-width:760px) {
+  #p2p-offer-code,#p2p-response-code,#p2p-answer,textarea[name="offer"] { min-height:96px; font-size:11px!important; }
+}
+/* Keep the oversized archival numeral inside the hero; no blank scroll area beneath the screen. */
+body .login-hero { overflow:hidden!important; }
+body .ambient-scene { overflow:hidden!important; }

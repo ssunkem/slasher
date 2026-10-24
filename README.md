@@ -6,100 +6,103 @@
 
 **A cidade nunca esquece. Só muda os registros.**
 
-Um RPG de **survival horror, investigação e mistério**, com fichas digitais, mesa multiplayer e uma interface inspirada nos menus de jogos de terror do começo dos anos 2000.
+RPG digital de **survival horror, investigação e mistério**. Menus inspirados nos clássicos do PS1, efeitos CRT e uma mesa conectada diretamente entre jogadores e mestre.
 
-[![Versão](https://img.shields.io/badge/vers%C3%A3o-10.0-84a8ec?style=flat-square&labelColor=080b14)](https://github.com/ssunkem/slasher)
-![Interface](https://img.shields.io/badge/visual-CRT%20%2B%20bloom%20%2B%20RGB-64b977?style=flat-square&labelColor=080b14)
+![Edição](https://img.shields.io/badge/edi%C3%A7%C3%A3o-X-8d9fe7?style=flat-square&labelColor=080b14)
+![Modo](https://img.shields.io/badge/modo%20padr%C3%A3o-P2P%20experimental-64b977?style=flat-square&labelColor=080b14)
 ![Stack](https://img.shields.io/badge/frontend-HTML%20%7C%20CSS%20%7C%20JS-b4bed5?style=flat-square&labelColor=080b14)
-![Mesa](https://img.shields.io/badge/multiplayer-Supabase-94a6d1?style=flat-square&labelColor=080b14)
+![Servidor](https://img.shields.io/badge/banco%20de%20dados-nenhum-7599c7?style=flat-square&labelColor=080b14)
 
-**[🎮 Abrir SLASHER](https://ssunkem.github.io/slasher/) · [📦 Instalar do zero](#-instalação-do-zero) · [📺 Ver telas](#-a-interface) · [📖 Manual](manual-6.html)**
+**[🎮 Abrir SLASHER](https://ssunkem.github.io/slasher/) · [⌁ Conectar uma mesa](#-jogar-p2p) · [📺 Interface](#-interface) · [📁 Backup](#-arquivos-e-backups) · [📖 Manual](manual-6.html)**
 
 </div>
 
 ---
 
-## 📺 A interface
+## ⌁ O que mudou?
+
+O **SLASHER 10.1 (P2P experimental)** funciona por padrão **sem Supabase**. O site é estático no GitHub Pages, mas as fichas, rolagens e alterações da sessão são sincronizadas via **WebRTC DataChannels**. O navegador do **mestre** é o host e mantém os dados oficiais da campanha.
+
+- **Mestre:** cria ou abre uma campanha local, oferece conexões e mantém sua aba aberta.
+- **Jogadores:** abrem o mesmo endereço, escolhem "Entrar na mesa do mestre" e participam sem criar contas.
+- **RNG autoritativo do host:** o jogador solicita uma rolagem ou ataque; o mestre sorteia os valores e devolve o resultado confirmado. Isso impede que o jogador escolha livremente o resultado enviado ao host.
+- **Permissões:** o host confere o dono da ficha, impede acesso a ações exclusivas do mestre e não compartilha as notas secretas do GM. Criaturas preparadas não são enviadas enquanto não há confronto ativo.
+- **Persistência:** a campanha fica no navegador do host, com opção de exportar/importar um arquivo JSON de backup.
+
+> [!IMPORTANT]
+> **É um beta P2P.** A conexão foi testada com um transporte WebRTC simulado e com a interface mestre/jogador no navegador. Ainda falta validar ICE/NAT com duas redes reais. Alguns roteadores ou operadoras precisam de retransmissão TURN, que não está configurada nesta versão. O modo P2P não garante conexão em qualquer rede.
+
+## 🔪 Jogar P2P
+
+Não há SQL, conta, token, `config.js` ou instalação de Supabase.
+
+### No computador do mestre
+
+1. Abra **[ssunkem.github.io/slasher](https://ssunkem.github.io/slasher/)** e escolha **Hospedar como mestre**.
+2. Abra uma campanha existente ou clique em **Criar campanha**. Os arquivos ficam salvos neste dispositivo.
+3. Na barra lateral, entre em **Sala P2P → Gerar convite para jogador**.
+4. Copie o código longo do convite e envie **somente à pessoa que quer convidar**.
+5. Quando o jogador enviar a resposta, cole-a em **Resposta** e clique em **Concluir conexão**.
+6. Para adicionar outra pessoa, gere um novo convite. Não feche a aba do mestre durante a sessão.
+
+### No navegador do jogador
+
+1. Abra o **mesmo endereço** e escolha **Entrar na mesa do mestre**.
+2. Informe seu apelido, cole o código recebido do mestre e clique em **Gerar resposta de conexão**.
+3. Envie a resposta ao mestre. Assim que ele concluir a conexão, a **Mesa Atual** abre automaticamente.
+4. Crie seu sobrevivente. O mestre pode acompanhar sua ficha, controlar monstros, itens e loja.
+
+> A troca manual de dois códigos é a **sinalização** do WebRTC. Um código simples de sala ou convite em um clique exigiria um serviço de sinalização (mesmo que pequeno). Servidores **STUN públicos** são utilizados apenas para descobrir rotas de conexão; os dados da sessão não são enviados ao Supabase. Em redes que não permitem conexão direta, seria necessário um serviço **TURN**.
+
+## 📺 Interface
 
 > *Uma tela velha. Um arquivo aberto. Uma cidade que não deveria existir nos registros.*
 
 <div align="center">
-  <img src="assets/preview-desktop.webp" alt="SLASHER 10.0: Mesa Atual com scanlines CRT clássico, bloom e aberração cromática ao máximo" width="100%">
-  <sub>Mesa Atual — CRT Clássico · Bloom 100% · Aberração cromática 100%</sub>
+  <img src="assets/preview-p2p-entry.webp" alt="Nova tela inicial P2P: hospedar como mestre ou entrar na mesa" width="100%">
+  <sub>Entrada P2P · A estética de Dunmoore, agora sem Supabase</sub>
+</div>
+
+<div align="center">
+  <img src="assets/preview-desktop.webp" alt="Mesa Atual em estilo survival horror CRT" width="100%">
+  <sub>Mesa Atual · CRT Clássico · Bloom 100% · Aberração cromática 100%</sub>
 </div>
 
 <br>
 
 <div align="center">
-  <img src="assets/preview-settings.webp" alt="Aba Configurações do SLASHER, com CRT Clássico selecionado e bloom e aberração cromática em 100%" width="100%">
-  <sub>Configurações — imagem e áudio reunidos numa única tela</sub>
+  <img src="assets/preview-settings.webp" alt="Configurações de vídeo e áudio" width="100%">
+  <sub>Configurações · Imagem, efeitos e áudio em uma única aba</sub>
 </div>
 
-<br>
-
 <details>
-<summary><b>📱 Ver versão mobile</b></summary>
-<br>
-<div align="center"><img src="assets/preview-mobile.webp" alt="Mesa Atual do SLASHER 10.0 no celular, com CRT clássico e efeitos em intensidade máxima" width="390"></div>
+<summary><b>📱 Ver a interface no celular</b></summary><br>
+<div align="center"><img src="assets/preview-mobile.webp" alt="SLASHER no navegador mobile" width="390"></div>
 </details>
 
-<details>
-<summary><b>🌘 Ver tela de entrada</b></summary>
-<br>
-<div align="center"><img src="assets/preview-login.webp" alt="Tela inicial de Dunmoore, em estilo survival horror CRT" width="100%"></div>
-</details>
+*As capturas mostram a identidade visual consolidada na versão 10.0; a edição P2P substituiu a antiga entrada por uma tela de hospedagem/conexão. A estética CRT permanece.*
 
-**As capturas acima são reais**, feitas com a demonstração local do SLASHER 10.0. O modo utilizado foi **Clássico**, com **bloom e aberração cromática em 100%**, conforme o conceito visual do lançamento. No uso diário, você pode reduzir ou desligar os efeitos.
+### Funcionalidades atuais
 
-## 🔪 O que existe nesta edição
-
-| Sobreviventes | Mestre | Atmosfera |
+| Para jogadores | Para o mestre | Atmosfera |
 | :-- | :-- | :-- |
-| 12 classes, atributos e retratos | Campanhas e convites por código | CRT configurável: suave, clássico, intenso e desligado |
-| HP, Stamina, Estresse e condições | Painel de controle de personagens e NPCs | Bloom e aberração cromática independentes |
-| Dados D20 com resposta imediata | Catálogo de monstros, armas e itens | Efeitos sonoros lo-fi sintetizados no navegador |
-| Inventário, armas equipadas e dinheiro | Loja com estoque, preços e compras | Configurações reunidas numa aba própria |
-| Combate com seleção de alvo e histórico | Monstros persistentes e rodadas de confronto | Interface responsiva com elementos de survival horror |
+| 12 classes, retratos e atributos | Criar campanhas e NPCs | CRT Suave / Clássico / Intenso / Desligado |
+| HP, Stamina e Estresse | Gerenciar fichas e condições | Bloom e aberração cromática reguláveis |
+| Inventário e compra de itens | Loja, estoque, armas e catálogo | Efeitos sonoros lo-fi sintetizados |
+| Testes D20 e combate | Monstros, HP, turnos e rolagens | Interface responsiva, vinheta e scanlines |
+| Registros compartilhados | Arquivo da sessão armazenado localmente | Aba Configurações independente |
 
-A **Mesa Atual** reúne inventário, rolagens, combate, loja, histórico, anotações e ferramentas de mestre em painéis que podem ser reorganizados. A identidade visual mistura menus clássicos de survival horror, tons escuros, brilho verde/azulado, scanlines, vinheta e névoa de Dunmoore.
+## 📁 Arquivos e backups
 
-**Dados locais:** o D20 e o dado de dano são sorteados pelo navegador com `crypto.getRandomValues`. O resultado aparece sem esperar a rede. O Supabase recebe a rolagem e, no combate, valida permissões, arma, defesa e alteração de HP antes de confirmar a ação.
+O **host salva os dados no armazenamento local do navegador**. Isso não equivale a um banco remoto nem é garantia de persistência: dados podem se perder se o usuário limpar o site, trocar de navegador ou entrar no modo privado.
 
-> [!IMPORTANT]
-> Como o sorteio acontece no cliente, alguém que modifique o navegador pode adulterar o resultado. O servidor **não garante a imparcialidade do dado local**. O projeto é voltado a mesas privadas de confiança, não a partidas competitivas. Falhas de sincronização devem ser verificadas no histórico antes de seguir o combate.
+Na tela **Campanhas**, o mestre encontra **Exportar backup** e **Restaurar backup**. O arquivo JSON guarda campanhas, fichas, rolagens, notas e dados da Mesa Atual. **Exporte ao final de cada sessão** e guarde uma cópia fora do navegador. A restauração substitui os arquivos locais e só é permitida quando não há jogadores conectados.
 
-## 📦 Instalação do zero
+Os jogadores não mantêm uma cópia oficial da campanha. Se o mestre encerrar a aba, a sessão fica indisponível. **Reconexão automática e recuperação de identidade ainda estão em desenvolvimento**; se alguém retornar com uma nova conexão, o mestre talvez precise reatribuir a ficha.
 
-Este guia parte de **um projeto novo e vazio do Supabase**. **Você só precisa de um arquivo SQL: [`install.sql`](install.sql).** Não é preciso seguir o histórico de atualizações nem executar scripts separados.
+## 🌐 Hospedagem
 
-### 1. Criar o projeto no Supabase
-
-1. Crie sua conta em [supabase.com](https://supabase.com/) e um **novo projeto**.
-2. No painel de autenticação, habilite **Anonymous Sign-Ins** se quiser permitir o acesso rápido por nome de usuário. A opção de e-mail/senha também pode ser configurada conforme suas preferências.
-3. Abra **SQL Editor → New query**.
-4. Copie o arquivo **[`install.sql`](install.sql)** inteiro, cole no editor e execute **Run**. Esse script prepara tabelas, índices, políticas RLS, funções e eventos em tempo real necessários à versão 10.0.
-
-> O instalador é para **banco novo**. Não o execute sobre campanhas antigas. Para manutenção de instalações existentes, use um procedimento de atualização específico após realizar backup.
-
-### 2. Configurar a conexão
-
-Abra [`config.js`](config.js) e preencha as duas informações públicas do seu projeto em **Project Settings / API** (a nomenclatura pode variar no painel do Supabase):
-
-```js
-window.SLASHER_CONFIG = {
-  supabaseUrl: 'https://SEU-PROJETO.supabase.co',
-  supabaseAnonKey: 'SUA_CHAVE_PUBLICA_ANON_OU_PUBLISHABLE'
-};
-```
-
-Use apenas a **chave pública** (`anon`/`publishable`). **Nunca** coloque a `service_role`/`secret` no frontend, em commits ou em páginas públicas. As políticas RLS e a validação das funções do banco são responsáveis pelo controle de acesso.
-
-### 3. Publicar o site
-
-1. Faça um fork ou clone deste repositório.
-2. Coloque seu `config.js` com a URL e a chave pública do seu projeto.
-3. Publique a pasta como site estático no **GitHub Pages** ou em qualquer hospedagem HTTPS compatível. Não há etapa de build.
-4. Abra o site e teste: entrar, criar campanha, entrar com convite, gerar uma ficha, rolar o D20 e iniciar um combate com dois navegadores diferentes.
+O aplicativo é estático. Para montar seu próprio endereço no GitHub Pages:
 
 ```bash
 git clone https://github.com/ssunkem/slasher.git
@@ -107,63 +110,37 @@ cd slasher
 python -m http.server 8000
 ```
 
-O servidor local acima é útil para desenvolvimento. A URL do site é `http://localhost:8000`. O modo conectado precisa de um projeto Supabase configurado; caso contrário, o SLASHER abre a demonstração local.
+O comando acima serve apenas para desenvolvimento local. No GitHub Pages, não é necessário operar um servidor de aplicação; o navegador do mestre é o host da sessão. O uso normal exige navegadores com WebRTC, uma conexão HTTPS (como GitHub Pages) e conectividade P2P entre os participantes.
 
-### 4. Testar sem Supabase
-
-Abra **[`SLASHER_Demo_Offline.html`](SLASHER_Demo_Offline.html)** no navegador. A demonstração inclui sobreviventes, monstros, inventário e uma loja de exemplo. Ela **não conecta nem altera seu banco**. Algumas funcionalidades online, como sincronização entre jogadores, não são reproduzidas no modo offline.
+**Limites atuais:** convite por troca manual de códigos, dependência de STUN público para conexão na internet, ausência de TURN, host sempre presente, sem autenticação persistente de identidade e sem testes de carga entre muitas pessoas. Compartilhe convites apenas com participantes de confiança. Conexões WebRTC podem expor endereços de rede entre os participantes.
 
 ## 🎛️ Configurações
 
-Tudo fica em **Configurações**, acessível antes de entrar numa mesa ou pela navegação lateral:
+A tela **Configurações** reúne intensidade CRT, bloom, aberração cromática, mute, volume e teste de sons. As preferências são individuais, permanecem no navegador e não precisam ser sincronizadas com a mesa.
 
-- **Imagem:** modos CRT **Suave**, **Clássico**, **Intenso** e **Desligado**, além de sliders de bloom e aberração cromática entre 0% e 100%.
-- **Áudio:** sons sintéticos de navegação, confirmação, voltar, equipar, comprar, dados e alertas, com volume, mute e botão para testar.
-- As preferências são pessoais, salvas no navegador. Áudio não toca automaticamente. Animações respeitam `prefers-reduced-motion`.
+## 🧪 Testes
 
-## 🧭 Estrutura do projeto
-
-```text
-slasher/
-├── index.html                  # Interface web
-├── app.js                      # Campanhas, personagens, navegação
-├── mesa71.js                   # Mesa, criaturas, loja, combate
-├── styles.css / mesa71.css     # Layout e painéis
-├── dunmoore.css                # Identidade visual
-├── crt.css / crt.js            # Efeitos de TV CRT, bloom e RGB
-├── sfx.css / sfx.js            # Efeitos sonoros lo-fi
-├── settings.css / settings-page.js
-├── dice-local.js              # Sorteio local com Web Crypto
-├── config.js                  # Conexão pública Supabase
-├── install.sql                # Banco completo, primeira instalação
-├── SLASHER_Demo_Offline.html  # Demonstração independente
-├── manual-6.html              # Manual do núcleo de regras
-├── assets/                    # Capturas e recursos visuais
-└── tests/                     # Testes automatizados com Node.js
-```
-
-### Testes locais
-
-Os testes incluídos cobrem partes do inventário, formulários, catálogo, sorteios, CRT, sons e Configurações. Execute, por exemplo:
+Execute na raiz do projeto:
 
 ```bash
-node tests/configuracoes.cjs
-node tests/dados-locais.cjs
-node tests/audio-ui.cjs
-node tests/catalogo-dunmoore.cjs
+for file in tests/*.cjs; do node "$file"; done
 ```
 
-## ⚠️ Estado do projeto
+Há testes da geração de dados, catálogo, formulários, controles CRT/SFX e fluxo de **oferta, resposta, sincronização e mensagens P2P** com transporte simulado. Testes reais de conectividade entre operadoras ainda são necessários antes de recomendar o P2P como solução universal.
 
-**SLASHER 10.0 ainda é um projeto experimental para mesas privadas.** O fluxo multiplayer depende de Supabase, das suas configurações de autenticação e das políticas do banco. Não há promessa de alta disponibilidade, recuperação automática de contas anônimas, antitrapaça para dados locais, rollback completo de ações ou testes de carga em produção. A interface offline não substitui a validação com contas reais.
+## 📚 Arquivos principais
 
-A autenticação anônima pode perder o acesso às fichas se a sessão do navegador for apagada ou se o usuário sair sem vincular outra forma de login. Evite armazenar dados pessoais sensíveis nas notas de campanha. Teste suas permissões antes de usar em mesas abertas.
-
-## 📓 Próximos arquivos a abrir
-
-- [`CATALOGO_DUNMOORE.md`](CATALOGO_DUNMOORE.md): biblioteca inicial de criaturas, armas e ferramentas.
-- [`manual-6.html`](manual-6.html): regras principais de investigação e sobrevivência, ainda compatíveis com a edição X.
-- [Issues](https://github.com/ssunkem/slasher/issues): bugs, sugestões de mecânicas e feedback.
+| Arquivo | Função |
+| :-- | :-- |
+| `index.html` | Entrada do aplicativo no GitHub Pages |
+| `p2p.js` | Transporte WebRTC e sinalização por código |
+| `app.js`, `mesa71.js` | Regras e interface de mesa |
+| `crt.js`, `crt.css` | Monitor CRT e efeitos |
+| `sfx.js`, `sfx.css` | Sons sintetizados |
+| `settings-page.js`, `settings.css` | Aba Configurações |
+| `SLASHER_P2P_Preview_Local.html` | Demo P2P em HTML único, sem arquivos externos |
+| `SLASHER_Demo_Offline.html` | Demonstração individual anterior |
+| `install.sql`, `schema.sql` | Arquivos históricos opcionais da integração Supabase; **não necessários para o P2P** |
 
 ---
 
@@ -171,8 +148,10 @@ A autenticação anônima pode perder o acesso às fichas se a sessão do navega
 
 ### S L A S H E R
 
-**DUNMOORE, MAINE · EDIÇÃO X · VERSÃO 10.0**
+*Três batidas. Uma voz conhecida do outro lado.*
 
-*O que a montanha engoliu ainda está escutando.*
+**Não responda.**
+
+`DUNMOORE / MAINE / ARQUIVO Nº X`
 
 </div>
