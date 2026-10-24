@@ -70,16 +70,16 @@ function p2pPublicSnapshot(){
  const camp=state.campaignId,dat=api.data;
  const raw=state.mesa71||{};
  const visible=!!raw.encounter?.active;
- const mesa={monsters:visible?(raw.monsters||[]):[],inventory:raw.inventory||[],shop:raw.shop||null,stock:raw.stock||[],encounter:raw.encounter||null,events:raw.events||[],ready:true,error:''};
- return {campaign:dat.campaigns.find(c=>c.id===camp),members:dat.members.filter(m=>m.campaign_id===camp),characters:dat.characters.filter(c=>c.campaign_id===camp),effects:dat.effects.filter(e=>e.campaign_id===camp),rolls:dat.rolls.filter(r=>r.campaign_id===camp).slice(-80).reverse(),audit:dat.audit.filter(e=>e.campaign_id===camp).slice(-35).reverse(),mesa71:mesa};
+ const mesa={version:2,threats:visible?(raw.threats||[]):[],clocks:raw.clocks||[],chase:raw.chase||null,inventory:raw.inventory||[],encounter:raw.encounter||null,events:raw.events||[],ready:true,error:''};
+ return {campaign:dat.campaigns.find(c=>c.id===camp),members:dat.members.filter(m=>m.campaign_id===camp),characters:dat.characters.filter(c=>c.campaign_id===camp),effects:dat.effects.filter(e=>e.campaign_id===camp),rolls:dat.rolls.filter(r=>r.campaign_id===camp).slice(-80).reverse(),audit:dat.audit.filter(e=>e.campaign_id===camp).slice(-35).reverse(),mesa71:mesa,investigation:state.investigation||null};
 }
 function broadcastP2P(){if(state.mode==='p2p-host'&&state.campaignId&&state.campaign)P2P.snapshot(p2pPublicSnapshot())}
 function safeInput(s,max=120){return String(s||'').trim().slice(0,max)}
 function downloadP2PBackup(){
  if(state.mode!=='p2p-host')throw Error('Só o mestre pode salvar o arquivo da campanha');
  const table={};
- try{for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key?.startsWith('slasher71_local_'))table[key]=JSON.parse(localStorage.getItem(key))}}catch{}
- if(state.campaignId&&state.mesa71)table['slasher71_local_'+state.campaignId]=state.mesa71;
+ try{for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key&&/^(slasher71_local_|slasher2_table_|slasher2_investigation_)/.test(key))table[key]=JSON.parse(localStorage.getItem(key))}}catch{}
+ if(state.campaignId&&state.mesa71)table['slasher2_table_'+state.campaignId]=state.mesa71;
  const saved={type:'slasher-p2p-backup',format:1,exportedAt:dateNow(),data:api.data,mesa:table};
  const blob=new Blob([JSON.stringify(saved,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);
  const a=document.createElement('a');a.href=url;a.download='SLASHER_P2P_backup_'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
@@ -94,7 +94,7 @@ async function restoreP2PBackup(file){
  if(db.campaigns.length>100||db.characters.length>500||Object.keys(backup.mesa).length>100)throw Error('Backup acima do limite permitido');
  if(!confirm('Substituir os arquivos locais do mestre pelos dados deste backup? Esta ação não pode ser desfeita.'))return;
  api.data=db;api.save();
- for(const [key,value] of Object.entries(backup.mesa))if(key.startsWith('slasher71_local_')&&key.length<130)try{localStorage.setItem(key,JSON.stringify(value))}catch{}
+ for(const [key,value] of Object.entries(backup.mesa))if(/^(slasher71_local_|slasher2_table_|slasher2_investigation_)/.test(key)&&key.length<130)try{localStorage.setItem(key,JSON.stringify(value))}catch{}
  state.mesa71=null;await loadLobby();toast('Backup restaurado. Abra a campanha para voltar ao jogo.');
 }
 
@@ -114,18 +114,10 @@ async function handleGuestRequest(who,method,args){
    if(p.kind!=='test'||!['normal','dificil','extremo'].includes(p.difficulty||'normal'))throw Error('Tipo de rolagem inválido');
    result=await api.roll({...p,kind:'test',campaign_id:state.campaignId,actor_id:who.id});
  }else if(method==='mesa'){
-  const op=a,params=b||{};if(!['buy','attack'].includes(op))throw Error('Operação exclusiva do mestre');
-  if(op==='buy'){owned(params.p_character)}
-  if(op==='attack'){
-   owned(params.p_actor_character);
-   if(!state.mesa71?.encounter?.active)throw Error('Não há combate ativo');
-   if(params.p_actor_monster||params.p_target_character||!state.mesa71.monsters.some(m=>m.id===params.p_target_monster&&m.hp>0))throw Error('Alvo inválido');
-   const item=state.mesa71.inventory.find(x=>x.id===params.p_inventory);
-   if(params.p_inventory&&(!item||item.character_id!==params.p_actor_character||item.kind!=='weapon'||item.quantity<1))throw Error('Arma inválida');
-   const die=item?.damage_sides||4;
-   params.p_client_natural=window.SLASHER_DICE.face(20);params.p_client_damage_face=window.SLASHER_DICE.face(die);
-  }
-  result=window.SLASHER71.remote(state,op,params,who.id);
+  const op=a,params=b||{};
+  if(!['v2-attack','v2-chase'].includes(op))throw Error('Ação não autorizada');
+  owned(params.actor);
+  result=window.SLASHER71.remote(state,op,params,who.id);api.save();
  }else throw Error('Ação não autorizada ao jogador P2P');
  await refreshCampaign(false);broadcastP2P();return result;
 }
@@ -157,7 +149,7 @@ P2P.on('welcome',message=>{
 P2P.on('snapshot',async payload=>{
  if(state.mode!=='p2p-client'||!payload?.campaign)return;
  api.data={campaigns:[payload.campaign],members:payload.members,characters:payload.characters,effects:payload.effects,rolls:payload.rolls,audit:payload.audit,notes:{}};
- state.mesa71=payload.mesa71;
+ state.mesa71=payload.mesa71;state.investigation=payload.investigation;
  if(!state.campaignId){state.campaignId=payload.campaign.id;state.page='mesa';}
  await refreshCampaign(false);
 });
@@ -196,7 +188,7 @@ function render(){const root=$('#app');if(!state.user){root.innerHTML=state.page
 async function loadLobby(){state.campaigns=await api.listCampaigns();state.campaign=null;state.campaignId=null;state.characters=[];state.effects=[];state.selected=null;state.page='lobby';if(api.unsubscribe)api.unsubscribe();render()}
 async function openCampaign(id){if(api.unsubscribe)api.unsubscribe();state.campaignId=id;state.page='mesa';await refreshCampaign(true);if(api.subscribe)api.subscribe(id,()=>{clearTimeout(syncTimer);syncTimer=setTimeout(()=>refreshCampaign(false).catch(e=>console.error(e)),300)})}
 let syncTimer=null,refreshing=false;
-async function refreshCampaign(force=false){if(!state.campaignId||refreshing)return;refreshing=true;try{const payload=await api.loadCampaign(state.campaignId);if(!payload?.campaign)throw Error('Campanha não encontrada ou acesso revogado');Object.assign(state,payload);await window.SLASHER71.load(state,api);if(!state.characters.some(c=>c.id===state.selected))state.selected=state.characters[0]?.id||null;
+async function refreshCampaign(force=false){if(!state.campaignId||refreshing)return;refreshing=true;try{const payload=await api.loadCampaign(state.campaignId);if(!payload?.campaign)throw Error('Campanha não encontrada ou acesso revogado');Object.assign(state,payload);await window.SLASHER71.load(state,api);window.SLASHER_INVESTIGATION?.load(state);if(!state.characters.some(c=>c.id===state.selected))state.selected=state.characters[0]?.id||null;
  const editing=!force&&(state.modal||document.activeElement?.closest('form')||document.activeElement?.id==='gm-note'||state.page==='settings');if(!editing)render();else updateConnectionStatus();if(state.mode==='p2p-host')broadcastP2P();}finally{refreshing=false}}
 async function syncAction(cb,notice='Alteração salva e sincronizada.'){try{await cb();if(state.campaignId)await refreshCampaign(true);else await loadLobby();if(notice)toast(notice)}catch(e){console.error(e);toast('Erro: '+safeErr(e))}}
 function randomChar(){return {name:sample(NAMES),class_key:sample(CLASSES)[0],age:16+Math.floor(Math.random()*35),occupation:sample(OCC),hook:sample(HOOKS)}}
@@ -236,6 +228,7 @@ document.addEventListener('click',async e=>{
  if(e.target.id==='modal-backdrop'){state.modal=null;render();return}
  const btn=e.target.closest('[data-action]');if(!btn||btn.disabled)return;const act=btn.dataset.action,val=btn.dataset.value,id=btn.dataset.id;
  try{
+ if(act.startsWith('investigation-')){btn.disabled=true;await window.SLASHER_INVESTIGATION.action(act,btn,{state,api,refreshCampaign,render,toast,isGM});return}
  if(act.startsWith('mesa-')){btn.disabled=true;await window.SLASHER71.action(act,btn,{state,api,refreshCampaign,render,toast});return}
  switch(act){
  case 'p2p-host':state.mode='p2p-host';state.user=api.me;await loadLobby();return;
@@ -278,6 +271,7 @@ document.addEventListener('change',async e=>{
 document.addEventListener('submit',async e=>{
  e.preventDefault();const form=e.target;const formId=form.getAttribute('id');if(!formId&&!form.dataset.mesaForm)return;const dat=Object.fromEntries(new FormData(form).entries());const submit=form.querySelector('button[type=submit]');if(submit?.disabled)return;if(submit)submit.disabled=true;
  try{
+ if(form.dataset.investigationForm){await window.SLASHER_INVESTIGATION.submit(form,{state,api,refreshCampaign,render,toast,isGM});return}
  if(form.dataset.mesaForm){await window.SLASHER71.submit(form,{state,api,refreshCampaign,render,toast},e.submitter);return}
  if(formId==='p2p-short-join-form'){p2pNickname=safeInput(dat.nick,32);await P2P.joinRoom(dat.room,p2pNickname);p2pWait='Aguardando conexão com o mestre...';render();return;}
  if(formId==='p2p-join-form'){p2pNickname=safeInput(dat.nick,32);p2pWait='Aguardando o mestre aceitar a conexão...';p2pAnswer=await P2P.joinOffer(String(dat.offer||'').trim(),p2pNickname);render();return;}
