@@ -6,6 +6,8 @@
 
 **A cidade nunca esquece. Só muda os registros.**
 
+**SLASHER 1.0.0 · lançamento público**
+
 Uma mesa digital de **survival horror e investigação**, com combate, fichas, registros e a atmosfera de um monitor esquecido nos anos 1990.
 
 **[◈ Entrar em Dunmoore](https://ssunkem.github.io/slasher/) · [⌁ Como jogar](#como-jogar) · [📺 Interface](#interface) · [📖 Manual de regras](manual-6.html)**
@@ -16,7 +18,7 @@ Uma mesa digital de **survival horror e investigação**, com combate, fichas, r
 
 ## A mesa
 
-O mestre abre uma campanha no navegador, cria a sala e compartilha um **código de nove caracteres**. Os jogadores entram pelo mesmo endereço, sem cadastro. O SLASHER usa **WebRTC** para sincronizar fichas, ações e rolagens. A Cloudflare auxilia na negociação entre navegadores e oferece retransmissão TURN quando necessário.
+O mestre cria uma campanha vazia no navegador, abre a sala e compartilha um **código de nove caracteres**. Os jogadores entram pelo mesmo endereço, sem cadastro. O SLASHER usa **WebRTC** para sincronizar fichas, ações e rolagens. A Cloudflare auxilia na negociação entre navegadores e oferece retransmissão TURN quando necessário.
 
 O mestre controla o estado oficial da campanha. Os dados de jogo são armazenados localmente no navegador dele, não num banco de dados público. **Não é necessário criar uma conta Supabase.**
 
@@ -66,6 +68,10 @@ O [Catálogo de Dunmoore](CATALOGO_DUNMOORE.md) reúne criaturas, armas e itens 
 <summary><b>Ver interface no celular</b></summary>
 <div align="center"><img src="assets/preview-mobile.webp" alt="Visual do SLASHER em tela móvel" width="390"></div>
 </details>
+
+## Atualização para a versão 1.0
+
+A versão 1.0 inicia sem campanhas, personagens, monstros, inventários ou lojas de exemplo. Quem já usava o SLASHER **mantém suas campanhas criadas, personagens e dados salvos no mesmo navegador**. O arquivo inicial incluído nas edições anteriores fica oculto na lista, mas seus dados não são apagados do armazenamento. Para segurança, exporte um backup das campanhas reais antes de limpar dados do navegador.
 
 ## Salvar sua campanha
 

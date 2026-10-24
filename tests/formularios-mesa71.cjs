@@ -26,7 +26,7 @@ function newForm(formName,entries){
 async function submit(form,buttonValue){let prevented=false;await events.submit({preventDefault(){prevented=true},target:form,submitter:buttonValue==null?null:{value:buttonValue}});assert.equal(prevented,true,'The app must handle submit');assert.equal(form._button.disabled,false,'Submission button must be released');}
 (async()=>{
  await new Promise(resolve=>setTimeout(resolve,30));
- await get('async function __openDemo(){state.user=api.me;await loadLobby();await openCampaign("dunmoore-1999");};__openDemo()');
+ await get('async function __openDemo(){state.user=api.me;await loadLobby();const id=await api.createCampaign("Campanha de validação","Mestre");await openCampaign(id);await api.createCharacter({campaign_id:id,name:"Eleanor",class_key:"reb",age:18,occupation:"Estudante"});await refreshCampaign(true);};__openDemo()');
  assert(root.innerHTML.includes('Mesa Atual'));
  // Must fail on the 7.1 original code, which returned early for forms without id.
  await submit(newForm('grant-item',{title:'Revólver enferrujado',kind:'weapon',damage:'8',details:'Teste de entrega'}));
@@ -41,6 +41,7 @@ async function submit(form,buttonValue){let prevented=false;await events.submit(
  assert(get('state.mesa71.stock').some(x=>x.title==='Munição caseira'),'Shop product must be inserted');
  // Switch to player. Store dock must appear, and GM-only panel disappear.
  const state=get('state');
+ state.characters[0].owner_id='demo-player';state.members.push({user_id:'demo-player',role:'player',nickname:'Eleanor'});
  state.user={id:'demo-player',user_metadata:{display_name:'Eleanor'}};
  const html=window.SLASHER71.render(state);
  assert(html.includes('data-dock="shop"'),'Players should see the open shop');

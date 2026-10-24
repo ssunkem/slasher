@@ -72,15 +72,15 @@ const activeKey=(s)=>`slasher71_weapon_${s.user?.id||'guest'}_${s.campaignId}`;
 function safeJson(s,fallback){try{return JSON.parse(s)||fallback}catch{return fallback}}
 function getLocal(key,fallback){try{return safeJson(localStorage.getItem(key),fallback)}catch{return fallback}}
 function setLocal(key,v){try{localStorage.setItem(key,JSON.stringify(v))}catch{}}
-function freshDemo(s){const all=s.characters||[];const first=all[0];return {monsters:[{id:id(),campaign_id:s.campaignId,name:'Escavado da Mina',hp:16,hp_max:20,defense:12,damage_sides:8,portrait:'',description:'Ouve passos através de paredes úmidas.'},{id:id(),campaign_id:s.campaignId,name:'Vigia das Três Batidas',hp:14,hp_max:14,defense:13,damage_sides:6,portrait:'',description:'Sempre chega após a terceira batida.'}],inventory:first?[{id:id(),campaign_id:s.campaignId,character_id:first.id,title:'Canivete de Caça',kind:'weapon',damage_sides:6,quantity:1,details:'Lâmina gasta; 1d6 de dano'},{id:id(),campaign_id:s.campaignId,character_id:first.id,title:'Lanterna',kind:'item',damage_sides:0,quantity:1,details:'Pilhas fracas'}]:[],shop:{campaign_id:s.campaignId,is_open:true,name:'Mercado da Rua Norte'},stock:[{id:id(),campaign_id:s.campaignId,title:'Kit de primeiros socorros',kind:'item',damage_sides:0,price:20,stock:5,details:'Bandagens e gaze limpa.'},{id:id(),campaign_id:s.campaignId,title:'Barra de ferro',kind:'weapon',damage_sides:8,price:35,stock:3,details:'Pesada, faz muito barulho.'}],encounter:{campaign_id:s.campaignId,active:true,round:1,turn_label:'Eleanor Hayes'},events:[],demoCredits:{}}}
+function freshLocalTable(s){return {monsters:[],inventory:[],shop:{campaign_id:s.campaignId,is_open:false,name:'Loja da campanha'},stock:[],encounter:{campaign_id:s.campaignId,active:false,round:1,turn_label:''},events:[],demoCredits:{}}}
 function currentData(s){return s.mesa71||{monsters:[],inventory:[],shop:null,stock:[],encounter:null,events:[],ready:false,error:''}}
 function roleGM(s){return s.campaign&&s.members.some(m=>m.user_id===s.user?.id&&m.role==='gm')&&!s.gmPreview}
 async function rpc(api,fn,args){const {data,error}=await api.sb.rpc('slasher71_'+fn,args);if(error)throw error;return data}
 async function query(api,table,campaign,opts={}){let q=api.sb.from('slasher71_'+table).select('*').eq('campaign_id',campaign);if(opts.order)q=q.order(opts.order,{ascending:false});if(opts.limit)q=q.limit(opts.limit);const {data,error}=await q;if(error)throw error;return data||[]}
 async function load(s,api){if(!s.campaignId)return;const camp=s.campaignId;const old=s.mesa71;
  if(s.mode==='p2p-client'){if(!s.mesa71)s.mesa71={monsters:[],inventory:[],shop:null,stock:[],encounter:null,events:[],ready:true,error:''};return;}
- if(s.mode==='demo'||s.mode==='p2p-host'){
-  const k=DKEY+camp;let local=getLocal(k,null);if(!local){local=freshDemo(s);setLocal(k,local)}
+ if(s.mode==='local'||s.mode==='p2p-host'){
+  const k=DKEY+camp;let local=getLocal(k,null);if(!local){local=freshLocalTable(s);setLocal(k,local)}
   s.mesa71={...local,ready:true,error:''};return;
  }
  try{
@@ -91,7 +91,7 @@ async function load(s,api){if(!s.campaignId)return;const camp=s.campaignId;const
   s.mesa71={monsters,inventory,shop:shops[0]||null,stock,encounter:encounters[0]||null,events,ready:true,error:''};lastKnownCamp=camp;
  }catch(e){s.mesa71={...(old||{}),ready:false,error:e?.message||'Erro ao carregar Mesa Atual',monsters:old?.monsters||[],inventory:old?.inventory||[],stock:old?.stock||[],events:old?.events||[]};}
 }
-function persistDemo(s){if(s.mode==='demo')setLocal(DKEY+s.campaignId,s.mesa71)}
+function persistLocal(s){if(s.mode==='local'||s.mode==='p2p-host')setLocal(DKEY+s.campaignId,s.mesa71)}
 function getLayout(s){const o=getLocal(sortKey(s),null)||{};return {order:Array.isArray(o.order)?[...new Set([...o.order,...dockDefault])].filter(x=>dockDefault.includes(x)):dockDefault.slice(),hidden:o.hidden||{}}}
 function setLayout(s,layout){setLocal(sortKey(s),layout)}
 function activeWeapon(s,charId){const o=getLocal(activeKey(s),{});return o[charId]||''}
@@ -151,7 +151,7 @@ async function compressPortrait(file){if(!file||!file.size)throw Error('Selecion
 function formData(form){return Object.fromEntries(new FormData(form).entries())}
 function mustGM(s){if(!roleGM(s))throw Error('Somente o mestre pode realizar esta ação')}
 function mustFocusChar(s){const c=getFocus(s);if(c?.type!=='character')throw Error('Escolha um sobrevivente primeiro');return c.data}
-function demoRpc(s,op,p){const d=currentData(s),gm=roleGM(s),c=s.characters.find(ch=>ch.id===p.p_character),stock=d.stock.find(i=>i.id===p.p_stock);const update=()=>{persistDemo(s)};if(['monster_create','monster_adjust','monster_portrait','inventory_grant','inventory_remove','shop_set','stock_add','stock_remove','wallet_adjust','encounter_set'].includes(op)&&!gm)throw Error('Apenas o mestre pode editar a mesa');
+function localRpc(s,op,p){const d=currentData(s),gm=roleGM(s),c=s.characters.find(ch=>ch.id===p.p_character),stock=d.stock.find(i=>i.id===p.p_stock);const update=()=>{persistLocal(s)};if(['monster_create','monster_adjust','monster_portrait','inventory_grant','inventory_remove','shop_set','stock_add','stock_remove','wallet_adjust','encounter_set'].includes(op)&&!gm)throw Error('Apenas o mestre pode editar a mesa');
  if(op==='monster_create'){const monsterId=id();d.monsters.push({id:monsterId,campaign_id:s.campaignId,name:p.p_name,hp:p.p_hp,hp_max:p.p_hp,defense:p.p_defense,damage_sides:p.p_damage,description:p.p_description||''});update();return monsterId}
  if(op==='monster_adjust'){const m=d.monsters.find(x=>x.id===p.p_id);if(m)m.hp=clamp(m.hp+p.p_delta,0,m.hp_max);update()}
  if(op==='monster_portrait'){const m=d.monsters.find(x=>x.id===p.p_id);if(m)m.portrait=p.p_portrait;update()}
@@ -179,10 +179,10 @@ async function run(s,api,op,p){
   return rpc(api,'attack_local',p);
  }
  if(s.mode==='p2p-client')return api.remoteMesa(op,p);
- if(s.mode==='demo'||s.mode==='p2p-host')return demoRpc(s,op,p);
+ if(s.mode==='local'||s.mode==='p2p-host')return localRpc(s,op,p);
  return rpc(api,op,p);
 }
-async function refresh(s,api,display){if(s.mode==='online'||s.mode==='p2p-client'||s.mode==='p2p-host')await display.refreshCampaign(true);else{persistDemo(s);api.save?.();display.render()} }
+async function refresh(s,api,display){if(s.mode==='online'||s.mode==='p2p-client'||s.mode==='p2p-host')await display.refreshCampaign(true);else{persistLocal(s);api.save?.();display.render()} }
 async function action(act,btn,ctx){const {state:s,api,refreshCampaign,render,toast}=ctx;const d=currentData(s),c=getFocus(s);const idVal=btn.dataset.item;
  if(act==='mesa-select-monster'){
   const monster=d.monsters.find(m=>m.id===btn.dataset.monster);
@@ -278,5 +278,5 @@ async function submit(form,ctx,submitter){const {state:s,api,refreshCampaign,ren
 function onFocus(s,value){focusKey=value;setLocal(focusStorage(s),value)}
 function animateCounters(){document.querySelectorAll('[data-m71-from][data-m71-to]').forEach(el=>{const from=Number(el.dataset.m71From),to=Number(el.dataset.m71To),max=Number(el.dataset.m71Max),start=performance.now(),duration=900;const tick=now=>{const f=Math.min(1,(now-start)/duration);const eased=1-Math.pow(1-f,3);el.textContent=Math.round(from+(to-from)*eased)+' / '+max;if(f<1)requestAnimationFrame(tick)};requestAnimationFrame(tick)})}
 function attachDrag(s){animateCounters();const board=document.getElementById('m71-board');if(!board||board.dataset.init)return;board.dataset.init='1';let dragged=null;board.addEventListener('dragstart',e=>{const el=e.target.closest('.m71-dock');if(!el)return;dragged=el.dataset.dock;el.classList.add('dragging');e.dataTransfer?.setData('text/plain',dragged);if(e.dataTransfer)e.dataTransfer.effectAllowed='move'});board.addEventListener('dragover',e=>{if(!dragged)return;e.preventDefault();const target=e.target.closest('.m71-dock');if(target&&target.dataset.dock!==dragged)target.classList.add('drop-target')});board.addEventListener('dragleave',e=>{e.target.closest('.m71-dock')?.classList.remove('drop-target')});board.addEventListener('drop',e=>{e.preventDefault();const t=e.target.closest('.m71-dock');if(!t||!dragged)return;const l=getLayout(s),from=l.order.indexOf(dragged),to=l.order.indexOf(t.dataset.dock);if(from>=0&&to>=0&&from!==to){l.order.splice(to,0,l.order.splice(from,1)[0]);setLayout(s,l)}dragged=null;document.querySelectorAll('.m71-dock').forEach(el=>el.classList.remove('drop-target','dragging'));s._mesaRender?.()});board.addEventListener('dragend',()=>{dragged=null;document.querySelectorAll('.m71-dock').forEach(el=>el.classList.remove('drop-target','dragging'))})}
-window.SLASHER71={load,render,action,submit,focusChanged:onFocus,attachDrag,roleGM,remote:(s,op,args,id)=>demoRpc({...s,user:{id},gmPreview:false},op,args)};
+window.SLASHER71={load,render,action,submit,focusChanged:onFocus,attachDrag,roleGM,remote:(s,op,args,id)=>localRpc({...s,user:{id},gmPreview:false},op,args)};
 })();

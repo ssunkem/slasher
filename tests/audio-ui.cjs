@@ -3,7 +3,7 @@ const assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('nod
 const root=path.join(__dirname,'..'),read=f=>fs.readFileSync(path.join(root,f),'utf8');
 const html=read('legacy/SLASHER_Demo_Offline.html'),online=read('index.html'),ui=read('settings-page.js');
 for(const name of ['slasher-audio-enabled','slasher-audio-volume','slasher-audio-test','slasher-audio-mute'])assert(ui.includes(name),name);
-assert(online.includes('src="sfx.js"')&&online.includes('src="settings-page.js"'));
+assert(online.includes('src="sfx.js?v=1.0.0"')&&online.includes('src="settings-page.js?v=1.0.0"'));
 assert(html.includes('data-file="sfx.js"')&&html.includes('data-file="settings-page.js"'));
 assert(!online.includes('id="slasher-audio-toggle"'));
 let constructed=0,notes=0;

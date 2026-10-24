@@ -22,7 +22,7 @@ async function submit(name,fields){const f=form(name,fields);await events.submit
 async function click(action,data){const btn={disabled:false,dataset:{action,...data},closest(sel){return sel==='[data-action]'?this:null}};await events.click({target:{id:null,closest:()=>btn}});}
 (async()=>{
  await new Promise(ok=>setTimeout(ok,30));
- await get('async function __load(){state.user=api.me;await loadLobby();await openCampaign("dunmoore-1999");};__load()');
+ await get('async function __load(){state.user=api.me;await loadLobby();const id=await api.createCampaign("Campanha de validação","Mestre");await openCampaign(id);await api.createCharacter({campaign_id:id,name:"Eleanor",class_key:"reb",age:18,occupation:"Estudante"});await refreshCampaign(true);};__load()');
  const state=get('state');
  const html=window.SLASHER71.render(state);
  assert(html.includes('data-dock="catalog"'),'Catalog dock missing');
@@ -53,6 +53,7 @@ async function click(action,data){const btn={disabled:false,dataset:{action,...d
  await click('mesa-seed-stock',{});
  assert.equal(state.mesa71.stock.length,count,'Seeding must be idempotent');
  // Players see their inventory but must not receive GM catalog or master controls.
+ state.characters[0].owner_id='demo-player';state.members.push({user_id:'demo-player',role:'player',nickname:'Eleanor'});
  state.user={id:'demo-player',user_metadata:{display_name:'Eleanor'}};
  const playerHtml=window.SLASHER71.render(state);
  assert(!playerHtml.includes('data-dock="catalog"'),'Players must not see catalog dock');

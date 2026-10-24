@@ -7,23 +7,25 @@ vm.createContext(ctx);
 vm.runInContext(fs.readFileSync(__dirname+'/../dice-local.js','utf8'),ctx);vm.runInContext(fs.readFileSync(__dirname+'/../mesa71.js','utf8'),ctx);
 const app=ctx.window.SLASHER71;
 const char=(id,name,owner)=>({id,name,owner_id:owner,class_key:'reb',occupation:'estudante',hp:16,hp_max:16,stamina:16,stamina_max:16,stress:12,credits:80,portrait:'',attrs:{REF:3,EDF:2},notes:''});
-const state={mode:'demo',user:{id:'demo-gm'},campaignId:'dunmoore',campaign:{id:'dunmoore'},members:[{user_id:'demo-gm',role:'gm'},{user_id:'demo-player',role:'player'}],characters:[char('e1','Elizabeth','demo-player'),char('e2','Theodore','demo-gm')],effects:[],gmPreview:false};
+const state={mode:'local',user:{id:'demo-gm'},campaignId:'dunmoore',campaign:{id:'dunmoore'},members:[{user_id:'demo-gm',role:'gm'},{user_id:'demo-player',role:'player'}],characters:[char('e1','Elizabeth','demo-player'),char('e2','Theodore','demo-gm')],effects:[],gmPreview:false};
 const api={save(){this.saved=true},roll:async p=>({natural:16,total:16+p.modifier,modifier:p.modifier})};
 let rendered=''; const ctx2={state,api,refreshCampaign:async()=>{throw Error('Unexpected remote refresh')},render:()=>{rendered=app.render(state)},toast:x=>{}};
 const form=(name,entries)=>({dataset:{mesaForm:name},entries});
 (async()=>{
  await app.load(state,api);
- assert.equal(state.mesa71.monsters.length,2);
+ assert.equal(state.mesa71.monsters.length,0);
  let h=app.render(state);
- assert(h.includes('Mesa Atual')&&h.includes('Escavado da Mina')&&h.includes('Inventário')&&h.includes('Loja da cena'));
+ assert(h.includes('Mesa Atual')&&h.includes('Inventário'));
+ await app.submit(form('create-monster',{name:'Escavado da Mina',hp:'20',defense:'12',damage:'8'}),ctx2);
  // Create another monster via GM form.
  await app.submit(form('create-monster',{name:'A Sombra',hp:'24',defense:'14',damage:'8'}),ctx2);
- assert.equal(state.mesa71.monsters.length,3);
+ assert.equal(state.mesa71.monsters.length,2);
  // Change focus back to a survivor after monster creation.
  app.focusChanged(state,'c:e1');
  // Test stock, shop open, money, buy and inventory creation.
  await app.submit(form('stock',{title:'Faca longa',kind:'weapon',damage:'8',price:'27',stock:'2',details:'Testada'}),ctx2);
  const stock=state.mesa71.stock.find(x=>x.title==='Faca longa'); assert(stock);
+ await app.submit(form('shop-settings',{name:'Loja do Cais'}),ctx2,{value:'true'});
  const credits=state.characters[0].credits;
  await app.action('mesa-buy',{dataset:{item:stock.id,character:'e1'}},ctx2);
  assert.equal(state.mesa71.inventory.filter(i=>i.character_id==='e1'&&i.title==='Faca longa').length,1);

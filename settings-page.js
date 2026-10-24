@@ -24,7 +24,7 @@
       <div class="settings-audio-actions"><button type="button" id="slasher-audio-test" class="settings-primary-button">▶ Testar som</button><button type="button" id="slasher-audio-mute" class="settings-secondary-button">${audio.enabled?'♫ Silenciar':'♫ Ativar som'}</button></div>
       <div class="settings-card-foot"><p>O áudio começa somente depois de sua interação. Não há reprodução automática nem música contínua.</p><span class="settings-audio-signal" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
      </section>
-     <div class="settings-end"><span>AS CONFIGURAÇÕES SÃO SALVAS AUTOMATICAMENTE</span><span>SLASHER · EDIÇÃO X.</span></div>
+     <div class="settings-end"><span>AS CONFIGURAÇÕES SÃO SALVAS AUTOMATICAMENTE</span><span>SLASHER · VERSÃO 1.0</span></div>
     </div>
    </div>
   </section>`;
