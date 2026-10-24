@@ -78,7 +78,7 @@ function safeInput(s,max=120){return String(s||'').trim().slice(0,max)}
 function downloadP2PBackup(){
  if(state.mode!=='p2p-host')throw Error('Só o mestre pode salvar o arquivo da campanha');
  const table={};
- try{for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key&&/^(slasher71_local_|slasher2_table_|slasher2_investigation_)/.test(key))table[key]=JSON.parse(localStorage.getItem(key))}}catch{}
+ try{for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key&&/^(slasher71_local_|slasher2_table_|slasher2_investigation_)/.test(key))table[key]=JSON.parse(localStorage.getItem(key));else if(key?.startsWith('slasher2_secrets_'))table[key]=localStorage.getItem(key)}}catch{}
  if(state.campaignId&&state.mesa71)table['slasher2_table_'+state.campaignId]=state.mesa71;
  const saved={type:'slasher-p2p-backup',format:1,exportedAt:dateNow(),data:api.data,mesa:table};
  const blob=new Blob([JSON.stringify(saved,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);
@@ -94,7 +94,7 @@ async function restoreP2PBackup(file){
  if(db.campaigns.length>100||db.characters.length>500||Object.keys(backup.mesa).length>100)throw Error('Backup acima do limite permitido');
  if(!confirm('Substituir os arquivos locais do mestre pelos dados deste backup? Esta ação não pode ser desfeita.'))return;
  api.data=db;api.save();
- for(const [key,value] of Object.entries(backup.mesa))if(/^(slasher71_local_|slasher2_table_|slasher2_investigation_)/.test(key)&&key.length<130)try{localStorage.setItem(key,JSON.stringify(value))}catch{}
+ for(const [key,value] of Object.entries(backup.mesa))if(/^(slasher71_local_|slasher2_table_|slasher2_investigation_|slasher2_secrets_)/.test(key)&&key.length<130)try{localStorage.setItem(key,key.startsWith('slasher2_secrets_')?String(value):JSON.stringify(value))}catch{}
  state.mesa71=null;await loadLobby();toast('Backup restaurado. Abra a campanha para voltar ao jogo.');
 }
 
