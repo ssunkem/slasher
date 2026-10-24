@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#030409"><meta name="description" content="SLASHER: RPG de survival horror multiplayer com interface CRT, inventário e combate online." >
-<title>SLASHER | Dunmoore</title>
+<title>SLASHER | P2P 10.1.1</title>
 <style>
 :root{--bg:#08111a;--bg2:#0d1823;--bg3:#11212c;--bg4:#162c39;--line:#294454;--red:#8ed9ee;--red2:#5fa8c2;--text:#edf8fb;--muted:#98afbb;--dim:#68808c;--good:#93ccb8;--warn:#d7bf8a;--radius:11px;--shadow:0 18px 45px #0008}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:20;background:repeating-linear-gradient(0deg,transparent 0,transparent 3px,#fff1 4px);opacity:.08}button,input,textarea,select{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.5}a{color:inherit}::selection{background:#d53c5470}h1,h2,h3,h4,p{margin:0}h1,h2,h3,.wordmark,.display,.number{font-family:Georgia,"Times New Roman",serif}h1{font-size:clamp(38px,5vw,78px);letter-spacing:.05em;line-height:.98}h2{font-size:30px;font-weight:500;letter-spacing:.01em}h3{font-size:21px;font-weight:500}p{line-height:1.7}small,.muted{color:var(--muted)}.eyebrow{text-transform:uppercase;letter-spacing:.2em;color:var(--red);font-size:10px;font-weight:800}.lead{max-width:690px;font-size:15px;color:#bfb9bb}.mono{font-family:ui-monospace,Consolas,monospace;font-variant-numeric:tabular-nums}.accent{color:var(--red)}.tiny{font-size:11px}.text-right{text-align:right}.nowrap{white-space:nowrap}.hidden{display:none!important}
@@ -766,6 +766,35 @@ html:not([data-crt='off']) .crt-led {
 @media(prefers-reduced-motion:reduce){.settings-blink,.settings-audio-signal i{animation:none!important}.settings-switch:before,.settings-mode{transition:none!important}}
 @media print{.settings-page{color:#111}.settings-chapters,.settings-guest-head{display:none}}
 
+
+/* SLASHER / P2P room UX. Does not modify CRT/SFX settings. */
+.ambient-scene { position:fixed!important; inset:0!important; height:100vh!important; width:100%!important; min-height:0!important; margin:0!important; pointer-events:none!important; }
+#app { position:relative; z-index:2; }
+.login-shell { min-height:100vh; }
+#p2p-offer-code,#p2p-response-code,#p2p-answer,textarea[name="offer"] {
+  width:100%; font:12px/1.55 ui-monospace,Consolas,"Courier New",monospace!important;
+  overflow-wrap:anywhere; word-break:break-all; resize:vertical; min-height:106px;
+  color:#dbe4fb!important; border-color:rgba(80,109,188,.7)!important;
+}
+button[data-action^="p2p-"]:focus-visible,
+#p2p-backup-file:focus-visible,
+textarea[name="offer"]:focus-visible,
+#p2p-response-code:focus-visible { outline:2px solid #76baff; outline-offset:3px; }
+.login-card .panel.stack p.hint { line-height:1.55; }
+@media(max-width:760px) {
+  #p2p-offer-code,#p2p-response-code,#p2p-answer,textarea[name="offer"] { min-height:96px; font-size:11px!important; }
+}
+/* Keep the oversized archival numeral inside the hero; no blank scroll area beneath the screen. */
+body .login-hero { overflow:hidden!important; }
+body .ambient-scene { overflow:hidden!important; }
+
+/* Diagnóstico de conexão P2P para mestre e jogador */
+.p2p-diagnostic{border:1px solid #38577e;padding:12px 14px;background:rgba(9,19,34,.75);font-size:14px;line-height:1.5;color:#dce8fa;overflow-wrap:anywhere}
+.p2p-diagnostic strong{display:block;font-weight:600;margin-bottom:3px;color:#b3d0ff}
+.p2p-diagnostic small{display:block;font:11px/1.5 ui-monospace,monospace;color:#8e9fb9;margin-top:5px}
+.p2p-diagnostic-error{border-color:#9a3547;background:rgba(42,10,17,.82);color:#f6c6ce}
+.p2p-diagnostic-error strong{color:#f8afbb}
+
 </style>
 </head>
 <body>
@@ -808,6 +837,11 @@ html:not([data-crt='off']) .crt-led {
  'use strict';
  const ICE={iceServers:[{urls:['stun:stun.l.google.com:19302','stun:stun1.l.google.com:19302']}]};
  const MAX_SIGNAL=35000,CHUNK=12000,MAX_MESSAGE=1200000;
+ const NO_ROUTE='O navegador não encontrou rotas WebRTC. Confira se PC e celular estão na mesma rede Wi-Fi, sem VPN, e tente novamente. Em algumas redes é necessário um servidor TURN.';
+ const hasRoute=sdp=>/^a=candidate:/m.test(String(sdp||''));
+ const routeCount=sdp=>(String(sdp||'').match(/^a=candidate:/gm)||[]).length;
+ let diagnostic={phase:'idle',message:'Pronto para negociar a conexão.',candidateCount:0,ice:'new',connection:'new'};
+ const report=(phase,message,who)=>{diagnostic={phase,message,candidateCount:who?.candidateCount??diagnostic.candidateCount,ice:who?.pc?.iceConnectionState||diagnostic.ice,connection:who?.pc?.connectionState||diagnostic.connection};callbacks.status?.({...diagnostic})};
  const pending=new Map(),live=new Map(),pendingRPC=new Map(),pieces=new Map();
  const uid=()=>crypto.randomUUID?.()||Array.from(crypto.getRandomValues(new Uint8Array(16)),x=>x.toString(16).padStart(2,'0')).join('');
  let client=null,requestSerial=0;
@@ -818,14 +852,36 @@ html:not([data-crt='off']) .crt-led {
   let value;
   try{const str=atob(code.replace(/\s/g,''));value=JSON.parse(new TextDecoder().decode(Uint8Array.from(str,c=>c.charCodeAt(0))))}catch{throw Error('Código de conexão inválido ou incompleto')}
   if(value.v!==1||value.type!==type||typeof value.sdp!=='string'||!value.sdp.startsWith('v=0')||value.sdp.length>25000||typeof value.id!=='string')throw Error('Código de conexão incompatível');
+  if(!hasRoute(value.sdp))throw Error('O código recebido não contém rotas de conexão WebRTC. O outro navegador deve gerar um NOVO código. '+NO_ROUTE);
   return value;
  }
  function gather(pc){return new Promise((resolve,reject)=>{
-  if(pc.iceGatheringState==='complete')return resolve();
-  const timer=setTimeout(()=>{pc.removeEventListener('icegatheringstatechange',test);reject(Error('Não foi possível reunir as rotas de conexão. Tente gerar outro convite.'))},18000);
-  function test(){if(pc.iceGatheringState==='complete'){clearTimeout(timer);pc.removeEventListener('icegatheringstatechange',test);resolve()}}
-  pc.addEventListener('icegatheringstatechange',test);
+  let finished=false;
+  const finish=()=>{
+   if(finished)return;
+   finished=true;clearTimeout(timer);pc.removeEventListener('icegatheringstatechange',changed);
+   const description=pc.localDescription?.sdp||'';
+   hasRoute(description)?resolve(routeCount(description)):reject(Error(NO_ROUTE));
+  };
+  const changed=()=>{if(pc.iceGatheringState==='complete')finish()};
+  // Some phones take longer to gather STUN candidates. If gathering stalls,
+  // use the routes we already have instead of rejecting a usable LAN route.
+  const timer=setTimeout(finish,25000);
+  pc.addEventListener('icegatheringstatechange',changed);
+  changed();
  })}
+ function watch(pc,who){
+  const changed=()=>{
+   const state=pc.connectionState,ice=pc.iceConnectionState;
+   if(state==='connected')report('connected','Canal P2P conectado.',who);
+   else if(state==='failed'||ice==='failed')report('error','Falha na negociação ICE. Tente ambos no mesmo Wi-Fi, desligue VPN e gere um novo convite. Em redes restritas será necessário TURN.',who);
+   else if(state==='disconnected')report('error','O outro navegador perdeu a conexão. Confira a rede dos dois aparelhos.',who);
+   else if(state==='connecting'||ice==='checking')report('connecting','Procurando caminho direto entre os navegadores...',who);
+  };
+  pc.addEventListener('connectionstatechange',changed);
+  pc.addEventListener('iceconnectionstatechange',changed);
+ }
+
  function make(){if(!window.RTCPeerConnection)throw Error('Seu navegador não oferece WebRTC. Use uma versão atual do Firefox ou Chrome.');return new RTCPeerConnection(ICE)}
  function transmit(dc,message){if(!dc||dc.readyState!=='open')throw Error('O outro participante está desconectado');
   const text=JSON.stringify(message);if(text.length>MAX_MESSAGE)throw Error('Mensagem grande demais para P2P');
@@ -846,15 +902,16 @@ html:not([data-crt='off']) .crt-led {
     if(pieces.size>80)for(const [k,p] of pieces)if(Date.now()-p.time>30000)pieces.delete(k);
    }catch(e){console.warn('SLASHER P2P pacote ignorado:',e)}
   };
-  dc.onclose=()=>{if(who.role==='host')live.delete(who.key);for(const [id,req] of pendingRPC)if(req.who===who){clearTimeout(req.timer);req.reject(Error('A conexão com o mestre caiu'));pendingRPC.delete(id)}callbacks.disconnected?.(who)};
+  dc.onerror=()=>report('error','Erro no canal de dados. Gere um novo convite e tente novamente.',who);
+  dc.onclose=()=>{if(diagnostic.phase!=='error')report('error','Canal P2P fechado. Será necessário reconectar.',who);if(who.role==='host')live.delete(who.key);for(const [id,req] of pendingRPC)if(req.who===who){clearTimeout(req.timer);req.reject(Error('A conexão com o mestre caiu'));pendingRPC.delete(id)}callbacks.disconnected?.(who)};
  }
  function received(who,msg){
   if(!msg||typeof msg.type!=='string')return;
   if(who.role==='host'){
-   if(msg.type==='hello'&&!who.id){who.id='peer-'+uid();who.nick=String(msg.nick||'Sobrevivente').trim().slice(0,32);if(who.nick.length<2)who.nick='Sobrevivente';live.set(who.key,who);transmit(who.dc,{type:'welcome',id:who.id,nick:who.nick});callbacks.hello?.(who);return}
+   if(msg.type==='hello'&&!who.id){report('connected','Jogador entrou na mesa!',who);who.id='peer-'+uid();who.nick=String(msg.nick||'Sobrevivente').trim().slice(0,32);if(who.nick.length<2)who.nick='Sobrevivente';live.set(who.key,who);transmit(who.dc,{type:'welcome',id:who.id,nick:who.nick});callbacks.hello?.(who);return}
    if(msg.type==='request'&&who.id&&typeof msg.reqid==='string'&&msg.reqid.length<100){Promise.resolve().then(()=>callbacks.request?.(who,msg.method,msg.args)).then(result=>transmit(who.dc,{type:'reply',reqid:msg.reqid,ok:true,result})).catch(e=>{try{transmit(who.dc,{type:'reply',reqid:msg.reqid,ok:false,error:String(e?.message||e)})}catch{}});return}
   }else{
-   if(msg.type==='welcome'){who.id=msg.id;callbacks.welcome?.(msg);return}
+   if(msg.type==='welcome'){report('connected','Conectado ao mestre! Aguardando os dados da campanha.',who);who.id=msg.id;callbacks.welcome?.(msg);return}
    if(msg.type==='snapshot'){callbacks.snapshot?.(msg.payload);return}
    if(msg.type==='reply'){const task=pendingRPC.get(msg.reqid);if(!task)return;clearTimeout(task.timer);pendingRPC.delete(msg.reqid);msg.ok?task.resolve(msg.result):task.reject(Error(msg.error||'Ação negada pelo mestre'));return}
   }
@@ -863,23 +920,29 @@ html:not([data-crt='off']) .crt-led {
   const pc=make(),id=uid(),key=id;let dc;
   try{
    dc=pc.createDataChannel('slasher-sync',{ordered:true});const who={key,pc,dc,role:'host',id:null,nick:null};
-   listen(dc,who);
-   const offer=await pc.createOffer();await pc.setLocalDescription(offer);await gather(pc);
-   pending.set(id,who);
+   listen(dc,who);watch(pc,who);dc.onopen=()=>report('connecting','Canal aberto; aguardando apresentação do jogador...',who);
+   report('gathering','Descobrindo rotas de conexão do mestre...',who);
+   const offer=await pc.createOffer();await pc.setLocalDescription(offer);who.candidateCount=await gather(pc);
+   pending.set(id,who);report('offer','Convite gerado com '+who.candidateCount+' rota(s) WebRTC. Envie o convite ao jogador.',who);
    return signal({v:1,type:'offer',id,sdp:pc.localDescription.sdp});
-  }catch(e){pc.close();throw e}
+  }catch(e){report('error',e.message||'Não foi possível gerar convite.');pc.close();throw e}
  }
  async function joinOffer(code,nick){
-  const offer=parse(code,'offer');const pc=make(),key='client-'+offer.id;
+  let offer;try{offer=parse(code,'offer')}catch(e){report('error',e.message);throw e}
+  const pc=make(),key='client-'+offer.id;
   try{
    const who={key,pc,role:'client',id:null,nick:String(nick||'').trim().slice(0,32),dc:null};
-   client=who;
-   pc.ondatachannel=e=>{who.dc=e.channel;listen(who.dc,who);who.dc.onopen=()=>transmit(who.dc,{type:'hello',nick:who.nick})};
-   await pc.setRemoteDescription({type:'offer',sdp:offer.sdp});const answer=await pc.createAnswer();await pc.setLocalDescription(answer);await gather(pc);
+   client=who;watch(pc,who);report('gathering','O celular está descobrindo suas rotas WebRTC...',who);
+   pc.ondatachannel=e=>{who.dc=e.channel;listen(who.dc,who);who.dc.onopen=()=>{report('connecting','Canal aberto. Confirmando identidade com o mestre...',who);transmit(who.dc,{type:'hello',nick:who.nick})}};
+   await pc.setRemoteDescription({type:'offer',sdp:offer.sdp});const answer=await pc.createAnswer();await pc.setLocalDescription(answer);who.candidateCount=await gather(pc);
+   report('answer','Resposta pronta com '+who.candidateCount+' rota(s). Envie ao mestre e aguarde a confirmação.',who);
    return signal({v:1,type:'answer',id:offer.id,sdp:pc.localDescription.sdp});
-  }catch(e){pc.close();client=null;throw e}
+  }catch(e){report('error',e.message||'Não foi possível gerar a resposta.');pc.close();client=null;throw e}
  }
- async function acceptAnswer(code){const answer=parse(code,'answer');const who=pending.get(answer.id);if(!who)throw Error('Esse convite não está mais ativo. Gere um novo.');pending.delete(answer.id);await who.pc.setRemoteDescription({type:'answer',sdp:answer.sdp});return true}
+ async function acceptAnswer(code){let answer;try{answer=parse(code,'answer')}catch(e){report('error',e.message);throw e}const who=pending.get(answer.id);if(!who)throw Error('Esse convite não está mais ativo. Gere um novo.');pending.delete(answer.id);await who.pc.setRemoteDescription({type:'answer',sdp:answer.sdp});
+  report('connecting','Resposta aplicada. Verificando a conexão direta...',who);
+  setTimeout(()=>{if(who.dc.readyState!=='open'&&who.pc.connectionState!=='connected'&&who.pc.connectionState!=='closed')report('error','A conexão não abriu após 30 segundos. Tente no mesmo Wi-Fi, sem VPN. Se continuar falhando, esta rede provavelmente precisa de TURN.',who)},30000);
+  return true}
  function snapshot(payload){for(const who of live.values()){try{transmit(who.dc,{type:'snapshot',payload})}catch(e){console.warn('P2P: envio falhou',e)}}}
  function call(method,args){if(!client||client.dc?.readyState!=='open'||!client.id)return Promise.reject(Error('Aguardando conexão com o mestre'));
   const reqid='r'+(++requestSerial)+'-'+Date.now();return new Promise((resolve,reject)=>{
@@ -888,11 +951,10 @@ html:not([data-crt='off']) .crt-led {
   });
  }
  function close(){for(const who of [...pending.values(),...live.values(),client].filter(Boolean)){try{who.dc?.close();who.pc.close()}catch{}}
-  pending.clear();live.clear();client=null;for(const [id,p] of pendingRPC){clearTimeout(p.timer);p.reject(Error('Mesa encerrada'));pendingRPC.delete(id)}
+  pending.clear();live.clear();client=null;report('idle','Sala desconectada.');for(const [id,p] of pendingRPC){clearTimeout(p.timer);p.reject(Error('Mesa encerrada'));pendingRPC.delete(id)}
  }
- window.SLASHER_P2P={hostOffer,joinOffer,acceptAnswer,snapshot,call,close,on:(type,cb)=>callbacks[type]=cb,peers:()=>Array.from(live.values()).map(w=>({id:w.id,nick:w.nick,state:w.dc?.readyState})),isClientReady:()=>!!client?.id};
+ window.SLASHER_P2P={hostOffer,joinOffer,acceptAnswer,snapshot,call,close,on:(type,cb)=>callbacks[type]=cb,peers:()=>Array.from(live.values()).map(w=>({id:w.id,nick:w.nick,state:w.dc?.readyState})),isClientReady:()=>!!client?.id,diagnostics:()=>({...diagnostic,hostPeers:live.size,pendingOffers:pending.size,clientReady:!!client?.id})};
 })();
-
 </script>
 <script>
 /* SLASHER CRT / display effects, persisted locally. Events survive page rerenders. */
@@ -946,7 +1008,6 @@ html:not([data-crt='off']) .crt-led {
  document.addEventListener('input',e=>{for(const key of Object.keys(FX_KEYS))if(e.target.id==='slasher-fx-'+key)setFx(key,e.target.value)});
  window.SLASHER_CRT={set:mode=>{if(ORDER.includes(mode))apply(mode,true)},get:()=>document.documentElement.dataset.crt,effects:()=>({...fxState}),setFx,sync:()=>apply(document.documentElement.dataset.crt)};
 })();
-
 </script>
 <script>
 /* SLASHER / UI AUDIO: original procedural retro/lo-fi sounds.
@@ -1107,7 +1168,6 @@ html:not([data-crt='off']) .crt-led {
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});else setup();
  window.SLASHER_SFX={play,get:()=>({...setting}),setEnabled:v=>{setting.enabled=Boolean(v);persist();applyUi()},setVolume:v=>{setting.volume=clamp(v);persist();applyUi()},sync:applyUi};
 })();
-
 </script>
 <script>
 /* SLASHER | Options / system settings: one page for video and audio preferences. */
@@ -1145,7 +1205,6 @@ html:not([data-crt='off']) .crt-led {
  }
  window.SLASHER_SETTINGS={render};
 })();
-
 </script>
 <script>
 /* SLASHER / dados locais; resultado rápido com envio assíncrono ao Supabase.
@@ -1162,7 +1221,6 @@ function face(sides){
 function build(p){const natural=face(20),sides=Number(p.damage_sides||0),damage=p.kind!=='test'&&sides>0?face(sides):0;return {natural,damage,modifier:Number(p.modifier||0),total:natural+Number(p.modifier||0)}}
 window.SLASHER_DICE={face,build};
 })();
-
 </script>
 <script>
 /* SLASHER · Dunmoore · Mesa Atual
@@ -1447,7 +1505,6 @@ function animateCounters(){document.querySelectorAll('[data-m71-from][data-m71-t
 function attachDrag(s){animateCounters();const board=document.getElementById('m71-board');if(!board||board.dataset.init)return;board.dataset.init='1';let dragged=null;board.addEventListener('dragstart',e=>{const el=e.target.closest('.m71-dock');if(!el)return;dragged=el.dataset.dock;el.classList.add('dragging');e.dataTransfer?.setData('text/plain',dragged);if(e.dataTransfer)e.dataTransfer.effectAllowed='move'});board.addEventListener('dragover',e=>{if(!dragged)return;e.preventDefault();const target=e.target.closest('.m71-dock');if(target&&target.dataset.dock!==dragged)target.classList.add('drop-target')});board.addEventListener('dragleave',e=>{e.target.closest('.m71-dock')?.classList.remove('drop-target')});board.addEventListener('drop',e=>{e.preventDefault();const t=e.target.closest('.m71-dock');if(!t||!dragged)return;const l=getLayout(s),from=l.order.indexOf(dragged),to=l.order.indexOf(t.dataset.dock);if(from>=0&&to>=0&&from!==to){l.order.splice(to,0,l.order.splice(from,1)[0]);setLayout(s,l)}dragged=null;document.querySelectorAll('.m71-dock').forEach(el=>el.classList.remove('drop-target','dragging'));s._mesaRender?.()});board.addEventListener('dragend',()=>{dragged=null;document.querySelectorAll('.m71-dock').forEach(el=>el.classList.remove('drop-target','dragging'))})}
 window.SLASHER71={load,render,action,submit,focusChanged:onFocus,attachDrag,roleGM,remote:(s,op,args,id)=>demoRpc({...s,user:{id},gmPreview:false},op,args)};
 })();
-
 </script>
 <script>
 // SLASHER | Dunmoore | frontend modular sem build step
@@ -1551,6 +1608,8 @@ const api=ONLINE?new SupaAPI():new DemoAPI();
 const P2P=window.SLASHER_P2P||{on(){},peers(){return []},snapshot(){},call(){return Promise.reject(Error('WebRTC indisponível'))}};
 let p2pOffer='',p2pAnswer='',p2pWait='',p2pNickname='';
 
+function p2pDiagnostics(){const d=P2P.diagnostics?.()||{};return `<div class="p2p-diagnostic ${d.phase==='error'?'p2p-diagnostic-error':''}" id="p2p-diagnostic" role="status" aria-live="polite"><strong>Estado da conexão:</strong> ${esc(d.message||'Aguardando...')}<small>Rotas: ${Number(d.candidateCount)||0} · ICE: ${esc(d.ice||'new')} · Canal: ${esc(d.connection||'new')}</small></div>`}
+
 // ---- Interface ----
 function updateConnectionStatus(){const el=$('#connection');if(el)el.innerHTML=state.mode==='p2p-host'?'<span class="chip good">P2P / MESTRE</span>':state.mode==='p2p-client'?`<span class="chip ${state.connection==='live'?'good':'red'}">P2P / ${state.connection==='live'?'CONECTADO':'DESCONECTADO'}</span>`:state.mode==='demo'?'<span class="chip red">DEMONSTRAÇÃO LOCAL</span>':`<span class="chip ${state.connection==='live'?'good':'red'}"><span class="live-dot"></span>${esc(state.connection==='live'?'AO VIVO':state.connection.toUpperCase())}</span>`}
 function renderLogin(){return renderP2PLanding()}
@@ -1560,8 +1619,8 @@ function oldRenderLogin(){return `<div class="login-shell"><section class="login
  <div class="settings-login-access"><button type="button" class="btn flat" data-action="go" data-value="settings">⚙ Configurações de imagem e áudio</button></div></div></section></div>`}
 
 function renderP2PLanding(){return `<div class="login-shell"><section class="login-hero"><div class="hero-content"><div class="eyebrow">DUNMOORE / MAINE / ARQUIVO Nº X</div><div class="hero-line"></div><div class="hero-title">SLASHER</div><div class="hero-sub">DUNMOORE</div><p class="lead">O mestre abre a porta. O restante da mesa decide se entra.</p><div class="row" style="margin-top:24px"><span class="chip">P2P / WEBRTC</span><span class="chip">SEM SUPABASE</span><span class="chip">EDIÇÃO X</span></div></div><div class="hero-foot">EDIÇÃO X. · O QUE A MONTANHA ENGOLIU AINDA ESTÁ ESCUTANDO.</div></section><section class="login-side"><div class="login-card"><div class="eyebrow">REDE LOCAL / SESSÃO PRIVADA</div><h2>Escolha como entrar.</h2><p class="lead">O mestre hospeda os arquivos no próprio navegador. Jogadores se conectam diretamente, sem cadastro e sem banco remoto.</p><div class="panel stack" style="margin-top:22px"><button class="btn red wide" data-action="p2p-host">✝ Hospedar como mestre ↗</button><button class="btn flat wide" data-action="p2p-join">⌁ Entrar na mesa do mestre</button><p class="hint">Conexão inicial por troca de códigos. Funciona sem servidor próprio, mas depende de WebRTC, STUN público e da rede permitir conexão direta.</p><p class="hint">O mestre deve manter a aba aberta. Salve backups da campanha no computador.</p></div><div class="settings-login-access"><button type="button" class="btn flat" data-action="go" data-value="settings">⚙ Configurações de imagem e áudio</button></div></div></section></div>`}
-function renderP2PJoin(){return `<div class="login-shell"><section class="login-hero"><div class="hero-content"><div class="eyebrow">CONEXÃO DIRETA / SOBREVIVENTE</div><div class="hero-line"></div><div class="hero-title">SLASHER</div><div class="hero-sub">P2P / JOGADOR</div><p class="lead">Peça um convite ao mestre, envie sua resposta e mantenha esta aba aberta.</p></div></section><section class="login-side"><div class="login-card"><div class="eyebrow">WEBRTC / SINALIZAÇÃO MANUAL</div><h2>Entrar na mesa</h2><form id="p2p-join-form"><label class="field">Como você quer ser chamado?<input name="nick" required minlength="2" maxlength="32" value="${esc(p2pNickname)}" placeholder="Seu apelido"></label><label class="field">Convite enviado pelo mestre<textarea name="offer" rows="5" required placeholder="Cole aqui o código longo gerado pelo mestre"></textarea></label><button type="submit" class="btn red wide">Gerar resposta de conexão ↗</button></form>${p2pAnswer?`<div class="panel stack" style="margin-top:16px"><label class="field">Sua resposta: copie e mande ao mestre<textarea rows="5" readonly id="p2p-answer">${esc(p2pAnswer)}</textarea></label><button class="btn flat wide" data-action="p2p-copy" data-target="p2p-answer">Copiar resposta</button><p class="hint">${esc(p2pWait||'Aguardando o mestre aplicar a resposta...')}</p></div>`:''}<button class="btn flat wide" data-action="p2p-back" style="margin-top:16px">← Voltar</button></div></section></div>`}
-function renderP2PRoom(){let host=state.mode==='p2p-host';let peers=P2P.peers();return `${titleBlock('WEBRTC / CONEXÃO DIRETA','Sala P2P',host?'Você é a autoridade da sessão. Compartilhe o código e aceite a resposta do jogador.':'Você está conectado diretamente ao mestre.')}<div class="grid2"><section class="panel stack"><div class="panel-title"><h3>${host?'✝ Controle do mestre':'⌁ Conexão com o mestre'}</h3><span class="tag">${host?peers.length+' CONECTADOS':'JOGADOR'}</span></div>${host?`<p>Campanha hospedada: <b>${esc(state.campaign?.name||'')}</b></p><p class="hint">Os dados são salvos neste navegador. Cada novo jogador precisa receber um convite separado.</p><button class="btn red" data-action="p2p-offer">+ Gerar convite para jogador</button>${p2pOffer?`<label class="field">1. Envie o convite<textarea readonly rows="5" id="p2p-offer-code">${esc(p2pOffer)}</textarea></label><button class="btn flat" data-action="p2p-copy" data-target="p2p-offer-code">Copiar convite</button><label class="field">2. Cole a resposta que o jogador devolveu<textarea id="p2p-response-code" rows="5" placeholder="Resposta do jogador"></textarea></label><button class="btn red" data-action="p2p-accept">Concluir conexão ↗</button>`:''}`:`<p><b>Conectado como ${esc(state.user?.user_metadata?.display_name||'Sobrevivente')}</b></p><p class="hint">O mestre controla a campanha. Seus dados não são salvos na nuvem nem no Supabase.</p>`}</section><section class="panel stack"><div class="panel-title"><h3>Participantes</h3></div>${host?peers.map(x=>`<div class="m71-item"><strong>${esc(x.nick)}</strong><span class="chip good">${esc(x.state)}</span></div>`).join('')||'<p class="hint">Nenhum participante conectado por WebRTC ainda.</p>':`<p class="hint">Conexão P2P ativa. Abra a Mesa Atual para ver as fichas e jogar.</p>`}<button class="btn flat" data-action="go" data-value="mesa">◈ Ir para Mesa Atual</button><p class="hint">Sem servidor TURN, algumas combinações de roteadores e redes móveis não conseguem estabelecer conexão direta.</p></section></div>`}
+function renderP2PJoin(){return `<div class="login-shell"><section class="login-hero"><div class="hero-content"><div class="eyebrow">CONEXÃO DIRETA / SOBREVIVENTE</div><div class="hero-line"></div><div class="hero-title">SLASHER</div><div class="hero-sub">P2P / JOGADOR</div><p class="lead">Peça um convite ao mestre, envie sua resposta e mantenha esta aba aberta.</p></div></section><section class="login-side"><div class="login-card"><div class="eyebrow">WEBRTC / SINALIZAÇÃO MANUAL</div><h2>Entrar na mesa</h2><form id="p2p-join-form"><label class="field">Como você quer ser chamado?<input name="nick" required minlength="2" maxlength="32" value="${esc(p2pNickname)}" placeholder="Seu apelido"></label><label class="field">Convite enviado pelo mestre<textarea name="offer" rows="5" required placeholder="Cole aqui o código longo gerado pelo mestre"></textarea></label><button type="submit" class="btn red wide">Gerar resposta de conexão ↗</button></form>${p2pDiagnostics()}${p2pAnswer?`<div class="panel stack" style="margin-top:16px"><label class="field">Sua resposta: copie e mande ao mestre<textarea rows="5" readonly id="p2p-answer">${esc(p2pAnswer)}</textarea></label><button class="btn flat wide" data-action="p2p-copy" data-target="p2p-answer">Copiar resposta</button><p class="hint">${esc(p2pWait||'Aguardando o mestre aplicar a resposta...')}</p></div>`:''}<button class="btn flat wide" data-action="p2p-back" style="margin-top:16px">← Voltar</button></div></section></div>`}
+function renderP2PRoom(){let host=state.mode==='p2p-host';let peers=P2P.peers();return `${titleBlock('WEBRTC / CONEXÃO DIRETA','Sala P2P',host?'Você é a autoridade da sessão. Compartilhe o código e aceite a resposta do jogador.':'Você está conectado diretamente ao mestre.')}<div class="grid2"><section class="panel stack"><div class="panel-title"><h3>${host?'✝ Controle do mestre':'⌁ Conexão com o mestre'}</h3><span class="tag">${host?peers.length+' CONECTADOS':'JOGADOR'}</span></div>${host?`<p>Campanha hospedada: <b>${esc(state.campaign?.name||'')}</b></p><p class="hint">Os dados são salvos neste navegador. Cada novo jogador precisa receber um convite separado.</p><button class="btn red" data-action="p2p-offer">+ Gerar convite para jogador</button>${p2pDiagnostics()}${p2pOffer?`<label class="field">1. Envie o convite<textarea readonly rows="5" id="p2p-offer-code">${esc(p2pOffer)}</textarea></label><button class="btn flat" data-action="p2p-copy" data-target="p2p-offer-code">Copiar convite</button><label class="field">2. Cole a resposta que o jogador devolveu<textarea id="p2p-response-code" rows="5" placeholder="Resposta do jogador"></textarea></label><button class="btn red" data-action="p2p-accept">Concluir conexão ↗</button>`:''}`:`<p><b>Conectado como ${esc(state.user?.user_metadata?.display_name||'Sobrevivente')}</b></p><p class="hint">O mestre controla a campanha. Seus dados não são salvos na nuvem nem no Supabase.</p>`}</section><section class="panel stack"><div class="panel-title"><h3>Participantes</h3></div>${host?peers.map(x=>`<div class="m71-item"><strong>${esc(x.nick)}</strong><span class="chip good">${esc(x.state)}</span></div>`).join('')||'<p class="hint">Nenhum participante conectado por WebRTC ainda.</p>':`<p class="hint">Conexão P2P ativa. Abra a Mesa Atual para ver as fichas e jogar.</p>`}<button class="btn flat" data-action="go" data-value="mesa">◈ Ir para Mesa Atual</button><p class="hint">Sem servidor TURN, algumas combinações de roteadores e redes móveis não conseguem estabelecer conexão direta.</p></section></div>`}
 function p2pPublicSnapshot(){
  const camp=state.campaignId,dat=api.data;
  const raw=state.mesa71||{};
@@ -1637,6 +1696,9 @@ function guestMethods(){
  for(const fn of ['changeStat','grantEffect','removeEffect','setClock','saveNote','assignCharacter'])api[fn]=()=>Promise.reject(Error('Ação exclusiva do mestre'));
  api.remoteMesa=(op,args)=>P2P.call('mesa',[op,args]);
 }
+P2P.on('status',info=>{
+ p2pWait=info.message;const el=document.getElementById('p2p-diagnostic');if(el){el.classList.toggle('p2p-diagnostic-error',info.phase==='error');el.innerHTML='<strong>Estado da conexão:</strong> '+esc(info.message)+'<small>Rotas: '+(Number(info.candidateCount)||0)+' · ICE: '+esc(info.ice||'new')+' · Canal: '+esc(info.connection||'new')+'</small>'}
+});
 P2P.on('hello',who=>{
  if(state.mode!=='p2p-host'||!state.campaignId)return;
  api.data.members.push({campaign_id:state.campaignId,user_id:who.id,role:'player',nickname:who.nick});api.save();
@@ -1810,6 +1872,5 @@ window.addEventListener('storage',e=>{if(state.mode==='demo'&&e.key===NOCACHE&&s
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&state.campaignId&&state.mode==='online')refreshCampaign(false).catch(console.error)});
 setInterval(()=>{if(!document.hidden&&state.campaignId&&state.mode==='online')refreshCampaign(false).catch(console.error)},20000);
 (async()=>{try{const user=await api.init();state.user=state.mode==='demo'?null:user;if(user&&state.mode==='online')await loadLobby();else render()}catch(e){console.error(e);$('#app').innerHTML=`<div class="login-side" style="min-height:100vh"><div class="panel"><h2>Falha de conexão</h2><p>${esc(safeErr(e))}</p><p class="hint">Verifique config.js, o banco e a conexão com a internet.</p><button class="btn red" onclick="location.reload()">Tentar novamente</button></div></div>`}})();
-
 </script>
 </body></html>

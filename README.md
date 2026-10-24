@@ -30,7 +30,7 @@ O **SLASHER 10.1 (P2P experimental)** funciona por padrão **sem Supabase**. O s
 - **Persistência:** a campanha fica no navegador do host, com opção de exportar/importar um arquivo JSON de backup.
 
 > [!IMPORTANT]
-> **É um beta P2P.** A conexão foi testada com um transporte WebRTC simulado e com a interface mestre/jogador no navegador. Ainda falta validar ICE/NAT com duas redes reais. Alguns roteadores ou operadoras precisam de retransmissão TURN, que não está configurada nesta versão. O modo P2P não garante conexão em qualquer rede.
+> **É um beta P2P com diagnóstico de conexão.** A conexão foi testada com um transporte WebRTC simulado e com a interface mestre/jogador no navegador. Ainda falta validar ICE/NAT com duas redes reais. Alguns roteadores ou operadoras precisam de retransmissão TURN, que não está configurada nesta versão. O modo P2P não garante conexão em qualquer rede.
 
 ## 🔪 Jogar P2P
 
@@ -53,6 +53,18 @@ Não há SQL, conta, token, `config.js` ou instalação de Supabase.
 4. Crie seu sobrevivente. O mestre pode acompanhar sua ficha, controlar monstros, itens e loja.
 
 > A troca manual de dois códigos é a **sinalização** do WebRTC. Um código simples de sala ou convite em um clique exigiria um serviço de sinalização (mesmo que pequeno). Servidores **STUN públicos** são utilizados apenas para descobrir rotas de conexão; os dados da sessão não são enviados ao Supabase. Em redes que não permitem conexão direta, seria necessário um serviço **TURN**.
+
+## 🧰 Conexão não abriu?
+
+O **SLASHER 10.1.1** mostra as rotas ICE encontradas, o estado da negociação e falhas de conexão. Se o código de convite não tiver nenhuma rota WebRTC, ele avisa imediatamente em vez de deixar o jogador aguardando para sempre.
+
+1. Teste primeiro com **PC e celular no mesmo Wi-Fi**, sem rede de convidados nem isolamento de dispositivos.
+2. Desligue temporariamente VPN, bloqueios de WebRTC e conexões de dados móveis no celular.
+3. Faça a troca **completa**: convite do mestre → resposta do jogador → mestre clica em **Concluir conexão**.
+4. Mantenha ambas as abas abertas; não recarregue após gerar os códigos.
+5. Se aparecer **0 rotas** ou ICE **failed**, tente outro navegador ou rede. Algumas combinações de NAT/CGNAT precisam de um servidor TURN e não podem ser resolvidas apenas com código no GitHub Pages.
+
+O diagnóstico não transmite senhas nem credenciais e não envia sua campanha a um backend.
 
 ## 📺 Interface
 

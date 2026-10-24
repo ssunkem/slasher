@@ -5,6 +5,11 @@
  'use strict';
  const ICE={iceServers:[{urls:['stun:stun.l.google.com:19302','stun:stun1.l.google.com:19302']}]};
  const MAX_SIGNAL=35000,CHUNK=12000,MAX_MESSAGE=1200000;
+ const NO_ROUTE='O navegador não encontrou rotas WebRTC. Confira se PC e celular estão na mesma rede Wi-Fi, sem VPN, e tente novamente. Em algumas redes é necessário um servidor TURN.';
+ const hasRoute=sdp=>/^a=candidate:/m.test(String(sdp||''));
+ const routeCount=sdp=>(String(sdp||'').match(/^a=candidate:/gm)||[]).length;
+ let diagnostic={phase:'idle',message:'Pronto para negociar a conexão.',candidateCount:0,ice:'new',connection:'new'};
+ const report=(phase,message,who)=>{diagnostic={phase,message,candidateCount:who?.candidateCount??diagnostic.candidateCount,ice:who?.pc?.iceConnectionState||diagnostic.ice,connection:who?.pc?.connectionState||diagnostic.connection};callbacks.status?.({...diagnostic})};
  const pending=new Map(),live=new Map(),pendingRPC=new Map(),pieces=new Map();
  const uid=()=>crypto.randomUUID?.()||Array.from(crypto.getRandomValues(new Uint8Array(16)),x=>x.toString(16).padStart(2,'0')).join('');
  let client=null,requestSerial=0;
@@ -15,14 +20,36 @@
   let value;
   try{const str=atob(code.replace(/\s/g,''));value=JSON.parse(new TextDecoder().decode(Uint8Array.from(str,c=>c.charCodeAt(0))))}catch{throw Error('Código de conexão inválido ou incompleto')}
   if(value.v!==1||value.type!==type||typeof value.sdp!=='string'||!value.sdp.startsWith('v=0')||value.sdp.length>25000||typeof value.id!=='string')throw Error('Código de conexão incompatível');
+  if(!hasRoute(value.sdp))throw Error('O código recebido não contém rotas de conexão WebRTC. O outro navegador deve gerar um NOVO código. '+NO_ROUTE);
   return value;
  }
  function gather(pc){return new Promise((resolve,reject)=>{
-  if(pc.iceGatheringState==='complete')return resolve();
-  const timer=setTimeout(()=>{pc.removeEventListener('icegatheringstatechange',test);reject(Error('Não foi possível reunir as rotas de conexão. Tente gerar outro convite.'))},18000);
-  function test(){if(pc.iceGatheringState==='complete'){clearTimeout(timer);pc.removeEventListener('icegatheringstatechange',test);resolve()}}
-  pc.addEventListener('icegatheringstatechange',test);
+  let finished=false;
+  const finish=()=>{
+   if(finished)return;
+   finished=true;clearTimeout(timer);pc.removeEventListener('icegatheringstatechange',changed);
+   const description=pc.localDescription?.sdp||'';
+   hasRoute(description)?resolve(routeCount(description)):reject(Error(NO_ROUTE));
+  };
+  const changed=()=>{if(pc.iceGatheringState==='complete')finish()};
+  // Some phones take longer to gather STUN candidates. If gathering stalls,
+  // use the routes we already have instead of rejecting a usable LAN route.
+  const timer=setTimeout(finish,25000);
+  pc.addEventListener('icegatheringstatechange',changed);
+  changed();
  })}
+ function watch(pc,who){
+  const changed=()=>{
+   const state=pc.connectionState,ice=pc.iceConnectionState;
+   if(state==='connected')report('connected','Canal P2P conectado.',who);
+   else if(state==='failed'||ice==='failed')report('error','Falha na negociação ICE. Tente ambos no mesmo Wi-Fi, desligue VPN e gere um novo convite. Em redes restritas será necessário TURN.',who);
+   else if(state==='disconnected')report('error','O outro navegador perdeu a conexão. Confira a rede dos dois aparelhos.',who);
+   else if(state==='connecting'||ice==='checking')report('connecting','Procurando caminho direto entre os navegadores...',who);
+  };
+  pc.addEventListener('connectionstatechange',changed);
+  pc.addEventListener('iceconnectionstatechange',changed);
+ }
+
  function make(){if(!window.RTCPeerConnection)throw Error('Seu navegador não oferece WebRTC. Use uma versão atual do Firefox ou Chrome.');return new RTCPeerConnection(ICE)}
  function transmit(dc,message){if(!dc||dc.readyState!=='open')throw Error('O outro participante está desconectado');
   const text=JSON.stringify(message);if(text.length>MAX_MESSAGE)throw Error('Mensagem grande demais para P2P');
@@ -43,15 +70,16 @@
     if(pieces.size>80)for(const [k,p] of pieces)if(Date.now()-p.time>30000)pieces.delete(k);
    }catch(e){console.warn('SLASHER P2P pacote ignorado:',e)}
   };
-  dc.onclose=()=>{if(who.role==='host')live.delete(who.key);for(const [id,req] of pendingRPC)if(req.who===who){clearTimeout(req.timer);req.reject(Error('A conexão com o mestre caiu'));pendingRPC.delete(id)}callbacks.disconnected?.(who)};
+  dc.onerror=()=>report('error','Erro no canal de dados. Gere um novo convite e tente novamente.',who);
+  dc.onclose=()=>{if(diagnostic.phase!=='error')report('error','Canal P2P fechado. Será necessário reconectar.',who);if(who.role==='host')live.delete(who.key);for(const [id,req] of pendingRPC)if(req.who===who){clearTimeout(req.timer);req.reject(Error('A conexão com o mestre caiu'));pendingRPC.delete(id)}callbacks.disconnected?.(who)};
  }
  function received(who,msg){
   if(!msg||typeof msg.type!=='string')return;
   if(who.role==='host'){
-   if(msg.type==='hello'&&!who.id){who.id='peer-'+uid();who.nick=String(msg.nick||'Sobrevivente').trim().slice(0,32);if(who.nick.length<2)who.nick='Sobrevivente';live.set(who.key,who);transmit(who.dc,{type:'welcome',id:who.id,nick:who.nick});callbacks.hello?.(who);return}
+   if(msg.type==='hello'&&!who.id){report('connected','Jogador entrou na mesa!',who);who.id='peer-'+uid();who.nick=String(msg.nick||'Sobrevivente').trim().slice(0,32);if(who.nick.length<2)who.nick='Sobrevivente';live.set(who.key,who);transmit(who.dc,{type:'welcome',id:who.id,nick:who.nick});callbacks.hello?.(who);return}
    if(msg.type==='request'&&who.id&&typeof msg.reqid==='string'&&msg.reqid.length<100){Promise.resolve().then(()=>callbacks.request?.(who,msg.method,msg.args)).then(result=>transmit(who.dc,{type:'reply',reqid:msg.reqid,ok:true,result})).catch(e=>{try{transmit(who.dc,{type:'reply',reqid:msg.reqid,ok:false,error:String(e?.message||e)})}catch{}});return}
   }else{
-   if(msg.type==='welcome'){who.id=msg.id;callbacks.welcome?.(msg);return}
+   if(msg.type==='welcome'){report('connected','Conectado ao mestre! Aguardando os dados da campanha.',who);who.id=msg.id;callbacks.welcome?.(msg);return}
    if(msg.type==='snapshot'){callbacks.snapshot?.(msg.payload);return}
    if(msg.type==='reply'){const task=pendingRPC.get(msg.reqid);if(!task)return;clearTimeout(task.timer);pendingRPC.delete(msg.reqid);msg.ok?task.resolve(msg.result):task.reject(Error(msg.error||'Ação negada pelo mestre'));return}
   }
@@ -60,23 +88,29 @@
   const pc=make(),id=uid(),key=id;let dc;
   try{
    dc=pc.createDataChannel('slasher-sync',{ordered:true});const who={key,pc,dc,role:'host',id:null,nick:null};
-   listen(dc,who);
-   const offer=await pc.createOffer();await pc.setLocalDescription(offer);await gather(pc);
-   pending.set(id,who);
+   listen(dc,who);watch(pc,who);dc.onopen=()=>report('connecting','Canal aberto; aguardando apresentação do jogador...',who);
+   report('gathering','Descobrindo rotas de conexão do mestre...',who);
+   const offer=await pc.createOffer();await pc.setLocalDescription(offer);who.candidateCount=await gather(pc);
+   pending.set(id,who);report('offer','Convite gerado com '+who.candidateCount+' rota(s) WebRTC. Envie o convite ao jogador.',who);
    return signal({v:1,type:'offer',id,sdp:pc.localDescription.sdp});
-  }catch(e){pc.close();throw e}
+  }catch(e){report('error',e.message||'Não foi possível gerar convite.');pc.close();throw e}
  }
  async function joinOffer(code,nick){
-  const offer=parse(code,'offer');const pc=make(),key='client-'+offer.id;
+  let offer;try{offer=parse(code,'offer')}catch(e){report('error',e.message);throw e}
+  const pc=make(),key='client-'+offer.id;
   try{
    const who={key,pc,role:'client',id:null,nick:String(nick||'').trim().slice(0,32),dc:null};
-   client=who;
-   pc.ondatachannel=e=>{who.dc=e.channel;listen(who.dc,who);who.dc.onopen=()=>transmit(who.dc,{type:'hello',nick:who.nick})};
-   await pc.setRemoteDescription({type:'offer',sdp:offer.sdp});const answer=await pc.createAnswer();await pc.setLocalDescription(answer);await gather(pc);
+   client=who;watch(pc,who);report('gathering','O celular está descobrindo suas rotas WebRTC...',who);
+   pc.ondatachannel=e=>{who.dc=e.channel;listen(who.dc,who);who.dc.onopen=()=>{report('connecting','Canal aberto. Confirmando identidade com o mestre...',who);transmit(who.dc,{type:'hello',nick:who.nick})}};
+   await pc.setRemoteDescription({type:'offer',sdp:offer.sdp});const answer=await pc.createAnswer();await pc.setLocalDescription(answer);who.candidateCount=await gather(pc);
+   report('answer','Resposta pronta com '+who.candidateCount+' rota(s). Envie ao mestre e aguarde a confirmação.',who);
    return signal({v:1,type:'answer',id:offer.id,sdp:pc.localDescription.sdp});
-  }catch(e){pc.close();client=null;throw e}
+  }catch(e){report('error',e.message||'Não foi possível gerar a resposta.');pc.close();client=null;throw e}
  }
- async function acceptAnswer(code){const answer=parse(code,'answer');const who=pending.get(answer.id);if(!who)throw Error('Esse convite não está mais ativo. Gere um novo.');pending.delete(answer.id);await who.pc.setRemoteDescription({type:'answer',sdp:answer.sdp});return true}
+ async function acceptAnswer(code){let answer;try{answer=parse(code,'answer')}catch(e){report('error',e.message);throw e}const who=pending.get(answer.id);if(!who)throw Error('Esse convite não está mais ativo. Gere um novo.');pending.delete(answer.id);await who.pc.setRemoteDescription({type:'answer',sdp:answer.sdp});
+  report('connecting','Resposta aplicada. Verificando a conexão direta...',who);
+  setTimeout(()=>{if(who.dc.readyState!=='open'&&who.pc.connectionState!=='connected'&&who.pc.connectionState!=='closed')report('error','A conexão não abriu após 30 segundos. Tente no mesmo Wi-Fi, sem VPN. Se continuar falhando, esta rede provavelmente precisa de TURN.',who)},30000);
+  return true}
  function snapshot(payload){for(const who of live.values()){try{transmit(who.dc,{type:'snapshot',payload})}catch(e){console.warn('P2P: envio falhou',e)}}}
  function call(method,args){if(!client||client.dc?.readyState!=='open'||!client.id)return Promise.reject(Error('Aguardando conexão com o mestre'));
   const reqid='r'+(++requestSerial)+'-'+Date.now();return new Promise((resolve,reject)=>{
@@ -85,7 +119,7 @@
   });
  }
  function close(){for(const who of [...pending.values(),...live.values(),client].filter(Boolean)){try{who.dc?.close();who.pc.close()}catch{}}
-  pending.clear();live.clear();client=null;for(const [id,p] of pendingRPC){clearTimeout(p.timer);p.reject(Error('Mesa encerrada'));pendingRPC.delete(id)}
+  pending.clear();live.clear();client=null;report('idle','Sala desconectada.');for(const [id,p] of pendingRPC){clearTimeout(p.timer);p.reject(Error('Mesa encerrada'));pendingRPC.delete(id)}
  }
- window.SLASHER_P2P={hostOffer,joinOffer,acceptAnswer,snapshot,call,close,on:(type,cb)=>callbacks[type]=cb,peers:()=>Array.from(live.values()).map(w=>({id:w.id,nick:w.nick,state:w.dc?.readyState})),isClientReady:()=>!!client?.id};
+ window.SLASHER_P2P={hostOffer,joinOffer,acceptAnswer,snapshot,call,close,on:(type,cb)=>callbacks[type]=cb,peers:()=>Array.from(live.values()).map(w=>({id:w.id,nick:w.nick,state:w.dc?.readyState})),isClientReady:()=>!!client?.id,diagnostics:()=>({...diagnostic,hostPeers:live.size,pendingOffers:pending.size,clientReady:!!client?.id})};
 })();

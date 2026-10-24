@@ -18,3 +18,10 @@ textarea[name="offer"]:focus-visible,
 /* Keep the oversized archival numeral inside the hero; no blank scroll area beneath the screen. */
 body .login-hero { overflow:hidden!important; }
 body .ambient-scene { overflow:hidden!important; }
+
+/* Diagnóstico de conexão P2P para mestre e jogador */
+.p2p-diagnostic{border:1px solid #38577e;padding:12px 14px;background:rgba(9,19,34,.75);font-size:14px;line-height:1.5;color:#dce8fa;overflow-wrap:anywhere}
+.p2p-diagnostic strong{display:block;font-weight:600;margin-bottom:3px;color:#b3d0ff}
+.p2p-diagnostic small{display:block;font:11px/1.5 ui-monospace,monospace;color:#8e9fb9;margin-top:5px}
+.p2p-diagnostic-error{border-color:#9a3547;background:rgba(42,10,17,.82);color:#f6c6ce}
+.p2p-diagnostic-error strong{color:#f8afbb}

@@ -7,12 +7,12 @@ class FakeChannel{
  close(){if(this.readyState==='closed')return;this.readyState='closed';this.onclose?.();this.peer?.close()}
 }
 class FakeRTCPeerConnection{
- constructor(){this.iceGatheringState='complete';this.ondatachannel=null;this.localDescription=null;this.remoteDescription=null;}
+ constructor(){this.iceGatheringState='complete';this.ondatachannel=null;this.localDescription=null;this.remoteDescription=null;this.connectionState='new';this.iceConnectionState='new';} addEventListener(){} removeEventListener(){}
  createDataChannel(){this.dc=new FakeChannel();return this.dc}
- async createOffer(){this.id='test'+(++serial);pairs.set(this.id,{host:this});return {type:'offer',sdp:'v=0\na=offer:'+this.id}}
- async createAnswer(){return {type:'answer',sdp:'v=0\na=answer:'+this.id}}
+ async createOffer(){this.id='test'+(++serial);pairs.set(this.id,{host:this});return {type:'offer',sdp:'v=0\na=offer:'+this.id+'\na=candidate:1 1 udp 2122260223 192.168.1.10 4444 typ host'}}
+ async createAnswer(){return {type:'answer',sdp:'v=0\na=answer:'+this.id+'\na=candidate:1 1 udp 2122260223 192.168.1.11 5555 typ host'}}
  async setLocalDescription(obj){this.localDescription=obj}
- async setRemoteDescription(obj){this.remoteDescription=obj;const id=obj.sdp.split(':')[1];this.id=id;const r=pairs.get(id);if(obj.type==='offer'){r.guest=this;this.host=r.host;}else{
+ async setRemoteDescription(obj){this.remoteDescription=obj;const id=obj.sdp.split('\n')[1].split(':')[1];this.id=id;const r=pairs.get(id);if(obj.type==='offer'){r.guest=this;this.host=r.host;}else{
   assert(r.guest&&r.host===this);const h=r.host.dc,g=new FakeChannel();h.peer=g;g.peer=h;r.guest.ondatachannel?.({channel:g});h.readyState='open';g.readyState='open';queueMicrotask(()=>g.onopen?.());
  }}
  close(){this.dc?.close()}
@@ -30,6 +30,8 @@ function createContext(){const sandbox={window:{RTCPeerConnection:FakeRTCPeerCon
  assert(joined&&received&&received.snapshot,'welcome+snapshot via fake WebRTC');
  assert.equal(received.snapshot.gmNote,null);
  assert.equal(joined.nick,'Eleanor');
+ assert(host.diagnostics().candidateCount>=1,'ICE candidates recorded');
+ assert.equal(host.diagnostics().hostPeers,1);
  const reply=await guest.call('roll',[{kind:'test',modifier:2}]);assert.equal(reply.method,'roll');assert.equal(reply.user,joined.id);
  await assert.rejects(guest.call('removeGMNotes',[]),/não autorizada/);
  host.close();await new Promise(resolve=>setTimeout(resolve,5));assert.equal(disconnect,1);
