@@ -27,7 +27,7 @@ const DAMAGE={soco:1,objeto:2,lamina:2,pesada:3,arma_curta:3,arma_longa:4};
 const clamp=(v,lo,hi)=>Math.min(hi,Math.max(lo,Number(v)||0));
 const pickHistory=id=>HISTORIES.find(h=>h.id===id);
 const skillsOf=c=>Object.keys(c?.skills||{}).filter(k=>c.skills[k]===15||c.skills[k]===25);
-function validateCharacter(c){
+function validateCharacter(c,{allowOverload=false}={}){
  const errors=[];
  if(!c||typeof c!=='object')return ['Ficha ausente'];
  if(!String(c.name||'').trim()||String(c.name).length>90)errors.push('Nome inválido');if(!Number.isInteger(Number(c.age))||Number(c.age)<10||Number(c.age)>100)errors.push('Idade deve ficar entre 10 e 100');
@@ -41,7 +41,7 @@ function validateCharacter(c){
  if(tr.filter(k=>c.skills[k]===25).length!==1)errors.push('Especialize exatamente uma das cinco competências');
  if(tr.some(k=>!SKILLS.includes(k)))errors.push('Competência desconhecida');
  if(!Array.isArray(c.bonds)||c.bonds.length!==3)errors.push('Registre três Vínculos');
- if(!Array.isArray(c.inventory)||c.inventory.some(i=>![1,2,3].includes(Number(i.slots))||!Number.isInteger(Number(i.damageBase||0))||Number(i.damageBase||0)<0||Number(i.damageBase||0)>4)||inventorySpaces(c.inventory)>6)errors.push('Inventário deve ocupar no máximo seis Espaços');
+ if(!Array.isArray(c.inventory)||c.inventory.some(i=>![1,2,3].includes(Number(i.slots))||!Number.isInteger(Number(i.damageBase||0))||Number(i.damageBase||0)<0||Number(i.damageBase||0)>4)||(!allowOverload&&inventorySpaces(c.inventory)>6))errors.push('Inventário inicial deve ocupar no máximo seis Espaços');
  return errors;
 }
 function inventorySpaces(items){return (items||[]).reduce((s,i)=>s+Number(i.slots||0),0)}
