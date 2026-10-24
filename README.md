@@ -2,96 +2,63 @@
 
 # S L A S H E R
 
-### DUNMOORE, MAINE · ARQUIVO Nº X
+### DUNMOOR, MAINE · ARQUIVO Nº X
 
 **A cidade nunca esquece. Só muda os registros.**
 
-**SLASHER 1.0.0 · lançamento público**
+**SLASHER 2.0 · Edição de Teste I (branch de desenvolvimento)**
 
-Uma mesa digital de **survival horror e investigação**, com combate, fichas, registros e a atmosfera de um monitor esquecido nos anos 1990.
-
-**[◈ Entrar em Dunmoore](https://ssunkem.github.io/slasher/) · [⌁ Como jogar](#como-jogar) · [📺 Interface](#interface) · [📖 Manual de regras](manual-6.html)**
+[◈ Abrir a mesa pública 1.0](https://ssunkem.github.io/slasher/) · [Regras rápidas 2.0](REGRAS_V2.md) · [Código-fonte](https://github.com/ssunkem/slasher)
 
 </div>
 
----
+## O que mudou na edição de teste
 
-## A mesa
+A mesa digital está sendo migrada do D20 para o sistema percentil do **SLASHER · Livro Básico, Edição de Teste I**.
 
-O mestre cria uma campanha vazia no navegador, abre a sala e compartilha um **código de nove caracteres**. Os jogadores entram pelo mesmo endereço, sem cadastro. O SLASHER usa **WebRTC** para sincronizar fichas, ações e rolagens. A Cloudflare auxilia na negociação entre navegadores e oferece retransmissão TURN quando necessário.
+- **Fichas sem classes:** seis atributos (FOR, AGI, PER, RAC, PRE, FIR), valores 65/55/50/45/40/35; doze Históricos; cinco Competências treinadas, uma delas especializada; Contato e três Vínculos.
+- **D100:** Alvo igual a atributo + treinamento + circunstâncias, limitado entre 10 e 90. Dificuldades Normal, Difícil e Extremo; sucessos Normal/Forte/Extraordinário, Virada 01 e Revés 100.
+- **Recursos:** Vitalidade 6, Fôlego 5, Tensão 0/6, Preparo 2 por Caso, Ferimentos Graves e Risco de Morte 0–3.
+- **Combate:** ataques percentuais, dano fixo por equipamento, esquiva com Reação/Fôlego. Ameaças anômalas não ganham HP artificial.
+- **Caçadas:** Distância 0–4, manobras, velocidade do perseguidor e Saída declarada.
+- **Investigação:** pistas confirmadas, hipóteses e perguntas públicas; arquivo secreto separado no navegador do Narrador.
+- **Relógios:** contadores da cena configuráveis (4 ou 6 segmentos) e relógios de campanha mantidos.
 
-O mestre controla o estado oficial da campanha. Os dados de jogo são armazenados localmente no navegador dele, não num banco de dados público. **Não é necessário criar uma conta Supabase.**
+O núcleo das regras está em `rules-engine.js`; a ficha e rolagens, em `slasher-v2.js`; os encontros, em `mesa-v2.js`; e o quadro de casos, em `investigation.js`.
 
-## Como jogar
+**Nota de escopo:** a implementação cobre os fluxos fundamentais e ainda é de *playtest*. Testes forçados, tipos de ferimentos com recuperação automatizada, evolução por gasto de Marcas, editor avançado de fichas de anomalias e aprovação formal de Preparo Retroativo ainda dependem de operações do Narrador. Consulte o livro para resolver esses casos. Não trate esta branch como sistema final homologado.
 
-| Mestre | Jogadores |
-|---|---|
-| Acesse **[SLASHER](https://ssunkem.github.io/slasher/)** e escolha **Hospedar como mestre**. | Acesse o mesmo site e escolha **Entrar na mesa do mestre**. |
-| Crie ou abra uma campanha e vá à **Sala P2P**. | Informe seu apelido e o código da sala. |
-| Clique em **Abrir sala com código curto** e compartilhe o código com a mesa. | Aguarde a conexão e abra a **Mesa Atual**. |
-| Mantenha o navegador aberto durante a sessão. | Jogue normalmente com o mestre conectado. |
+## Hospedar e participar
 
-Uma sala aceita até **seis jogadores**, além do mestre. Em redes restritivas, o WebRTC pode recorrer ao TURN. Caso o serviço de sinalização esteja indisponível, a tela oferece **Conexão avançada / código manual** como alternativa.
+O SLASHER usa **GitHub Pages**, **WebRTC DataChannels** e serviço de sinalização **Cloudflare** para códigos curtos. Os dados oficiais permanecem no navegador do mestre; o host precisa manter a sessão aberta.
 
-> **Importante:** o host deve permanecer online. Salas não têm identidade persistente de jogador nem reconexão automática garantida. Uma conexão de internet com restrições severas pode impedir o P2P mesmo com relay. Compartilhe códigos de sala apenas com quem participará da campanha.
+1. O mestre escolhe **Hospedar como mestre**, cria ou abre uma campanha e ativa a **Sala P2P**.
+2. Compartilha o código curto de nove caracteres.
+3. Os jogadores escolhem **Entrar na mesa do mestre**, digitam seu apelido e o código.
+4. O mestre controla os dados da campanha. O jogador cria e consulta sua própria ficha e pede ações ao host.
 
-## O que você encontra em Dunmoore
+O P2P não tem identidade persistente forte nem reconexão automaticamente garantida. Compartilhe o código apenas com os participantes.
 
-| Sobreviventes | Mestre | Atmosfera |
-|---|---|---|
-| 12 classes, atributos e retratos | Campanhas, personagens e NPCs | Menus inspirados no survival horror do PS1 |
-| HP, Stamina e Estresse | Monstros, turnos e combate | CRT com scanlines e vinheta |
-| Inventário, itens e loja | Gestão de estoque e equipamentos | Bloom e aberração cromática ajustáveis |
-| Rolagens D20 e ações de combate | Histórico de ações e rolagens | Áudio lo-fi sintetizado |
-| Ficha sincronizada com a mesa | Catálogo de criaturas e objetos | Visual responsivo para computador e celular |
+## Compatibilidade e backups
 
-O [Catálogo de Dunmoore](CATALOGO_DUNMOORE.md) reúne criaturas, armas e itens pensados para a campanha **O Rei Oculto**.
+A edição 2.0 **não converte automaticamente** atributos D20 em competências percentuais: não existe equivalência fiel. Personagens e mesas do sistema 1.0 são preservados e identificados como legados. Crie novas fichas 2.0 para jogar com estas regras.
 
-## Interface
+O armazenamento anterior usa `slasher7-demo-v1` e `slasher71_local_`. A cena 2.0 usa `slasher2_table_`, e o quadro compartilhado de investigação usa `slasher2_investigation_`. As notas sigilosas do narrador ficam em `slasher2_secrets_`.
 
-<div align="center">
-  <img src="assets/preview-p2p-entry.webp" alt="Entrada da mesa, com opções para hospedar ou participar" width="100%">
-  <sub>O mestre abre a porta. Os sobreviventes decidem se entram.</sub>
-</div>
+Na área **Campanhas**, exporte um backup antes de testes e após sessões. Apagar os dados do navegador pode eliminar a cópia oficial. Faça backup também das notas sigilosas que não estejam incluídas em exportações antigas.
 
-<div align="center">
-  <img src="assets/preview-desktop.webp" alt="Interface principal da mesa, com visual de monitor CRT" width="100%">
-  <sub>Mesa Atual · Fichas, combate e arquivos de Dunmoore</sub>
-</div>
+## Testes
 
-<div align="center">
-  <img src="assets/preview-settings.webp" alt="Controles de imagem e áudio" width="100%">
-  <sub>Configurações · Imagem e som da sessão</sub>
-</div>
+Os novos testes estão em `tests/rules-v2.cjs` e `tests/mesa-v2.cjs`; rodam com Node.js sem dependências externas:
 
-<details>
-<summary><b>Ver interface no celular</b></summary>
-<div align="center"><img src="assets/preview-mobile.webp" alt="Visual do SLASHER em tela móvel" width="390"></div>
-</details>
+```bash
+node tests/rules-v2.cjs
+node tests/mesa-v2.cjs
+```
 
-## Atualização para a versão 1.0
+Os testes originais em `tests/` e o material em `legacy/` permanecem para referência histórica. Alguns verificam componentes 1.0 deliberadamente retirados do fluxo principal e não representam mais o comportamento do site 2.0.
 
-A versão 1.0 inicia sem campanhas, personagens, monstros, inventários ou lojas de exemplo. Quem já usava o SLASHER **mantém suas campanhas criadas, personagens e dados salvos no mesmo navegador**. O arquivo inicial incluído nas edições anteriores fica oculto na lista, mas seus dados não são apagados do armazenamento. Para segurança, exporte um backup das campanhas reais antes de limpar dados do navegador.
-
-## Salvar sua campanha
-
-O SLASHER salva a campanha no **armazenamento local do navegador do mestre**. Na área **Campanhas**, use **Exportar backup** para baixar um JSON e **Restaurar backup** para recuperar uma cópia.
-
-**Faça backup depois de cada sessão.** Limpar dados do navegador, usar uma janela privada ou trocar de aparelho pode apagar a única cópia oficial da campanha. Evite compartilhar arquivos de backup: eles podem conter informações particulares da mesa e notas do mestre.
-
-## Tecnologia
-
-O site é hospedado pelo **GitHub Pages**, em HTML, CSS e JavaScript. A troca de dados da mesa usa **WebRTC DataChannels**. Um **Cloudflare Worker com Durable Objects** conecta os participantes por meio de códigos curtos; o serviço Cloudflare TURN pode servir de relay quando a conexão direta não for possível.
-
-- **[Abrir o aplicativo](https://ssunkem.github.io/slasher/)**
-- **[Código-fonte](https://github.com/ssunkem/slasher)**
-- **[Serviço de conexão](cloudflare/README.md)**: implantação, configuração e manutenção do Worker
-- **[Manual de regras](manual-6.html)**
-
-As credenciais permanentes do TURN ficam nos **Secrets do Cloudflare Worker**, nunca no site, no JavaScript público ou nos arquivos do GitHub. A URL em `signal-config.js` é pública e não contém senhas.
-
-<details>
-<summary>Instalação local para colaboradores</summary>
+## Execução local
 
 ```bash
 git clone https://github.com/ssunkem/slasher.git
@@ -99,20 +66,8 @@ cd slasher
 python -m http.server 8000
 ```
 
-Abra `http://localhost:8000`. Para implantar sua própria instância do serviço de salas, consulte [`cloudflare/README.md`](cloudflare/README.md). Os arquivos da antiga arquitetura com Supabase estão preservados em [`legacy/`](legacy/), sem participação no fluxo atual.
+Acesse `http://localhost:8000`. Para a configuração do serviço de salas, consulte `cloudflare/README.md`.
 
-</details>
+## Cânone
 
----
-
-<div align="center">
-
-### S L A S H E R
-
-*Três batidas. Uma voz conhecida do outro lado.*
-
-**Não responda.**
-
-`DUNMOORE / MAINE / ARQUIVO Nº X`
-
-</div>
+O módulo de cenário atual chama-se **Dunmoor** e o antagonista **O Rei Oculto**. A antiga novelização **O Messias Afogado**, ambientada em Ashborough, é fonte de atmosfera, não uma regra mecânica do Livro Básico. Catálogos e arquivos legados permanecem disponíveis para consulta histórica.
