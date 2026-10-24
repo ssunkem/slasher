@@ -30,7 +30,7 @@ const skillsOf=c=>Object.keys(c?.skills||{}).filter(k=>c.skills[k]===15||c.skill
 function validateCharacter(c){
  const errors=[];
  if(!c||typeof c!=='object')return ['Ficha ausente'];
- if(!String(c.name||'').trim()||String(c.name).length>90)errors.push('Nome inválido');
+ if(!String(c.name||'').trim()||String(c.name).length>90)errors.push('Nome inválido');if(!Number.isInteger(Number(c.age))||Number(c.age)<10||Number(c.age)>100)errors.push('Idade deve ficar entre 10 e 100');
  const vals=Object.keys(ATTRIBUTES).map(k=>Number(c.attrs?.[k])).sort((a,b)=>a-b);
  if(JSON.stringify(vals)!==JSON.stringify([...ATTRIBUTE_VALUES].sort((a,b)=>a-b)))errors.push('Distribua 35, 40, 45, 50, 55 e 65 exatamente uma vez');
  const history=pickHistory(c.history);
@@ -41,7 +41,7 @@ function validateCharacter(c){
  if(tr.filter(k=>c.skills[k]===25).length!==1)errors.push('Especialize exatamente uma das cinco competências');
  if(tr.some(k=>!SKILLS.includes(k)))errors.push('Competência desconhecida');
  if(!Array.isArray(c.bonds)||c.bonds.length!==3)errors.push('Registre três Vínculos');
- if(!Array.isArray(c.inventory)||c.inventory.some(i=>![1,2,3].includes(Number(i.slots)))||inventorySpaces(c.inventory)>6)errors.push('Inventário deve ocupar no máximo seis Espaços');
+ if(!Array.isArray(c.inventory)||c.inventory.some(i=>![1,2,3].includes(Number(i.slots))||!Number.isInteger(Number(i.damageBase||0))||Number(i.damageBase||0)<0||Number(i.damageBase||0)>4)||inventorySpaces(c.inventory)>6)errors.push('Inventário deve ocupar no máximo seis Espaços');
  return errors;
 }
 function inventorySpaces(items){return (items||[]).reduce((s,i)=>s+Number(i.slots||0),0)}
@@ -57,7 +57,7 @@ function newCharacter(payload){
  contact:String(payload.contact||history?.contact||'').trim().slice(0,240),
  bonds:Array.isArray(payload.bonds)?payload.bonds.map(b=>String(b||'').trim().slice(0,300)):[],
  home:String(payload.home||'').slice(0,240),responsibility:String(payload.responsibility||'').slice(0,240),
- meaningfulItem:String(payload.meaningfulItem||'').slice(0,240),inventory:Array.isArray(payload.inventory)?payload.inventory.map(i=>({name:String(i.name||'').slice(0,100),slots:Number(i.slots)})):[],
+ meaningfulItem:String(payload.meaningfulItem||'').slice(0,240),inventory:Array.isArray(payload.inventory)?payload.inventory.map(i=>({name:String(i.name||'').slice(0,100),slots:Number(i.slots),damageBase:Number(i.damageBase||0)})):[],
  vitality:6,vitalityMax:6,stamina:5,staminaMax:5,tension:0,preparations:2,
  wounds:[],deathRisk:0,marks:[],development:0,notes:String(payload.notes||'').slice(0,5000),portrait:String(payload.portrait||'').slice(0,170000)
  };
