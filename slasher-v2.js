@@ -7,7 +7,7 @@ const fmt=n=>(Number(n)||0);
 const options=(items,value)=>items.map(([v,label])=>'<option value="'+esc(v)+'"'+(String(value)===String(v)?' selected':'')+'>'+esc(label)+'</option>').join('');
 const attrSelect=(key,value)=>'<label class="field">'+key+' · '+R.ATTRIBUTES[key]+'<select name="attr_'+key+'" required>'+options([...R.ATTRIBUTE_VALUES].sort((a,b)=>b-a).map(n=>[n,n]),value)+'</select></label>';
 const skillOpts=(current,includeBlank=true)=>options([...(includeBlank?[['','Selecione...']]:[]),...R.SKILLS.map(k=>[k,k])],current||'');
-const itemList=items=>(items||[]).map(i=>esc(i.name)+' | '+Number(i.slots)).join('\n');
+const itemList=items=>(items||[]).map(i=>esc(i.name)+' | '+Number(i.slots)+' | '+Number(i.damageBase||0)).join('\n');
 const bond=(v,i)=>'<label class="field">Vínculo '+(i+1)+'<input name="bond_'+i+'" maxlength="300" value="'+esc(v||'')+'" required placeholder="Nome, relação, o que oferece e o que teme perder"></label>';
 function historyOptions(id){return options(R.HISTORIES.map(h=>[h.id,h.name+' · '+h.skills.join(' + ')]),id||'estudante');}
 function characterForm(existing=null){
@@ -34,8 +34,8 @@ function characterForm(existing=null){
  '<label class="field">Moradia<input name="home" maxlength="240" value="'+esc(existing?.home||'')+'"></label>'+
  '<label class="field">Responsabilidade cotidiana<input name="responsibility" maxlength="240" value="'+esc(existing?.responsibility||'')+'"></label>'+
  '<label class="field">Item significativo<input name="meaningfulItem" maxlength="240" value="'+esc(existing?.meaningfulItem||'')+'"></label>'+
- '<label class="field">Itens carregados, um por linha (nome | espaços)<textarea name="inventory" rows="4" placeholder="Lanterna | 1&#10;Kit de ferramentas | 2">'+esc(itemList(existing?.inventory))+'</textarea></label>'+
- '<p class="hint">Máximo de 6 Espaços. Itens de grande volume podem usar 2 ou 3, conforme o livro e decisão do narrador.</p></div>'+
+ '<label class="field">Itens carregados, um por linha (nome | espaços | dano base)<textarea name="inventory" rows="4" placeholder="Lanterna | 1 | 0&#10;Faca pequena | 1 | 2">'+esc(itemList(existing?.inventory))+'</textarea></label>'+
+ '<p class="hint">Máximo 6 Espaços. Dano base: 0 para item comum, 1 soco/objeto leve, 2 lâmina curta/objeto, 3 arma pesada/arma curta, 4 arma longa. Validar equipamentos com o narrador.</p></div>'+
  '<div class="v2-form-step"><h3>07 / Sobrevivência</h3><p class="hint">Início automático: Vitalidade 6/6, Fôlego 5/5, Tensão 0/6, duas Declarações de Preparo.</p>'+
  '<label class="field">Anotações<textarea name="notes" maxlength="5000" rows="3">'+esc(existing?.notes||'')+'</textarea></label>'+
  (existing?'<label class="field">Retrato (JPG, PNG ou WebP; até 8 MB)<input id="portrait-file" type="file" accept="image/jpeg,image/png,image/webp"></label><div id="portrait-preview" class="v2-photo">'+(existing.portrait?'<img src="'+esc(existing.portrait)+'" alt="Retrato">':'Sem retrato')+'</div>':'')+'</div>'+
@@ -50,9 +50,9 @@ function parseCharacterForm(dat,previous={}){
  const values=Object.fromEntries(Object.keys(R.ATTRIBUTES).map(k=>[k,Number(dat['attr_'+k])]));
  const skills=Object.fromEntries(all.map(k=>[k,k===dat.specialization?25:15]));
  const inventory=String(dat.inventory||'').split(/\r?\n/).map(s=>s.trim()).filter(Boolean).map(s=>{
-  const bits=s.split('|');const name=bits[0].trim(),slots=Number(bits[1]);
+  const bits=s.split('|');const name=bits[0].trim(),slots=Number(bits[1]),damageBase=Number(bits[2]||0);
   if(!name||!Number.isInteger(slots)||slots<1||slots>3)throw Error('Escreva cada item como "nome | espaços" (1 a 3)');
-  return {name,slots};
+  if(!Number.isInteger(damageBase)||damageBase<0||damageBase>4)throw Error('Dano base deve estar entre 0 e 4');return {name,slots,damageBase};
  });
  const c=R.newCharacter({...previous,name:dat.name,age:Number(dat.age),occupation:dat.occupation,
  concept:dat.concept,traits:dat.traits,concern:dat.concern,attrs:values,history:dat.history,
