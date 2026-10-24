@@ -45,7 +45,7 @@ function validateCharacter(c,{allowOverload=false}={}){
  return errors;
 }
 function inventorySpaces(items){return (items||[]).reduce((s,i)=>s+Number(i.slots||0),0)}
-function newCharacter(payload){
+function newCharacter(payload,{allowOverload=false}={}){
  const history=pickHistory(payload.history);
  const attrs=Object.fromEntries(Object.keys(ATTRIBUTES).map((key,i)=>[key,Number(payload.attrs?.[key]??ATTRIBUTE_VALUES[i])]));
  const skills=Object.fromEntries(SKILLS.filter(k=>payload.skills?.[k]===15||payload.skills?.[k]===25).map(k=>[k,Number(payload.skills[k])]));
@@ -61,7 +61,7 @@ function newCharacter(payload){
  vitality:6,vitalityMax:6,stamina:5,staminaMax:5,tension:0,preparations:2,
  wounds:[],deathRisk:0,marks:[],development:0,notes:String(payload.notes||'').slice(0,5000),portrait:String(payload.portrait||'').slice(0,170000)
  };
- const errors=validateCharacter(c);if(errors.length)throw Error(errors.join('; '));return c;
+ const errors=validateCharacter(c,{allowOverload});if(errors.length)throw Error(errors.join('; '));return c;
 }
 function die100(randomBytes){
  if(randomBytes&&randomBytes.length){const n=Number(randomBytes[0]);if(Number.isInteger(n)&&n>=1&&n<=100)return n;}
