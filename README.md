@@ -32,6 +32,9 @@ O **SLASHER 10.1 (P2P experimental)** funciona por padrão **sem Supabase**. O s
 > [!IMPORTANT]
 > **É um beta P2P com diagnóstico de conexão.** A conexão foi testada com um transporte WebRTC simulado e com a interface mestre/jogador no navegador. Ainda falta validar ICE/NAT com duas redes reais. Alguns roteadores ou operadoras precisam de retransmissão TURN, que não está configurada nesta versão. O modo P2P não garante conexão em qualquer rede.
 
+
+> **10.1.2: Conexões manuais não usam TTL de convite.** O navegador tenta ICE enquanto o código de resposta ainda está sendo copiado. Antes de o mestre colar a resposta, `checking` ou até um `failed` precoce **não prova que o convite expirou**. O SLASHER agora mostra *Aguardando o mestre* durante essa etapa e ignora erros de convites antigos. O aviso de **45 segundos começa somente depois que o mestre aplica a resposta**. Se der falha após completar a troca, crie dois códigos novos.
+
 ## 🔪 Jogar P2P
 
 Não há SQL, conta, token, `config.js` ou instalação de Supabase.
@@ -56,7 +59,7 @@ Não há SQL, conta, token, `config.js` ou instalação de Supabase.
 
 ## 🧰 Conexão não abriu?
 
-O **SLASHER 10.1.1** mostra as rotas ICE encontradas, o estado da negociação e falhas de conexão. Se o código de convite não tiver nenhuma rota WebRTC, ele avisa imediatamente em vez de deixar o jogador aguardando para sempre.
+O **SLASHER 10.1.2** mostra as rotas ICE encontradas, o estado da negociação e falhas de conexão. Se o código de convite não tiver nenhuma rota WebRTC, ele avisa imediatamente em vez de deixar o jogador aguardando para sempre.
 
 1. Teste primeiro com **PC e celular no mesmo Wi-Fi**, sem rede de convidados nem isolamento de dispositivos.
 2. Desligue temporariamente VPN, bloqueios de WebRTC e conexões de dados móveis no celular.

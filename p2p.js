@@ -3,7 +3,9 @@
    The host must keep this browser tab open. */
 (function(){
  'use strict';
- const ICE={iceServers:[{urls:['stun:stun.l.google.com:19302','stun:stun1.l.google.com:19302']}]};
+ const ICE={iceServers:[{urls:['stun:stun.cloudflare.com:3478','stun:stun.l.google.com:19302','stun:stun1.l.google.com:19302']}]};
+ // Os convites NÃO têm TTL: gatheringTimeout e connectTimeout não expiram o código.
+ const GATHER_MS=30000, CONNECT_MS=45000;
  const MAX_SIGNAL=35000,CHUNK=12000,MAX_MESSAGE=1200000;
  const NO_ROUTE='O navegador não encontrou rotas WebRTC. Confira se PC e celular estão na mesma rede Wi-Fi, sem VPN, e tente novamente. Em algumas redes é necessário um servidor TURN.';
  const hasRoute=sdp=>/^a=candidate:/m.test(String(sdp||''));
@@ -11,6 +13,9 @@
  let diagnostic={phase:'idle',message:'Pronto para negociar a conexão.',candidateCount:0,ice:'new',connection:'new'};
  const report=(phase,message,who)=>{diagnostic={phase,message,candidateCount:who?.candidateCount??diagnostic.candidateCount,ice:who?.pc?.iceConnectionState||diagnostic.ice,connection:who?.pc?.connectionState||diagnostic.connection};callbacks.status?.({...diagnostic})};
  const pending=new Map(),live=new Map(),pendingRPC=new Map(),pieces=new Map();
+ // Uma negociação manual pode aguardar o usuário copiar/colar a resposta.
+ // Um ICE 'failed' antes da aplicação da resposta não equivale a convite expirado.
+ const retire=who=>{if(!who)return;who.closed=true;clearTimeout(who.connectionTimer);try{who.dc?.close()}catch{}try{who.pc?.close()}catch{}};
  const uid=()=>crypto.randomUUID?.()||Array.from(crypto.getRandomValues(new Uint8Array(16)),x=>x.toString(16).padStart(2,'0')).join('');
  let client=null,requestSerial=0;
  const callbacks={};
@@ -34,17 +39,33 @@
   const changed=()=>{if(pc.iceGatheringState==='complete')finish()};
   // Some phones take longer to gather STUN candidates. If gathering stalls,
   // use the routes we already have instead of rejecting a usable LAN route.
-  const timer=setTimeout(finish,25000);
+  const timer=setTimeout(finish,GATHER_MS);
   pc.addEventListener('icegatheringstatechange',changed);
   changed();
  })}
  function watch(pc,who){
   const changed=()=>{
+   if(who.closed)return; // Ignora callbacks de tentativas antigas.
    const state=pc.connectionState,ice=pc.iceConnectionState;
-   if(state==='connected')report('connected','Canal P2P conectado.',who);
-   else if(state==='failed'||ice==='failed')report('error','Falha na negociação ICE. Tente ambos no mesmo Wi-Fi, desligue VPN e gere um novo convite. Em redes restritas será necessário TURN.',who);
-   else if(state==='disconnected')report('error','O outro navegador perdeu a conexão. Confira a rede dos dois aparelhos.',who);
-   else if(state==='connecting'||ice==='checking')report('connecting','Procurando caminho direto entre os navegadores...',who);
+   if(state==='connected'){
+    who.stage='connected';report('connected','Canal P2P conectado.',who);
+   }else if(state==='failed'||ice==='failed'){
+    if(who.role==='client'&&who.stage==='waiting-host'){
+     // O cliente começa a testar ICE assim que cria o answer. Como o mestre
+     // ainda precisa colar esse código, um erro ICE aqui é prematuro.
+     report('waiting','Resposta gerada. ICE ainda sem conexão: envie o código ao mestre e peça que conclua. Se não conectar depois, gere convite e resposta novos.',who);
+    }else if(who.role==='host'&&who.stage==='waiting-answer'){
+     report('waiting','Convite criado. Aguardando a resposta do jogador; ICE ainda não foi concluído.',who);
+    }else{
+     report('error','Falha na negociação ICE depois da resposta. Tente gerar um convite novo. Desative VPN ou isolamento Wi-Fi; algumas redes exigem TURN.',who);
+    }
+   }else if(state==='disconnected'){
+    if(who.stage==='connected')report('error','O outro navegador perdeu a conexão. Confira a rede dos dois aparelhos.',who);
+   }else if(state==='connecting'||ice==='checking'){
+    if(who.stage==='waiting-host')report('waiting','Resposta pronta. Aguardando o mestre aplicar o código... (ICE: '+ice+')',who);
+    else if(who.stage==='waiting-answer')report('waiting','Convite gerado. Aguardando a resposta do jogador...',who);
+    else report('connecting','Verificando caminho direto entre os navegadores...',who);
+   }
   };
   pc.addEventListener('connectionstatechange',changed);
   pc.addEventListener('iceconnectionstatechange',changed);
@@ -71,7 +92,7 @@
    }catch(e){console.warn('SLASHER P2P pacote ignorado:',e)}
   };
   dc.onerror=()=>report('error','Erro no canal de dados. Gere um novo convite e tente novamente.',who);
-  dc.onclose=()=>{if(diagnostic.phase!=='error')report('error','Canal P2P fechado. Será necessário reconectar.',who);if(who.role==='host')live.delete(who.key);for(const [id,req] of pendingRPC)if(req.who===who){clearTimeout(req.timer);req.reject(Error('A conexão com o mestre caiu'));pendingRPC.delete(id)}callbacks.disconnected?.(who)};
+  dc.onclose=()=>{if(who.closed)return;if(diagnostic.phase!=='error')report('error','Canal P2P fechado. Será necessário reconectar.',who);if(who.role==='host')live.delete(who.key);for(const [id,req] of pendingRPC)if(req.who===who){clearTimeout(req.timer);req.reject(Error('A conexão com o mestre caiu'));pendingRPC.delete(id)}callbacks.disconnected?.(who)};
  }
  function received(who,msg){
   if(!msg||typeof msg.type!=='string')return;
@@ -85,31 +106,33 @@
   }
  }
  async function hostOffer(){
+  // Não deixe um convite antigo gerar 'ICE failed' sobre o convite atual.
+  for(const who of pending.values())retire(who);pending.clear();
   const pc=make(),id=uid(),key=id;let dc;
   try{
-   dc=pc.createDataChannel('slasher-sync',{ordered:true});const who={key,pc,dc,role:'host',id:null,nick:null};
-   listen(dc,who);watch(pc,who);dc.onopen=()=>report('connecting','Canal aberto; aguardando apresentação do jogador...',who);
+   dc=pc.createDataChannel('slasher-sync',{ordered:true});const who={key,pc,dc,role:'host',id:null,nick:null,stage:'gathering',closed:false};
+   listen(dc,who);watch(pc,who);dc.onopen=()=>{clearTimeout(who.connectionTimer);who.stage='connected';report('connected','Canal aberto; aguardando apresentação do jogador...',who)};
    report('gathering','Descobrindo rotas de conexão do mestre...',who);
    const offer=await pc.createOffer();await pc.setLocalDescription(offer);who.candidateCount=await gather(pc);
-   pending.set(id,who);report('offer','Convite gerado com '+who.candidateCount+' rota(s) WebRTC. Envie o convite ao jogador.',who);
+   who.stage='waiting-answer';pending.set(id,who);report('offer','Convite pronto ('+who.candidateCount+' rotas). Sem TTL no SLASHER: mantenha esta aba aberta e peça a resposta ao jogador.',who);
    return signal({v:1,type:'offer',id,sdp:pc.localDescription.sdp});
   }catch(e){report('error',e.message||'Não foi possível gerar convite.');pc.close();throw e}
  }
  async function joinOffer(code,nick){
   let offer;try{offer=parse(code,'offer')}catch(e){report('error',e.message);throw e}
-  const pc=make(),key='client-'+offer.id;
+  retire(client);client=null;const pc=make(),key='client-'+offer.id;
   try{
-   const who={key,pc,role:'client',id:null,nick:String(nick||'').trim().slice(0,32),dc:null};
+   const who={key,pc,role:'client',id:null,nick:String(nick||'').trim().slice(0,32),dc:null,stage:'gathering',closed:false};
    client=who;watch(pc,who);report('gathering','O celular está descobrindo suas rotas WebRTC...',who);
-   pc.ondatachannel=e=>{who.dc=e.channel;listen(who.dc,who);who.dc.onopen=()=>{report('connecting','Canal aberto. Confirmando identidade com o mestre...',who);transmit(who.dc,{type:'hello',nick:who.nick})}};
+   pc.ondatachannel=e=>{who.dc=e.channel;listen(who.dc,who);who.dc.onopen=()=>{clearTimeout(who.connectionTimer);who.stage='connected';report('connected','Canal aberto. Confirmando identidade com o mestre...',who);transmit(who.dc,{type:'hello',nick:who.nick})}};
    await pc.setRemoteDescription({type:'offer',sdp:offer.sdp});const answer=await pc.createAnswer();await pc.setLocalDescription(answer);who.candidateCount=await gather(pc);
-   report('answer','Resposta pronta com '+who.candidateCount+' rota(s). Envie ao mestre e aguarde a confirmação.',who);
+   who.stage='waiting-host';report('answer','Resposta pronta ('+who.candidateCount+' rotas). COPIE e envie ao mestre; ainda não é erro se ICE estiver em checking/failed.',who);
    return signal({v:1,type:'answer',id:offer.id,sdp:pc.localDescription.sdp});
   }catch(e){report('error',e.message||'Não foi possível gerar a resposta.');pc.close();client=null;throw e}
  }
- async function acceptAnswer(code){let answer;try{answer=parse(code,'answer')}catch(e){report('error',e.message);throw e}const who=pending.get(answer.id);if(!who)throw Error('Esse convite não está mais ativo. Gere um novo.');pending.delete(answer.id);await who.pc.setRemoteDescription({type:'answer',sdp:answer.sdp});
+ async function acceptAnswer(code){let answer;try{answer=parse(code,'answer')}catch(e){report('error',e.message);throw e}const who=pending.get(answer.id);if(!who)throw Error('Esse convite não está mais ativo. Gere um novo.');pending.delete(answer.id);who.stage='checking';await who.pc.setRemoteDescription({type:'answer',sdp:answer.sdp});
   report('connecting','Resposta aplicada. Verificando a conexão direta...',who);
-  setTimeout(()=>{if(who.dc.readyState!=='open'&&who.pc.connectionState!=='connected'&&who.pc.connectionState!=='closed')report('error','A conexão não abriu após 30 segundos. Tente no mesmo Wi-Fi, sem VPN. Se continuar falhando, esta rede provavelmente precisa de TURN.',who)},30000);
+  who.connectionTimer=setTimeout(()=>{if(!who.closed&&who.stage==='checking'&&who.dc.readyState!=='open'&&who.pc.connectionState!=='connected'&&who.pc.connectionState!=='closed')report('error','A conexão não abriu após 45 segundos DESDE A ACEITAÇÃO DA RESPOSTA. Crie convite novo e tente novamente. Verifique isolamento Wi-Fi/VPN ou necessidade de TURN.',who)},CONNECT_MS);
   return true}
  function snapshot(payload){for(const who of live.values()){try{transmit(who.dc,{type:'snapshot',payload})}catch(e){console.warn('P2P: envio falhou',e)}}}
  function call(method,args){if(!client||client.dc?.readyState!=='open'||!client.id)return Promise.reject(Error('Aguardando conexão com o mestre'));
@@ -118,7 +141,7 @@
    pendingRPC.set(reqid,{who:client,resolve,reject,timer});try{transmit(client.dc,{type:'request',reqid,method,args})}catch(e){clearTimeout(timer);pendingRPC.delete(reqid);reject(e)}
   });
  }
- function close(){for(const who of [...pending.values(),...live.values(),client].filter(Boolean)){try{who.dc?.close();who.pc.close()}catch{}}
+ function close(){for(const who of [...pending.values(),...live.values(),client].filter(Boolean))retire(who);
   pending.clear();live.clear();client=null;report('idle','Sala desconectada.');for(const [id,p] of pendingRPC){clearTimeout(p.timer);p.reject(Error('Mesa encerrada'));pendingRPC.delete(id)}
  }
  window.SLASHER_P2P={hostOffer,joinOffer,acceptAnswer,snapshot,call,close,on:(type,cb)=>callbacks[type]=cb,peers:()=>Array.from(live.values()).map(w=>({id:w.id,nick:w.nick,state:w.dc?.readyState})),isClientReady:()=>!!client?.id,diagnostics:()=>({...diagnostic,hostPeers:live.size,pendingOffers:pending.size,clientReady:!!client?.id})};
