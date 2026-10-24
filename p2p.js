@@ -10,8 +10,23 @@
  const NO_ROUTE='O navegador não encontrou rotas WebRTC. Confira se PC e celular estão na mesma rede Wi-Fi, sem VPN, e tente novamente. Em algumas redes é necessário um servidor TURN.';
  const hasRoute=sdp=>/^a=candidate:/m.test(String(sdp||''));
  const routeCount=sdp=>(String(sdp||'').match(/^a=candidate:/gm)||[]).length;
- let diagnostic={phase:'idle',message:'Pronto para negociar a conexão.',candidateCount:0,ice:'new',connection:'new'};
- const report=(phase,message,who)=>{diagnostic={phase,message,candidateCount:who?.candidateCount??diagnostic.candidateCount,ice:who?.pc?.iceConnectionState||diagnostic.ice,connection:who?.pc?.connectionState||diagnostic.connection};callbacks.status?.({...diagnostic})};
+ // Contagem por tipo, sem revelar IP privado, mDNS ou endereco publico.
+ const routeTypes=sdp=>{
+  const groups={host:0,srflx:0,relay:0,prflx:0}, lines=String(sdp||'').split(/\r?\n/).filter(x=>x.startsWith('a=candidate:'));
+  let mdns=0;
+  for(const line of lines){const type=line.match(/\btyp (host|srflx|relay|prflx)\b/);if(type)groups[type[1]]++;if(/\.local(?:\s|$)/.test(line))mdns++;}
+  const parts=Object.entries(groups).filter(([,n])=>n).map(([type,n])=>type+':'+n);
+  return parts.length?parts.join(', ')+(mdns?' (mDNS:'+mdns+')':''):'nenhuma';
+ };
+ let diagnostic={phase:'idle',message:'Pronto para negociar a conexão.',candidateCount:0,ice:'new',connection:'new',channel:'novo',localRoutes:'nenhuma',remoteRoutes:'nenhuma'};
+ const report=(phase,message,who)=>{diagnostic={phase,message,
+  candidateCount:who?.candidateCount??diagnostic.candidateCount,
+  ice:who?.pc?.iceConnectionState||diagnostic.ice,
+  connection:who?.pc?.connectionState||diagnostic.connection,
+  channel:who?who.dc?.readyState||'não criado':diagnostic.channel,
+  localRoutes:who?.pc?routeTypes(who.pc.localDescription?.sdp):diagnostic.localRoutes,
+  remoteRoutes:who?.pc?routeTypes(who.pc.remoteDescription?.sdp):diagnostic.remoteRoutes
+ };callbacks.status?.({...diagnostic})};
  const pending=new Map(),live=new Map(),pendingRPC=new Map(),pieces=new Map();
  // Uma negociação manual pode aguardar o usuário copiar/colar a resposta.
  // Um ICE 'failed' antes da aplicação da resposta não equivale a convite expirado.

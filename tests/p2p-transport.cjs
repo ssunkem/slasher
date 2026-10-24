@@ -41,6 +41,9 @@ function createContext(){const sandbox={window:{RTCPeerConnection:FakeRTCPeerCon
  assert.equal(received.snapshot.gmNote,null);
  assert.equal(joined.nick,'Eleanor');
  assert(host.diagnostics().candidateCount>=1,'ICE candidates recorded');
+ assert.match(host.diagnostics().localRoutes,/host:1/,'candidate type is exposed without IP');
+ assert.match(host.diagnostics().remoteRoutes,/host:1/,'remote candidate type is exposed');
+ assert.equal(typeof host.diagnostics().channel,'string','real DataChannel state is reported');
  assert.equal(host.diagnostics().hostPeers,1);
  const reply=await guest.call('roll',[{kind:'test',modifier:2}]);assert.equal(reply.method,'roll');assert.equal(reply.user,joined.id);
  await assert.rejects(guest.call('removeGMNotes',[]),/não autorizada/);

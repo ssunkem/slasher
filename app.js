@@ -99,7 +99,9 @@ const api=ONLINE?new SupaAPI():new DemoAPI();
 const P2P=window.SLASHER_P2P||{on(){},peers(){return []},snapshot(){},call(){return Promise.reject(Error('WebRTC indisponível'))}};
 let p2pOffer='',p2pAnswer='',p2pWait='',p2pNickname='';
 
-function p2pDiagnostics(){const d=P2P.diagnostics?.()||{};return `<div class="p2p-diagnostic ${d.phase==='error'?'p2p-diagnostic-error':''}" id="p2p-diagnostic" role="status" aria-live="polite"><strong>Estado da conexão:</strong> ${esc(d.message||'Aguardando...')}<small>Rotas: ${Number(d.candidateCount)||0} · ICE: ${esc(d.ice||'new')} · Canal: ${esc(d.connection||'new')}</small></div>`}
+function p2pDiagDetails(d){return '<small>Rotas locais: '+(Number(d.candidateCount)||0)+' · ICE: '+esc(d.ice||'new')+' · Conexão: '+esc(d.connection||'new')+' · DataChannel: '+esc(d.channel||'novo')+'</small>'+
+ '<small>Candidatos locais: '+esc(d.localRoutes||'nenhuma')+' · Remotos: '+esc(d.remoteRoutes||'nenhuma')+'</small>'}
+function p2pDiagnostics(){const d=P2P.diagnostics?.()||{};return `<div class="p2p-diagnostic ${d.phase==='error'?'p2p-diagnostic-error':''}" id="p2p-diagnostic" role="status" aria-live="polite"><strong>Estado da conexão:</strong> ${esc(d.message||'Aguardando...')}${p2pDiagDetails(d)}</div>`}
 
 // ---- Interface ----
 function updateConnectionStatus(){const el=$('#connection');if(el)el.innerHTML=state.mode==='p2p-host'?'<span class="chip good">P2P / MESTRE</span>':state.mode==='p2p-client'?`<span class="chip ${state.connection==='live'?'good':'red'}">P2P / ${state.connection==='live'?'CONECTADO':'DESCONECTADO'}</span>`:state.mode==='demo'?'<span class="chip red">DEMONSTRAÇÃO LOCAL</span>':`<span class="chip ${state.connection==='live'?'good':'red'}"><span class="live-dot"></span>${esc(state.connection==='live'?'AO VIVO':state.connection.toUpperCase())}</span>`}
@@ -188,7 +190,7 @@ function guestMethods(){
  api.remoteMesa=(op,args)=>P2P.call('mesa',[op,args]);
 }
 P2P.on('status',info=>{
- p2pWait=info.message;const el=document.getElementById('p2p-diagnostic');if(el){el.classList.toggle('p2p-diagnostic-error',info.phase==='error');el.innerHTML='<strong>Estado da conexão:</strong> '+esc(info.message)+'<small>Rotas: '+(Number(info.candidateCount)||0)+' · ICE: '+esc(info.ice||'new')+' · Canal: '+esc(info.connection||'new')+'</small>'}
+ p2pWait=info.message;const el=document.getElementById('p2p-diagnostic');if(el){el.classList.toggle('p2p-diagnostic-error',info.phase==='error');el.innerHTML='<strong>Estado da conexão:</strong> '+esc(info.message)+p2pDiagDetails(info)}
 });
 P2P.on('hello',who=>{
  if(state.mode!=='p2p-host'||!state.campaignId)return;
